@@ -1,0 +1,25 @@
+job:
+  singular: cronjob
+  plural: cronjobs
+  fields:
+    name: string
+    desc: string
+    command: text
+    command_type: "enum('function','system','call_url')"
+    interval: "enum('1min','15min','30min','60min','720min','1440min','custom')"
+    interval_custom: number
+    lastrun: datetime
+  hasMany:
+    - log
+log:
+  singular: cronlog
+  plural: cronlogs
+  fields:
+    command: text
+    start: datetime
+    end: datetime
+    return: text
+    message: string
+    message_type: "enum('n/a','error','info')"
+  hasOne:
+    - job

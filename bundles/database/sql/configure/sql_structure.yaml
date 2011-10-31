@@ -1,0 +1,33 @@
+book:
+  singular: book
+  plural: books
+  fields:
+    title: string
+    description: text
+  hasOne:
+    - author
+
+author:
+  singular: author
+  plural: authors
+  fields:
+    name: string
+
+shelf:
+  singular: shelf
+  plural: shelves
+  fields:
+    category: string
+  manyToMany:
+    - store
+  hasMany:
+    - book
+    
+store:
+  singular: store
+  plural: stores
+  fields:
+    name: string
+    address: text
+  manyToMany:
+    - shelf

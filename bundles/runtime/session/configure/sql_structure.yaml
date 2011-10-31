@@ -1,0 +1,10 @@
+list:
+  singular: session
+  plural: sessions
+  fields:
+    key: string
+    key_ssl: string
+    hits: number
+    extra_info: longblob
+    data: longblob
+    ip: string

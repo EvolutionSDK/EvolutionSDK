@@ -1,0 +1,197 @@
+body, textarea, input, div, p {
+	font-size: 14px;
+	font-family: Sans, Lucida Grande, Tahoma, Verdana, Helvetica, sans-serif;
+}
+body {
+	padding: 0 0 30px;
+	margin: 0;
+}
+body > h1 {
+	margin: 0;
+	font-size: 18px;
+	color: white;
+	border-bottom: 2px solid #000;
+	background: #333;
+	text-shadow: 2px 2px 1px #000;
+	padding: 30px;
+}
+body > h1 > a, body > h1 > span {
+	color: #fff;
+	text-decoration: none;
+	border: 2px solid transparent;
+	border-radius: 4px;
+	padding: 4px;
+	margin: -4px 0;
+}
+body > h1 > a:hover {
+	background: #555;
+	box-shadow: 0 0 3px #000;
+	text-shadow: 1px 1px 1px #000;
+}
+body > h1 > a:active {
+	background: #555;
+	box-shadow: inset 0 0 3px #000;
+	text-shadow: 0 0 1px #000;
+}
+a {
+	color: #666;	
+}
+.section {
+	font-size: 15px;	
+	padding: 0 30px;
+}
+.section .section {
+	border-left: 30px solid #eee;
+}
+h1 {
+	font-size: 120%;
+	margin: 30px 0 14px;
+}
+code, .trace, h4, .key {
+	padding: 2px 4px;
+	margin: 0 2px;
+	border-radius: 4px;
+}
+h4 code {
+	margin: 0 -4px;
+}
+code {
+	background: #fe8;
+	text-shadow: 1px 1px 1px #ffa;
+	font-family: Consolas, monospace;
+}
+code.alt, code.alt code {
+	background:#237;	
+	text-shadow: 1px 1px 1px #124;
+	color: #fff;
+}
+code.alt2, code.alt2 code  {
+	background:#732;	
+	text-shadow: 1px 1px 1px #421;
+	color: #fff;
+}
+h4 {
+	float: left;
+	padding: 6px 10px;
+	position: relative;
+	top: 4px;
+	font-size: 13px;
+	box-shadow: inset 0 4px 10px #ccc;
+	font-weight: bold;
+}
+.trace {
+	clear: left;
+	font-family: Consolas, monospace;
+	box-shadow: inset 0 0 10px #ccc;
+	margin-bottom: 20px;
+}
+.trace, h4 {	
+	text-shadow: 1px 1px 1px #fff;
+	background: #eee;
+}
+.trace > .step, .trace > p, .trace > textarea, .trace > input {
+	font-size: 13px;	
+	margin: 8px;
+}
+.trace > p {
+	margin: 1em 8px;	
+}
+.trace > div.pad-sides {
+	padding: 0 8px;
+	margin: 8px 0;
+}
+.trace textarea {
+	width: 100%;
+	height: 12em;
+	box-sizing: border-box;
+	resize: none;
+	padding: 8px;
+	line-height: 1.6;
+}
+.trace > input {
+	margin: 0 8px 12px;
+	padding: 8px 12px;
+}
+.line, .func, .parens {
+	font-weight: bold;
+}
+.func, 
+.function 	{	color: darkblue;	}
+.array 		{	color: orange;		}
+.string 	{	color: green;		}
+.boolean 	{	color: orange;		}
+.number 	{	color: red;			}
+.object 	{	color: darkred;		}
+.class 		{	color: darkred;		}
+.line 		{	color: purple;		}
+
+.selected {
+	padding: 2px 4px;
+	border-radius: 4px;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+.class.selected {
+	background: darkred;
+	color: white;
+}
+.selected a {
+	color: white;
+	text-decoration: none;	
+}
+
+/* Environment Var style */
+.var {padding: 1em; margin: 0 30px -1px 0; border: 1px solid #ddd; background: #f8f8f8; width: 45%; float: left;}
+.var label {width: 100px; float: left; padding: 8px 6px; color: #444; background: #ddd; border: 1px solid #bbb; font-size: 14px; font-weight: bold; text-align: right;}
+.var input, .var select {border: 1px solid #bbb; background: white; padding: 8px 6px; margin: 0 0 0 -1px; font-size: 14px;}
+.clear {clear:both; height: 1px; margin-top: -1px}
+/* List Styles */
+table.list {
+	border-collapse: collapse;
+	width: 100%;
+}
+table.list th {
+	background: #eee;
+	border: 1px solid #ccc;
+	padding: 12px 6px;
+}
+table.list td {
+	border: 1px solid #eee;
+	padding: 6px 6px;
+	text-align: left;
+	vertical-align: top;
+}
+
+/* Dump Styles */
+table.dump {
+	border-collapse: collapse;
+	width: 100%;
+}
+table.dump td {
+	padding: 4px 0;	
+}
+table.dump td.dump-array {
+	background: #f8f8f8;
+	padding: 8px;
+	border: 1px solid #ccc;
+}
+table.dump td.dump-array td.dump-array {
+	background: #fcfcfc;
+}
+table.dump td.dump-array td.dump-array td.dump-array {
+	background: #eee;
+}
+table.dump td.dump-array td.dump-array td.dump-array td.dump-array {
+	background: #f8f8f8;
+}
+
+table.dump td.dump-key {
+	padding: 4px 2px;
+}
+.methods {
+	margin-top: 1em;	
+}
+.key { background: #e0e0e0; color: black;
+	font-size: 12px;
+	white-space: nowrap;
+	text-shadow: 1px 1px 1px #fff; margin: 0 6px 0 0;
+	padding: 1px 4px;}
