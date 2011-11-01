@@ -1,6 +1,7 @@
 <?php
 
 namespace bundles\LHTML;
+use e\Configure;
 use Exception;
 
 class Bundle {

@@ -32,7 +32,7 @@ class Bundle {
 	/**
 	 * Non-static Versions
 	 */
-	public function invalidVar($var, $ex = null, $addscope) {
+	public function invalidVar($var, $ex = null) {
 		return self::_invalid($var, $ex);
 	}
 	

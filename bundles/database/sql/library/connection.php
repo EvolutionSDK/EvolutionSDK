@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\SQL;
+namespace Bundles\SQL;
 use Exception;
 use PDOException;
 use PDO;
@@ -46,6 +46,7 @@ class Connection {
 		$access = $this->_parse_access_url($url, 'dsn');
 		try {
 			$this->connection = new PDO($access['dsn'], $access['user'], $access['password']);
+			$this->query("SHOW TABLES");
 		} catch(PDOException $e) {
 			throw new ConnectionException("Could not connect to database `$slug`", 0, $e);
 		}
@@ -132,12 +133,16 @@ class Connection {
 			case 'dsn':
 				if($driver == 'mysql') $dsn = "mysql:host=$host;dbname=$database;";
 				if($driver == 'sqlite') $dsn = "sqlite:$host;";
+				if(!isset($dsn))
+					throw new Exception("Unknown database driver `$driver`");
 				$dsn = array('dsn' => $dsn, 'user' => $user, 'password' => $password);
 			break;
 			default:
 				$dsn = array('hostname' => $host, 'port' => $port, 'password' => $password, 'user' => $user);
 			break;
 		}
+		if(!isset($dsn))
+			throw new Exception("Invalid database access string format");
 		return $dsn;
 	}
 	

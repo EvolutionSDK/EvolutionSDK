@@ -1,7 +1,8 @@
 <?php
 
-namespace bundles\sql;
+namespace Bundles\SQL;
 use Exception;
+use PDOException;
 use e;
 
 /**
@@ -64,17 +65,19 @@ class Bundle {
 		if(!is_string($slug))
 			throw new Exception("Database connection slug must be a string when
 				calling `e::sql(<i>slug</i>)` or `e::sql()->useConnection(<i>slug</i>)`");
-
+		
 		// Load up the database connection from environment
 		$default = e::environment()->requireVar("sql.connection.$slug", 
 			'service://username[:password]@hostname[:port]/database');
-
+		
 		// Try to make the connection
 		try {
-			return $this->addConnection($default, $slug);
-		} catch(ConnectionException $e) {
+			$conn = $this->addConnection($default, $slug);
+		} catch(Exception $e) {
 			e::environment()->invalidVar("sql.connection.$slug", $e);
 		}
+		
+		return $conn;
 	}
 	
 	/**
