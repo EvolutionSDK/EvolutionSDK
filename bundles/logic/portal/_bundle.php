@@ -24,7 +24,7 @@ class Bundle {
 		 * Check for null first segment
 		 */
 		if(!isset($path[0]))
-			$name = 'default';
+			$name = 'site';
 			
 		/**
 		 * Portal Name
