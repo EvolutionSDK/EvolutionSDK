@@ -1,8 +1,7 @@
 <?php
 
-namespace Evolution\Environment;
-use Evolution\Router;
-use Evolution\Manage\Tile;
+namespace bundles\Environment;
+use bundles\Manage\Tile;
 use e;
 
 /**
@@ -18,9 +17,9 @@ class Manage {
 		foreach($env as $key => $value) {
 			if(substr($key, -9) === '---format')
 				continue;
-			$delete = Router\BundleURL('environment') . '/delete/' . base64_encode($key);
+			$delete = '/@environment/delete/' . base64_encode($key);
 			$delete = '<a href="'.$delete.'">Delete</a>';
-			$edit = Router\BundleURL('environment') . '/edit/' . base64_encode($key);
+			$edit = '/@environment/edit/' . base64_encode($key);
 			$edit = '<a href="'.$edit.'">Edit</a>';
 			$out .= "<div class='var'>$edit &bull; $delete &bull; <code class='alt'>$key</code> = <code>$value</code></div>";
 		}

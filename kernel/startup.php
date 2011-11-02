@@ -42,7 +42,7 @@ require_once(kernel.'/configure.php');
  * Handle Fatal Errors as Exceptions
  */
 set_error_handler(function($no, $msg, $file, $line) {
-	handle(new \ErrorException($msg, 0, $no, $file, $line));
+	throw new \ErrorException($msg, 0, $no, $file, $line);
 });
 
 /**

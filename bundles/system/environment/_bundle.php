@@ -26,29 +26,28 @@ class Bundle {
 		/**
 		 * Add to manager
 		 */
-		e\configure::add('manage.bundle', __CLASS__);
+		e\configure::add('manage.bundle', __NAMESPACE__, 'environment');
 	}
 	
 	/**
 	 * Non-static Versions
 	 */
 	public function invalidVar($var, $ex = null) {
-		return self::_invalid($var, $ex);
+		return $this->_invalid($var, $ex);
 	}
 	
 	public function requireVar($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null) {
-		$this->active = true;
-		return self::_require($var, $format, $why, $new, $ex);
+		return $this->_require($var, $format, $why, $new, $ex);
 	}
 	
 	/**
 	 * Static Versions
 	 */
-	public static function _invalid($var, $ex = null) {
-		return self::_require($var, self::$environment[self::$scope . ".$var---format"], 'is Invalid', true, $ex);
+	public function _invalid($var, $ex = null) {
+		return $this->_require($var, self::$environment[self::$scope . ".$var---format"], 'is Invalid', true, $ex);
 	}
 	
-	public static function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $addscope = true) {
+	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $addscope = true) {
 		
 		// Add current scope
 		if($addscope)
@@ -68,6 +67,9 @@ class Bundle {
 			if(!$new)
 				return $value;
 		}
+		
+		// Now we will show something
+		$this->active = true;
 		
 		// Get exception display
 		if($ex instanceof Exception)

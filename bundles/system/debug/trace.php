@@ -1,20 +1,28 @@
-<style>
-	body {
-		margin-left: 11px !important;
+<script>
+	document.body.onkeydown = function(e) {
+		if(e.keyCode == 192 && e.altKey)
+			__trace('block');
+	};
+	function __trace(x) {
+		document.getElementById('-e-debug-panel').style.display = x;
 	}
+</script>
+<style>
 	#-e-debug-panel {
 		font-family: Sans, Lucida Grande, Tahoma, Verdana, Helvetica, sans-serif;
 		font-size: 14px;
-		position: fixed; left: -625px; width: 600px; bottom: 0; top: 0;
-		overflow: auto; padding: 12px 14px 12px 12px;
-		background: #eee; box-shadow: -16px 0 16px 16px black;
+		position: fixed; left: 50px; right: 50px; bottom: 50px; top: 50px;
+		overflow: auto; padding: 30px;
+		background: #eee; box-shadow: 0 0 8px black, 0 0 20px 20px #fff;
+		border-radius: 20px;
 		z-index: 10000000;
+		display: none;
 	}
-	#-e-debug-panel:hover {
-		left: 0;
+	#-e-debug-panel a.link {
+		margin-left: 10px;
 	}
 	#-e-debug-panel h1 {
-		margin: 0 0 12px;
+		margin: 0 0 30px;
 		font-size: 120%;
 	}
 	#-e-debug-panel .args {
@@ -41,7 +49,7 @@
 		margin-bottom: -1px;
 	}
 	#-e-debug-panel .step {
-		padding: 6px;
+		padding: 10px;
 		background: #f8f8f8;
 		border: 1px solid #aaa;
 		margin-bottom: -1px;
@@ -87,7 +95,8 @@
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 </style>
 <div id="-e-debug-panel">
-<a class='link' href="" style="float:right;">Manage System</a>
+<a class='link' href="javascript:__trace('none');" style="float:right;">Hide</a>
+<a class='link' href="/@manage" style="float:right;">Manage System</a>
 <h1>Execution Trace
 	<span class='link' id='-e-show-all' onclick='_e_show(1)'>Show All</span>
 	<span class='link' id='-e-show-imp' onclick='_e_show(0)' style='display:none;'>Show Important</span>

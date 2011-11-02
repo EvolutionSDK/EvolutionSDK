@@ -177,9 +177,9 @@ function trace_exit() {
  * Complete page output
  */
 function complete() {
-	if(e::environment()->active)
+	if(e::environment()->active){ eval(d);
 		$dev = 'yes';
-	else
+	}else
 		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
 	if($dev == 'yes') {
 		trace('Completed with <code class="alt2">e\\complete()</code>');

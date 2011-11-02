@@ -33,7 +33,7 @@ class Bundle {
 				throw new Exception("No method `$method` found for bundle `$class`");
 		
 			e\trace(__CLASS__, "Processing `".get_class($bundle)."->$method()`");
-			$bundle->$method($this->path);
+			$bundle->$method($path);
 			e\complete();
 		}
 	}
