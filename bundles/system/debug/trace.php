@@ -1,10 +1,26 @@
 <script>
-	document.body.onkeydown = function(e) {
-		if(e.keyCode == 192 && e.altKey)
-			__trace('block');
-	};
+	setTimeout(function() {
+		window.document.body.onkeydown = function(e) {
+			if(e.keyCode == 192 && (e.altKey || e.ctrlKey || e.metaKey))
+				__trace('toggle');
+		};
+	}, 100);
+	
 	function __trace(x) {
-		document.getElementById('-e-debug-panel').style.display = x;
+		var w = document.getElementById('-e-debug-panel');
+		if(x == 'toggle')
+			x = w.style.display == 'block' ? 'none' : 'block';
+		w.style.display = x;
+	}
+	
+	function _e_show(x) {
+		var w = document.getElementById('-e-debug-panel');
+		var imp = '-e-show-important';
+		var all = '-e-show-all';
+		w.className = (x == 1 ? all : imp);
+		document.getElementById(imp).style.display = (x == 1 ? 'inline' : 'none');
+		document.getElementById(all).style.display = (x == 1 ? 'none' : 'inline');
+		return false;
 	}
 </script>
 <style>
@@ -59,6 +75,15 @@
 	#-e-debug-panel .step.hilite {
 		background: #fff;
 	}
+	#-e-debug-panel.-e-show-important .low {
+		display: none;
+	}
+	#-e-debug-panel.-e-show-all .step.high {
+		background: #ffb;
+	}
+	#-e-debug-panel.-e-show-all .step.high.hilite {
+		background: #ffa;
+	}
 	#-e-debug-panel .line, #-e-debug-panel .func, #-e-debug-panel .parens {
 		font-weight: bold;
 	}
@@ -89,17 +114,14 @@
 		text-shadow: 1px 1px 1px #421;
 		color: #fff;
 	}
-	#-e-debug-panel .low {
-		display: none;
-	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 </style>
-<div id="-e-debug-panel">
-<a class='link' href="javascript:__trace('none');" style="float:right;">Hide</a>
+<div id="-e-debug-panel" class="-e-show-important">
+<a class='link' onclick="return __trace('none')" style="float:right;">Hide</a>
 <a class='link' href="/@manage" style="float:right;">Manage System</a>
 <h1>Execution Trace
-	<span class='link' id='-e-show-all' onclick='_e_show(1)'>Show All</span>
-	<span class='link' id='-e-show-imp' onclick='_e_show(0)' style='display:none;'>Show Important</span>
+	<span class='link' id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
+	<span class='link' id='-e-show-important' onclick='return _e_show(0)' style='display:none;'>Show Important</span>
 </h1>
 
 <?php
@@ -121,7 +143,7 @@ function highestPriority($id) {
 		if(trace::$arr[$id]['depth'] <= $idepth)
 			break;
 		$p = trace::$arr[$id]['priority'];
-		if($p > $highest)
+		if($p < $highest)
 			$highest = $p;
 	}
 	return $highest;
@@ -136,8 +158,8 @@ foreach(trace::$arr as $id => $trace) {
 	else if($depth < $lastDepth)
 		echo str_repeat("</div>", $lastDepth - $depth);
 	$lastDepth = $depth;
-	if(highestPriority($id) === 0)
-		$priority = 'xlow';
+	if(highestPriority($id) > 2)
+		$priority = 'low';
 	else
 		$priority = 'high';
 	$step = "<div class=\"name\">$trace[title]</div>";

@@ -31,11 +31,11 @@ class Bundle {
 			'args' => serialize($args)
 		));	
 		
-		e\trace("<b>Deferred Callback Registered</b>");
+		e\trace("<b>Deferred Callback Registered</b>", '', null, 8);
 	}
 	
 	public function _on_after_framework_loaded() {
-		e\trace('Processing Deferred Events');
+		e\trace('Processing Deferred Events', '', null, 8);
 		$pending = e::sql()->select('deferred.pending')->all();
 		
 		foreach($pending as $item) {
