@@ -15,6 +15,7 @@ class SQLBundle {
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
+		
 		$this->bundle = basename($this->dir);
 	}
 	
@@ -27,6 +28,7 @@ class SQLBundle {
 		catch(Exception $e) {
 			throw new Exception("Error loading SQL configuration for bundle `$this->bundle` from file `$file`", 0, $e);
 		}
+		
 		/**
 		 * If a relation is on the same table prefix it with its bundle name
 		 */
@@ -51,6 +53,7 @@ class SQLBundle {
 		 */
 		foreach($sql as $table=>$val) Bundle::$db_structure[$this->bundle.'.'.$table] = $val;
 		foreach($sql as $table=>$val) self::$local_structure[$table] = $val;
+		
 	}
 	
 	/**

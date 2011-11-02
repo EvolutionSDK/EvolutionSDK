@@ -54,6 +54,20 @@ class Bundle {
 		}
 		
 		/**
+		 * Search the default portal
+		 */
+		if(is_null($matched)) foreach($searchdirs as $dir) {
+			$name = 'site';
+			
+			$dir .= '/portals/' . $name;
+			if(is_dir($dir)) {
+				$matched = $dir;
+				array_unshift($path, $name);
+				break;
+			}
+		}
+		
+		/**
 		 * If any paths matched
 		 */
 		if(!is_null($matched)) {

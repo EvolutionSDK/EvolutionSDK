@@ -20,6 +20,10 @@ class Bundle {
 	
 	private $connections = array();
 	
+	public function _on_first_use() {
+		$this->build_architecture();
+	}
+	
 	public function __bundle_response($method = false) {
 		//if(!isset($this->connections['default']))
 			// if it doesnt have a connection add the default connection
@@ -99,7 +103,7 @@ class Bundle {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	public static function build_architecture() {
+	private function build_architecture() {
 		if(empty(self::$db_structure)) return false;
 		
 		foreach(self::$db_structure as $table=>$config) {
