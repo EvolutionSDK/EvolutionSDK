@@ -63,7 +63,7 @@ class DSpyc {
 	
 	public function save($file, $array) {
 		# get the string to save to the file
-		if(!is_writable($file)) {
+		if(!is_writable(dirname($file))) {
 			throw new \Exception("Can't write YAML file for saving: `$file`");
 		} else {
 			$fh = fopen($file, 'w');

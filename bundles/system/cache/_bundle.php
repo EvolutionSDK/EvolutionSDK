@@ -27,7 +27,7 @@ class Bundle {
 			throw new Exception("Could not create cache folder at `$this->_cache_path`", 0, $e);
 		}
 		try {
-			if(!is_writable($this->_cache_path)) chmod($this->_cache_path, 0777);
+			if(!is_writable($this->_cache_path)) exec('chmod -Rf 0777 '.$this->_cache_path);
 		} catch(Exception $e) {
 			throw new Exception("Could not make cache folder writable at `$this->_cache_path`", 0, $e);
 		}

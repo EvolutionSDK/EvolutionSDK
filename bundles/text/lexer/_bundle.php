@@ -188,6 +188,16 @@ class Lexer {
 				}
 			}
 			
+			/**
+			 * Handle last token
+			 */
+			if($char === false) {
+				$tokens[] = (object) array('name' => $token, 'value' => $queue,
+					'line' => $tokenLine, 'col' => $tokenCol);
+					
+				break;
+			}
+			
 			// Whether to check for the ' ' space token, matches all whitespace
 			if($char === "\n" || $char === "\r" || $char === "\t")
 				$checkchar = ' ';
@@ -263,7 +273,7 @@ class Lexer {
 			$o = '';
 		else
 			$o = '<style>'.
-				file_get_contents(__DIR__ . '/library/css/lexer-debug-theme.css').
+				file_get_contents(__DIR__ . '/css/lexer-debug-theme.css').
 				'</style><div class="tokens">';
 		$this->debugStyleSent = true;
 		$tokens = $this->tokenize();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Evolution\LHTML;
+namespace Bundles\LHTML;
 use Exception;
 
 class Tag_Content extends Node {

@@ -124,6 +124,10 @@ class e {
 	 * Return a bundle
 	 */
 	public static function __callStatic($bundle, $args) {
+		/**
+		 * Case insensitise the bundle name
+		 */
+		$bundle = strtolower($bundle);
 		
 		/**
 		 * Enforce system load before bundle use

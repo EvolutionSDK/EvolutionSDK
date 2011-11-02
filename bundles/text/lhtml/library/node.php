@@ -1,7 +1,7 @@
 <?php
 
-namespace Evolution\LHTML;
-use Evolution\Kernel\Service;
+namespace Bundles\LHTML;
+use Bundles\Kernel\Service;
 use Exception;
 
 /**

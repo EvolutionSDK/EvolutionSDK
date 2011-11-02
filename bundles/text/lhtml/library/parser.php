@@ -1,8 +1,9 @@
 <?php
 
-namespace Evolution\LHTML;
-use Evolution\Text\Lexer;
+namespace Bundles\LHTML;
+use Bundles\Text\Lexer;
 use Exception;
+use e;
 
 class Parser {
 	
@@ -121,7 +122,7 @@ class Parser {
 	public static function parseString($string) {
 		
 		// Load lexer
-		$lexer = new Lexer();
+		$lexer = e::lexer();
 		$lexer->grammar(self::$grammar)->sourceString($string);
 		
 		// Parse lexer
@@ -130,7 +131,7 @@ class Parser {
 
 	public static function parseFile($file) {
 		// Load lexer
-		$lexer = new Lexer();
+		$lexer = e::lexer();
 		$lexer->grammar(self::$grammar)->sourceFile($file);
 		
 		// Parse lexer
@@ -140,8 +141,10 @@ class Parser {
 	public static function parseLexer(&$lexer) {
 		
 		// Debug if set
-		if(isset($_GET['--tokens']))
-			die($lexer->debugHTML());
+		if(isset($_GET['--tokens'])) {
+			echo $lexer->debugHTML();
+			e\complete();
+		}
 		
 		// Load tokens
 		$tokens = $lexer->tokenize();

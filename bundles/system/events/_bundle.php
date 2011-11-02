@@ -34,9 +34,7 @@ class Bundle {
 							$current = e\decode_file($file);
 						break;
 						case 'yaml':
-							$current = e::yaml()->load($file);
-							if(isset($current[0]) && $current[0] === $file)
-								$current = array();
+							$current = e::yaml()->load($file, true);
 						break;
 						default:
 							throw new Exception("Error with `$filename` the config extension `$ext` is not supported.");

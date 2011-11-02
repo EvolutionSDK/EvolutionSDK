@@ -3,6 +3,7 @@
 namespace bundles\LHTML;
 use e\Configure;
 use Exception;
+use e;
 
 class Bundle {
 	
@@ -18,7 +19,11 @@ class Bundle {
 		$this->route($path, array($dir));
 	}
 	
-	public function _on_router_route($path, $dirs = null) {
+	public function _on_router_route($path) {
+		$this->route($path, array(e::$site));
+	}
+	
+	public function route($path, $dirs = null) {
 		
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
@@ -26,10 +31,12 @@ class Bundle {
 		
 		// Make sure path contains valid controller name
 		if(!isset($path[0]) || $path[0] == '')
-			return;
+			$path = array('index');
 		
 		// Get the lhtml name
-		$name = strtolower($path[0]);
+		$name = strtolower(implode('/', $path));
+		
+		e\Trace(__CLASS__, "Looking for $name.lhtml");
 		
 		// Check all dirs for a matching lhtml
 		foreach($dirs as $dir) {
@@ -62,7 +69,7 @@ class Instance {
 	private $file;
 	private $stack;
 	
-	public function __construct($dir) {
+	public function __construct() {
 		
 		/**
 		 * Add lhtml to default router and portal routing
