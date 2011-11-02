@@ -14,6 +14,10 @@ class Bundle {
 		
 	}
 	
+	public function _on_portal_route($path, $dir) {
+		$this->route($path, array($dir));
+	}
+	
 	public function _on_router_route($path, $dirs = null) {
 		
 		// If dirs are not specified, use defaults

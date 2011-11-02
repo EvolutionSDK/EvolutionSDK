@@ -24,17 +24,18 @@ class Bundle {
 		 * Check for null first segment
 		 */
 		if(!isset($path[0]))
-			return false;
+			$name = 'default';
+			
+		/**
+		 * Portal Name
+		 */
+		else
+			$name = strtolower($path[0]);
 
 		/**
 		 * Paths where this portal exists
 		 */
 		$matched = null;
-
-		/**
-		 * Portal Name
-		 */
-		$name = strtolower($path[0]);
 
 		/**
 		 * Get portal paths
@@ -77,7 +78,7 @@ class Bundle {
 				/**
 				 * Route inside of the portal
 				 */
-				e::events()->portal_route($path, $matched, "allow:$matched/portal.json");
+				e::events()->portal_route($path, $matched, "allow:$matched/portal.yaml");
 			}
 			
 			/**

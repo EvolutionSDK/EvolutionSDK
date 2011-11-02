@@ -64,10 +64,10 @@ class DSpyc {
 	public function save($file, $array) {
 		# get the string to save to the file
 		if(!is_writable($file)) {
-			return false;
+			throw new \Exception("Can't write YAML file for saving: `$file`");
 		} else {
 			$fh = fopen($file, 'w');
-			if(!$fh) throw new \Exception("Can't open YAML file for saving: $file");
+			if(!$fh) throw new \Exception("Can't open YAML file for saving: `$file`");
 			fwrite($fh, $this->dump($array));
 			fclose($fh);
 			return true;

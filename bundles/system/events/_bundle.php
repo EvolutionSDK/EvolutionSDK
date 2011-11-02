@@ -22,9 +22,26 @@ class Bundle {
 				
 				$file = substr($last, 6);
 				
+				$ext = explode('.',$file);
+				$ext = end($ext);
+				
+				$filename = basename($file);
+				
 				$conf = array();
 				if(is_file($file)) {
-					$current = e\decode_file($file);
+					switch($ext) {
+						case 'json':
+							$current = e\decode_file($file);
+						break;
+						case 'yaml':
+							$current = e::yaml()->load($file);
+							if(isset($current[0]) && $current[0] === $file)
+								$current = array();
+						break;
+						default:
+							throw new Exception("Error with `$filename` the config extension `$ext` is not supported.");
+						break;
+					}
 					if(!is_array($current))
 						$current = array();
 					if(isset($current[$event]) && is_array($current[$event]))
@@ -43,8 +60,19 @@ class Bundle {
 					}
 				}
 				
-				if($save)
-					e\encode_file($file, $current);
+				if($save) {
+					switch($ext) {
+						case 'json':
+							e\encode_file($file, $current);
+						break;
+						case 'yaml':
+							e::yaml()->save($file, $current);
+						break;
+						default:
+							throw new Exception("Error with `$filename` the config extension `$ext` is not supported.");
+						break;
+					}
+				}
 			}
 		}
 		
