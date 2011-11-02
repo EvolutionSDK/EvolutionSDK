@@ -75,11 +75,13 @@ class Bundle {
 		}
 		
 		e\trace_enter("Running Event <code class='alt'>$event</code>", '', $args);
+		
+		$results = array();
 
 		foreach($objects as &$obj) {
 			
 			$class = get_class($obj);
-			
+						
 			/**
 			 * Check if the current event is regulated
 			 */
@@ -94,7 +96,7 @@ class Bundle {
 			e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event');
 			
 			try {
-				call_user_func_array(array($obj, $method), $args);
+				$results[] = call_user_func_array(array($obj, $method), $args);
 				e\trace_exit();
 			}
 			
@@ -111,6 +113,9 @@ class Bundle {
 		}
 		
 		e\trace_exit();
+		
+		return $results;
+		
 	}
 	
 }

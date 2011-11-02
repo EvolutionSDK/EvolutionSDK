@@ -7,13 +7,13 @@ use e;
 class AutoLoadException extends Exception {}
 
 function load($class) {
-	$path = explode('\\', $class);
+	$path = explode('\\', strtolower($class));
 	if($path[0] == '')
 		array_shift($path);
 	
 	$a = array_shift($path);
 	$b = array_shift($path);
-	$c = array_shift($path);
+	$c = implode('/', $path);
 	
 	if(empty($c))
 		throw new Exception("The class `$class` does not follow the expected autoload format `bundles\\<i>bundle-name</i>\\<i>some-class</i>`");

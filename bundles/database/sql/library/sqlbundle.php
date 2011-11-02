@@ -93,7 +93,7 @@ class SQLBundle {
 			case 'get':
 				if(!$plural) {
 					if(isset($args[0])) {
-						$class = "\\bundles\\$this->bundle\\Models\\$table";
+						$class = "\\Bundles\\$this->bundle\\Models\\$table";
 						try { $m = new $class($this->database, $relations['singular'], "$this->bundle.$table", $args[0]); }
 						catch(e\AutoLoadException $e) {
 							$m = new Model($this->database, $relations['singular'], "$this->bundle.$table", $args[0]);

@@ -1,8 +1,8 @@
 <?php
 
 namespace Bundles\LHTML;
-use Bundles\Kernel\Service;
 use Exception;
+use e;
 
 /**
  * Load LHTML Tags
@@ -298,7 +298,9 @@ class Node {
 				}				
 			}
 			if(substr($attr,0,1) == ':') continue;
-			$response = Service::run("attribute:$attr", $value);
+			
+			$response = e::events()->{"attribute_$attr"}($value);
+			
 			if(count($response) > 0)
 				$value = array_pop($response);
 
@@ -322,6 +324,8 @@ class Node {
 			PREG_SET_ORDER // settings
 		);
 		
+		$vars = array();
+		
 		foreach((array)$matches_vars as $var) {
 			$vars[] = $var[1];
 		}
@@ -341,6 +345,8 @@ class Node {
 			PREG_SET_ORDER // settings
 		);
 		
+		$vars = array();
+		
 		foreach((array)$matches_vars as $var) {
 			$vars[] = $var[1];
 		}
@@ -358,6 +364,8 @@ class Node {
 			$matches_vars, // variable to export results to
 			PREG_SET_ORDER // settings
 		);
+		
+		$vars = array();
 		
 		foreach((array)$matches_vars as $var) {
 			$vars[] = array('func' => $var[1], 'string' => $var[0], 'args' => explode(',', $var[2]));
