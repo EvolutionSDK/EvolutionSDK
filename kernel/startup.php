@@ -41,14 +41,14 @@ require_once(kernel.'/configure.php');
 /**
  * Handle Fatal Errors as Exceptions
  */
-/*set_error_handler(function($no, $msg, $file, $line) {
+set_error_handler(function($no, $msg, $file, $line) {
 	throw new \ErrorException($msg, 0, $no, $file, $line);
-});*/
+});
 
 /**
  * Use this to debug weird errors
  */
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 
 /**
  * Show exceptions
