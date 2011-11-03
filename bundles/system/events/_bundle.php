@@ -74,7 +74,7 @@ class Bundle {
 			}
 		}
 		
-		e\trace_enter("Running Event <code class='alt'>$event</code>", '', $args);
+		e\trace_enter("Running Event <code class='alt'>$event</code>", '', $args, 9);
 		
 		$results = array();
 
@@ -88,12 +88,12 @@ class Bundle {
 			if(isset($current) && isset($current[$event])) {
 				
 				if(!isset($current[$event][$class]) || $current[$event][$class] !== "enabled") {
-					e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>");
+					e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>", null, 9);
 					continue;
 				}
 			}
 			
-			e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event');
+			e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event', '', null, 9);
 			
 			try {
 				$results[] = call_user_func_array(array($obj, $method), $args);
