@@ -299,8 +299,6 @@ class Scope {
 	public function next() {
 		if($this->source_pointer < $this->source_count)
 			$this->source_pointer++;
-			
-		if($this->source_count == $this->source_pointer) return false;
 		
 		return $this;
 	}
