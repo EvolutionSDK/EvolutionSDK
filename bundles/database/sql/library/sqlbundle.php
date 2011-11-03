@@ -102,7 +102,7 @@ class SQLBundle {
 							$m = new Model($this->database, $relations['singular'], "$this->bundle.$table", $args[0]);
 						}
 					}
-					if(is_object($m) && isset($m->id)) return $m;
+					if(isset($m) && is_object($m) && isset($m->id)) return $m;
 					else return false;
 				}
 				else if($plural) {

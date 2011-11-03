@@ -7,14 +7,10 @@ class Scope {
 	
 	public $parent;
 	
-	public $data;
-	
-	public $source;
-	public $souce_as = false;
-	public $iterator = false;
-	
-	public $pointer = false;
-	private $count;
+	private $source_as = false;
+	private $source_data = false;
+	private $source_pointer = false;
+	private $source_count = false;
 	
 	public $timers = array();
 	
@@ -25,16 +21,18 @@ class Scope {
 		self::$hooks[$name] =& $obj;
 	}
 	
-	public function get_data() {
-		$s = $this->source;
-		if($s) return $this->parent->$s;
-		else return $this->data;
-	}
-	
 	public function __construct($parent = false) {
 		$this->timers['scope->map'] = 0;
 		$this->timers['scope->get'] = 0;
 		
+		/**
+		 * Set the parent scope
+		 */
+		$this->parent = $parent;
+		
+		/**
+		 * Set $_GET and $_POST to hooks
+		 */
 		self::$hooks[':get'] =& $_GET;
 		self::$hooks[':post'] =& $_POST;
 	}
@@ -60,11 +58,43 @@ class Scope {
 		if(!$flag_first) {
 			if(is_string($map[0]) && strpos($map[0],"'") === 0) return trim($map[0],"'");
 			else if(is_string($map[0]) && is_numeric($map[0])) return $map[0];
-			else if(is_string($map[0]) && isset($this->data[$map[0]]) && !is_object($this->data[$map[0]])) return $this->data[$map[0]];
-			else if(is_string($map[0]) && isset($this->data[$map[0]]) && is_object($this->data[$map[0]])) { $source = $this->data[$map[0]]; $flag_first = 1;}
-			else if(is_string($map[0]) && isset($this->data[$map[0]]) && is_array($this->data[$map[0]])) { $source = $this->data[$map[0]]; $flag_first = 1;}
-			else if(is_string($map[0]) && !isset($this->data[$map[0]])) return $this->parent ? $this->parent->get($allmap) : false;
-			else throw new \Exception("IXML Scope no function was called");
+			
+			/**
+			 * Return Source Array
+			 *
+			 * else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && !is_object($this->source_data[$map[0]])) 
+			 *	return $this->data[$map[0]][$this->source_pointer]->{$map[1]};
+			 */
+			
+			/**
+			 * Return Object
+			 */	
+			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_object($this->source_data[$map[0]])) {
+				$i=0; foreach($this->source_data[$map[0]] as $source) {
+					if($i === $this->source_pointer) break;
+					unset($source);
+					$i++;
+				}
+				
+				if(isset($source)) $flag_first = 1;
+			}
+			
+			/**
+			 * Return Array
+			 */
+			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_array($this->source_data[$map[0]])) {
+				$i=0; foreach($this->source_data[$map[0]] as $source) {
+					if($i === $this->source_pointer) break;
+					unset($source);
+					$i++;
+				}
+				
+				if(isset($source)) $flag_first = 1;
+			}
+			
+			else if(is_string($map[0]) && !isset($this->source_data[$map[0]])) return $this->parent;
+			
+			else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
 		}
 		
 		foreach($map as $i=>$var) {
@@ -76,11 +106,13 @@ class Scope {
 				if(method_exists($source, $var['func'])) $source = call_user_func_array(array($source, $var['func']), $var['args']);
 				else if(method_exists($source, '__call')) $source = call_user_func_array(array($source, $var['func']), $var['args']);
  			} 
+
 			else if(is_object($source)) {
 				if(isset($source->$var)) $source = $source->$var;
 				else if(!is_null($var) && method_exists($source, $var)) $source = $source->$var();
 				else if(!is_null($var) && method_exists($source, '__call')) $source = $source->$var();
 			}
+			
 			else if(is_array($source)) {
 				if($this->pointer !== false && $map[0] == $this->iterator && !$iterated) {
 					$iterated = true;
@@ -210,50 +242,87 @@ class Scope {
 		return array('vars' => $vars, 'filters' => $filters);
 	}
 	
+	/**
+	 * Get parsed variable
+	 */
 	public function __get($v) {
 		return $this->get($v);
-	}
-	
-	/**
-	 * Iteration function
-	 */
-	public function iterate($limit = false) {
-		$this->iterator = $this->source_as;
-		//var_dump($this->iterator, $this->data[$this->iterator]);
-		--$limit;
-		if($limit !== false && $limit !== NULL && $this->pointer !== false && $this->pointer >= $limit) return false;
-		$this->pointer = $this->pointer === false ? 0 : $this->pointer + 1;
-		return $this->pointer >= $this->count ? false : true;
-	}
-	
-	/**
-	 * Load source into the scope
-	 */
-	public function source($source_map, $as = false) {
-		if($as) $this->source_as = $as;
-		else $this->source_as = 'i';
-		# if requesting query, load the query results into this scope
-		$this->data[$this->source_as] = $this->get($source_map);
-		$this->iterator = $this->source_as;
 	}
 	
 	/**
 	 * Load a literal variable into the scope
 	 */
 	public function __set($var, $value) {
-		$this->data[$var] = $value;
+		$this->source_data[$var] = $value;
+	}
+	
+	/**
+	 * Load source into the scope
+	 */
+	public function source($source, $as = false) {
+		if(count($source) < 1) throw new \Exception("You must provide a foreachable row or object with at least one key. When calling `\bundles\lhtml\scope::source()`");
+		
+		/**
+		 * Set the source as
+		 */
+		if(!$as) $as = 'i';
+		$this->source_as = $as;
+				
+		/**
+		 * Load the source into the scope
+		 */
+		$this->source_data[$this->source_as] = $source;
+		
+		/**
+		 * Set the count of the source
+		 */
+		$this->source_count = count($source);
+		
+		/**
+		 * Reset the pointer
+		 */
+		$this->source_pointer = 0;
 	}
 	
 	/**
 	 * Reset Iterations
 	 */
 	public function reset() {
-		if(is_object($this->data[$this->iterator]) && method_exists($this->data[$this->iterator], '_scope_rewind')) {
-			$this->data[$this->iterator]->_scope_rewind();
-			$this->count = $this->data[$this->iterator]->count();
-		}
-		else $this->count = $this->data[$this->iterator] ? count($this->data[$this->iterator]) : 0;
-		$this->pointer = false;
+		$this->source_pointer = 0;
+		
+		return $this;
+	}
+	
+	/**
+	 * Next Source
+	 */
+	public function next() {
+		if($this->source_pointer < $this->source_count)
+			$this->source_pointer++;
+			
+		if($this->source_count == $this->source_pointer) return false;
+		
+		return $this;
+	}
+	
+	/**
+	 * Is still in a safe zone
+	 */
+	public function iteratable() {
+		if($this->source_pointer >= 0 && $this->source_pointer <= ($this->source_count--))
+			return true;
+		else
+			return false;
+	}
+	
+	/**
+	 * Back One Source
+	 */
+	public function back() {
+		if($this->source_pointer !== 0)
+			$this->source_pointer--;
+		
+		return $this;
 	}
 	
 	/**

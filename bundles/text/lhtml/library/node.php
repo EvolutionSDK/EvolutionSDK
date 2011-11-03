@@ -70,7 +70,7 @@ class Node {
 		if($err instanceof Exception)
 			$err = $err->getMessage();
 		$err = "$err in tag `<$this->fake_element>` on line `".$this->_code->line.
-			"` at column `".$this->_code->col."` in file `".$this->_data()->__file__."`";
+			"` at column `".$this->_code->col."` in file `".$this->_data()->{__file__}."`";
 		$div = $this->_nchild('div');
 		$div->_attr('style', 'margin: 12px; color: #a00; border: 1px solid #a00; background: #fcc; font-size: 12px; padding: 12px;');
 		$div->_cdata("<b>LHTML Error ::</b> ".preg_replace('/`([^`]*)`/x', '<code>$1</code>', htmlspecialchars($err)));
@@ -167,7 +167,7 @@ class Node {
 		/**
 		 * Start build loop
 		 */
-		while($this->is_loop ? $this->_data()->iterate() : $once--) {
+		while($this->is_loop ? $this->_data()->iteratable() : $once--) {
 		
 		/**
 		 * If is a complete tag render it and return
@@ -197,6 +197,11 @@ class Node {
 		 * Close the tag
 		 */
 		if($this->element !== '' && $this->element) $output .= "</$this->element>";
+		
+		/**
+		 * If a loop increment the pointer
+		 */
+		if($this->is_loop) $this->_data()->next();
 		
 		/**
 		 * End build loop
@@ -231,28 +236,33 @@ class Node {
 			 * Instantiate a new scope for the children of this element
 			 */
 			list($source, $as) = explode(' as ', $var);	
+			$source = '{'.$source.'}';
 			$vars = $this->extract_vars($source);
-			if($vars) {
-				foreach($vars as $var) {
-					$data_response = ($this->_data()->$var);
-					$source = str_replace('{'.$var.'}', $data_response, $source);
-				}
+			if($vars) foreach($vars as $var) {
+				$source = $this->_data()->$var;
 			}
+			
 		}
 		
 		/**
 		 * Load IXML Iterate
 		 */
-		if($this->attr[':load'] && isset($this->attr[':iterate'])) {
-			$this->loop_type = $this->attr[':iterate'];
+		if(isset($this->attributes[':load']) && isset($this->attributes[':iterate'])) {
+			$this->loop_type = $this->attributes[':iterate'];
 			$this->is_loop = true;
 		}
+		
+		/**
+		 * If is a list object return the array of results
+		 */
+		if($source instanceof \Bundles\SQL\ListObj) $source = $source->all();
 
 		/**
 		 * Instantiate a new scope for the children of this element
 		 */
 		$this->_data = new Scope($this->_ ? $this->_->_data() : false);
 		if(isset($source) && isset($as)) $this->_data()->source($source, $as);
+		
 	}
 	
 	/**
@@ -263,16 +273,16 @@ class Node {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function _string_parse($value) {
-	
 			$vars = $this->extract_vars($value);
-			if($vars) {
-				foreach($vars as $var) {
-					$data_response = ($this->_data()->$var);
-					if(is_object($data_response))
-						$data_response = describe($data_response);
-					$value = str_replace('{'.$var.'}', $data_response, $value);				
-				}				
+			
+			if($vars) foreach($vars as $var) {
+				$data_response = ($this->_data()->$var);
+				if(is_object($data_response))
+					$data_response = describe($data_response);
+					
+				$value = str_replace('{'.$var.'}', $data_response, $value);							
 			}
+		
 			return $value;
 	}
 	
