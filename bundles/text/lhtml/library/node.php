@@ -251,11 +251,6 @@ class Node {
 			$this->loop_type = $this->attributes[':iterate'];
 			$this->is_loop = true;
 		}
-		
-		/**
-		 * If is a list object return the array of results
-		 */
-		if($source instanceof \Bundles\SQL\ListObj) $source = $source->all();
 
 		/**
 		 * Instantiate a new scope for the children of this element
