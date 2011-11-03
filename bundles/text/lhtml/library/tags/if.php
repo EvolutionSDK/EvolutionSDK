@@ -33,14 +33,14 @@ class tag_if extends Node {
 		 */
 		if($this->process()) {
 			if(!empty($this->children)) foreach($this->children as $child) {			
-				if(is_object($child)) $output .= $child->output();
+				if(is_object($child)) $output .= $child->build();
 				else if(is_string($child)) $output .= $this->_string_parse($child);
 			}
 		}
 		else {
 			if(!empty($this->children)) foreach($this->children as $child) {	
 				if(is_object($child)) {
-					if($child->fake_element == ':else') $output .= $child->output();
+					if($child->fake_element == ':else') $output .= $child->built();
 				}
 			}
 		}
@@ -76,17 +76,19 @@ class tag_if extends Node {
 		$v = str_replace('\'', '', $v);
 		
 		$v = explode(' ', $v);
-		
+
 		if($v[0] === '') $v[0] = null;
 		if($v[2] === '') $v[2] = null;
+		if($v[0] === 'null') $v[0] = null;
+		if($v[2] === 'null') $v[2] = null;
 		if($v[0] === 'true') $v[0] = true;
 		if($v[2] === 'true') $v[2] = true;
 		if($v[0] === 'false') $v[0] = false;
 		if($v[2] === 'false') $v[2] = false;
 		
-		if(!is_bool($v[0]) && is_string($v[0])) $v[0] = $this->_data()->$v[0];
-		if(!is_bool($v[2]) && is_string($v[2])) $v[2] = $this->_data()->$v[2];
-
+		if(is_string($v[0])) $v[0] = "'".$v[0]."'";
+		if(is_string($v[2])) $v[2] = "'".$v[2]."'";
+		
 		if($v[0] === null) $v[0] = 'null';
 		if($v[2] === null) $v[2] = 'null';
 		if($v[0] === true) $v[0] = 'true';
@@ -101,7 +103,7 @@ class tag_if extends Node {
 		eval("\$retval = ".$v.';');
 		
 		if(!$retval) foreach($this->children as $child) {
-			if($child->fake_element == ':else') $child->show_else = 1;
+			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
 		}
 		
 		return $retval;
@@ -145,7 +147,7 @@ class tag_else extends Node {
 		 */
 		if($this->show_else) {
 			if(!empty($this->children)) foreach($this->children as $child) {			
-				if(is_object($child)) $output .= $child->output();
+				if(is_object($child)) $output .= $child->build();
 				else if(is_string($child)) $output .= $this->_string_parse($child);
 			}
 		}
