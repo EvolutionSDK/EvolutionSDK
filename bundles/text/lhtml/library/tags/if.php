@@ -111,13 +111,15 @@ class tag_if extends Node {
 		if(isset($this->attributes['count'])) {
 		
 			$v = $this->attributes['count'];
+			
+			if(strpos($v, '{') === false) $v = '{'.$v.'}';
 
 			$vars = $this->extract_vars($v);
 			if($vars) foreach($vars as $var) {
 				$data_response = $this->_data()->$var;
 				$v = str_replace('{'.$var.'}', $data_response, $v);				
 			}
-
+			
 			$v = count($v);
 			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
