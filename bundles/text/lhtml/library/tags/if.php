@@ -62,51 +62,78 @@ class tag_if extends Node {
 	}
 	
 	public function process() {
-		if(!isset($this->attributes['cond']))
-			throw new Exception('No if-condition `cond` specified');
+		if(isset($this->attributes['cond'])) {
 		
-		$v = $this->attributes['cond'];
-		
-		$vars = $this->extract_vars($v);
-		if($vars) foreach($vars as $var) {
-			$data_response = $this->_data()->$var;
-			$v = str_replace('{'.$var.'}', $data_response, $v);				
-		}
-		
-		$v = str_replace('\'', '', $v);
-		
-		$v = explode(' ', $v);
+			$v = $this->attributes['cond'];
 
-		if($v[0] === '') $v[0] = null;
-		if($v[2] === '') $v[2] = null;
-		if($v[0] === 'null') $v[0] = null;
-		if($v[2] === 'null') $v[2] = null;
-		if($v[0] === 'true') $v[0] = true;
-		if($v[2] === 'true') $v[2] = true;
-		if($v[0] === 'false') $v[0] = false;
-		if($v[2] === 'false') $v[2] = false;
-		
-		if(is_string($v[0])) $v[0] = "'".$v[0]."'";
-		if(is_string($v[2])) $v[2] = "'".$v[2]."'";
-		
-		if($v[0] === null) $v[0] = 'null';
-		if($v[2] === null) $v[2] = 'null';
-		if($v[0] === true) $v[0] = 'true';
-		if($v[2] === true) $v[2] = 'true';
-		if($v[0] === false) $v[0] = 'false';
-		if($v[2] === false) $v[2] = 'false';
-		
-		$v = array($v[0], $v[1], $v[2]);
-		
-		$v = implode(' ', $v);
-				
-		eval("\$retval = ".$v.';');
-		
-		if(!$retval) foreach($this->children as $child) {
-			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
+			$vars = $this->extract_vars($v);
+			if($vars) foreach($vars as $var) {
+				$data_response = $this->_data()->$var;
+				$v = str_replace('{'.$var.'}', $data_response, $v);				
+			}
+
+			$v = str_replace('\'', '', $v);
+
+			$v = explode(' ', $v);
+
+			if($v[0] === '') $v[0] = null;
+			if($v[2] === '') $v[2] = null;
+			if($v[0] === 'null') $v[0] = null;
+			if($v[2] === 'null') $v[2] = null;
+			if($v[0] === 'true') $v[0] = true;
+			if($v[2] === 'true') $v[2] = true;
+			if($v[0] === 'false') $v[0] = false;
+			if($v[2] === 'false') $v[2] = false;
+
+			if(is_string($v[0])) $v[0] = "'".$v[0]."'";
+			if(is_string($v[2])) $v[2] = "'".$v[2]."'";
+
+			if($v[0] === null) $v[0] = 'null';
+			if($v[2] === null) $v[2] = 'null';
+			if($v[0] === true) $v[0] = 'true';
+			if($v[2] === true) $v[2] = 'true';
+			if($v[0] === false) $v[0] = 'false';
+			if($v[2] === false) $v[2] = 'false';
+
+			$v = array($v[0], $v[1], $v[2]);
+
+			$v = implode(' ', $v);
+
+			eval("\$retval = ".$v.';');
+
+			if(!$retval) foreach($this->children as $child) {
+				if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
+			}
+
+			return $retval;
 		}
 		
-		return $retval;
+		if(isset($this->attributes['count'])) {
+		
+			$v = $this->attributes['count'];
+
+			$vars = $this->extract_vars($v);
+			if($vars) foreach($vars as $var) {
+				$data_response = $this->_data()->$var;
+				$v = str_replace('{'.$var.'}', $data_response, $v);				
+			}
+
+			$v = count($v);
+			
+			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
+				if($v > $this->attributes['gt']) return true;
+				else return false;
+			}
+			
+			else if(isset($this->attributes['lt']) && is_numeric($this->attributes['lt'])) {
+				if($v < $this->attributes['lt']) return true;
+				else return false;
+			}
+			
+		}
+		
+		throw new \Exception("Missing conditions in &lt;:if&gt; tag.");
+		
 	}
 	
 }
