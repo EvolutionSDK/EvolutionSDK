@@ -208,6 +208,8 @@ class Node {
 		 */
 		}
 		
+		if($this->is_loop) $this->_data()->reset();
+		
 		/**
 		 * Return the rendered page
 		 */
@@ -268,17 +270,17 @@ class Node {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function _string_parse($value) {
-			$vars = $this->extract_vars($value);
-			
-			if($vars) foreach($vars as $var) {
-				$data_response = ($this->_data()->$var);
-				if(is_object($data_response))
-					$data_response = describe($data_response);
-					
-				$value = str_replace('{'.$var.'}', $data_response, $value);							
-			}
+		$vars = $this->extract_vars($value);
 		
-			return $value;
+		if($vars) foreach($vars as $var) {
+			$data_response = ($this->_data()->$var);
+			if(is_object($data_response))
+				$data_response = describe($data_response);
+				
+			$value = str_replace('{'.$var.'}', $data_response, $value);							
+		}
+	
+		return $value;
 	}
 	
 	/**

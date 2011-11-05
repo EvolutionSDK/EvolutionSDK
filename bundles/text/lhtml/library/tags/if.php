@@ -40,7 +40,7 @@ class tag_if extends Node {
 		else {
 			if(!empty($this->children)) foreach($this->children as $child) {	
 				if(is_object($child)) {
-					if($child->fake_element == ':else') $output .= $child->built();
+					if($child->fake_element == ':else') $output .= $child->build();
 				}
 			}
 		}
@@ -54,6 +54,8 @@ class tag_if extends Node {
 		 * End build loop
 		 */
 		}
+		
+		if($this->is_loop) $this->_data()->reset();
 		
 		/**
 		 * Return the rendered page
@@ -69,6 +71,10 @@ class tag_if extends Node {
 			$vars = $this->extract_vars($v);
 			if($vars) foreach($vars as $var) {
 				$data_response = $this->_data()->$var;
+				
+				if(is_object($data_response))
+					$data_response = describe($data_response);
+				
 				$v = str_replace('{'.$var.'}', $data_response, $v);				
 			}
 
@@ -101,11 +107,6 @@ class tag_if extends Node {
 
 			eval("\$retval = ".$v.';');
 
-			if(!$retval) foreach($this->children as $child) {
-				if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
-			}
-
-			return $retval;
 		}
 		
 		if(isset($this->attributes['count'])) {
@@ -120,19 +121,26 @@ class tag_if extends Node {
 			}
 			
 			if($v instanceof \Bundles\SQL\ListObj) $v = $v->count(true);
-			else $v = count($v);
+			else if(is_array($v)) $v = count($v);
+			else $v = 1;
 			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
-				if($v > $this->attributes['gt']) return true;
-				else return false;
+				if($v > $this->attributes['gt'])$retval = true;
+				else $retval = false;
 			}
 			
 			else if(isset($this->attributes['lt']) && is_numeric($this->attributes['lt'])) {
-				if($v < $this->attributes['lt']) return true;
-				else return false;
+				if($v < $this->attributes['lt']) $retval = true;
+				else $retval = false;
 			}
 			
 		}
+		
+		if(isset($retval) && !$retval) foreach($this->children as $child) {
+			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
+		}
+		
+		if(isset($retval)) return $retval;
 		
 		throw new \Exception("Missing conditions in &lt;:if&gt; tag.");
 		
@@ -175,7 +183,7 @@ class tag_else extends Node {
 		 * Render the code
 		 */
 		if($this->show_else) {
-			if(!empty($this->children)) foreach($this->children as $child) {			
+			if(!empty($this->children)) foreach($this->children as $child) {
 				if(is_object($child)) $output .= $child->build();
 				else if(is_string($child)) $output .= $this->_string_parse($child);
 			}

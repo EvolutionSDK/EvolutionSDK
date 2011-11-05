@@ -276,7 +276,8 @@ class Scope {
 		/**
 		 * Set the count of the source
 		 */
-		$this->source_count = count($source);
+		if($source instanceof \Bundles\SQL\ListObj) $this->source_count = $source->count(true);
+		else $this->source_count = count($source);
 		
 		/**
 		 * Reset the pointer
@@ -307,7 +308,7 @@ class Scope {
 	 * Is still in a safe zone
 	 */
 	public function iteratable() {
-		if($this->source_pointer >= 0 && $this->source_pointer <= ($this->source_count--))
+		if($this->source_pointer >= 0 && $this->source_pointer <= $this->source_count)
 			return true;
 		else
 			return false;
