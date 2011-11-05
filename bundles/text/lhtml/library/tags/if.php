@@ -116,11 +116,11 @@ class tag_if extends Node {
 
 			$vars = $this->extract_vars($v);
 			if($vars) foreach($vars as $var) {
-				$data_response = $this->_data()->$var;
-				$v = str_replace('{'.$var.'}', $data_response, $v);				
+				$v = $this->_data()->$var;
 			}
 			
-			$v = count($v);
+			if($v instanceof \Bundles\SQL\ListObj) $v = $v->count(true);
+			else $v = count($v);
 			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
 				if($v > $this->attributes['gt']) return true;
