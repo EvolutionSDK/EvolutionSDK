@@ -92,7 +92,7 @@ class Scope {
 				if(isset($source)) $flag_first = 1;
 			}
 			
-			else if(is_string($map[0]) && !isset($this->source_data[$map[0]])) return $this->parent->get($var_map);
+			else if(is_string($map[0]) && !isset($this->source_data[$map[0]]) && $this->parent) return $this->parent->get($var_map);
 			
 			else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
 		}
