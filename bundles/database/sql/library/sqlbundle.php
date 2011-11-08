@@ -22,6 +22,12 @@ class SQLBundle {
 	public function _on_framework_loaded() {
 		$this->initialized = true;
 		$file = $this->dir.'/configure/sql_structure.yaml';
+		
+		/**
+		 * If File Has Changed
+		 */
+		if(e::yaml()->is_changed($file)) Bundle::$changed = true;
+		
 		try {
 			$sql = e::yaml()->load($file, true);
 		}

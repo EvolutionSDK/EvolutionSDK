@@ -61,6 +61,16 @@ class DSpyc {
 		
 	}
 	
+	public function is_changed($file) {
+		$key = md5($file);
+		# load the environments
+		$fileTime = $this->_get_configuration_time($file);
+		$cacheTime = e::cache()->timestamp('yaml-cache', $key);
+		
+		if($fileTime > $cacheTime) return true;
+		else return false;
+	}
+	
 	public function save($file, $array) {
 		# get the string to save to the file
 		if(!is_writable(dirname($file))) {
