@@ -67,8 +67,21 @@ class DSpyc {
 		$fileTime = $this->_get_configuration_time($file);
 		$cacheTime = e::cache()->timestamp('yaml-cache', $key);
 		
-		if($fileTime > $cacheTime) return true;
-		else return false;
+		if($fileTime > $cacheTime) {
+			$result = $this->_get_configuration($file);
+			e::cache()->store('yaml-cache', $key, $result, 'base64');
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public function last_modified($file) {
+		return array(
+			'yaml' => $this->_get_configuration_time($file),
+			'cache' => e::cache()->timestamp('yaml-cache', md5($file))
+		);
 	}
 	
 	public function save($file, $array) {

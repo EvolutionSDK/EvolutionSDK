@@ -14,4 +14,8 @@ class Bundle extends DSpyc {
 		return $this->string($string);
 	}
 	
+	public function model($file) {
+		return new Yaml_Result($file);
+	}
+	
 }
