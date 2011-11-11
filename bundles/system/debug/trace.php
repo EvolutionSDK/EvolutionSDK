@@ -87,15 +87,17 @@
 	#-e-debug-panel .line, #-e-debug-panel .func, #-e-debug-panel .parens {
 		font-weight: bold;
 	}
-	#-e-debug-panel .line {		color: purple;		}
-	#-e-debug-panel .func, #-e-debug-panel .function {		color: darkblue;	}
-	#-e-debug-panel .array {	color: orange;		}
-	#-e-debug-panel .string {	color: green;		}
-	#-e-debug-panel .boolean {	color: orange;		}
-	#-e-debug-panel .number {	color: red;			}
-	#-e-debug-panel .object {	color: darkred;	}
-	#-e-debug-panel .class {	color: darkred;		}
-	#-e-debug-panel .exception {	color: #b00;		}
+	#-e-debug-panel .func, 
+	#-e-debug-panel .function 	{color: darkblue;	}
+	#-e-debug-panel .line 		{color: purple;		}
+	#-e-debug-panel .array 		{color: orange;		}
+	#-e-debug-panel .string 	{color: green;		}
+	#-e-debug-panel .boolean  	{color: orange;		}
+	#-e-debug-panel .number 	{color: red;		}
+	#-e-debug-panel .object 	{color: darkred;	}
+	#-e-debug-panel .class 		{color: darkred;	}
+	#-e-debug-panel .exception 	{color: #b00;		}
+	
 	#-e-debug-panel code {
 		background: #fe8;
 		text-shadow: 1px 1px 1px #ffa;
