@@ -17,12 +17,12 @@ class InvalidRequestException extends Exception { }
 class Bundle {
 	
 	public static $db_structure;
-	public static $changes = false;
+	public static $changed = false;
 	
 	private $connections = array();
 	
 	public function _on_first_use() {
-		if(self::$changes == true) $this->build_architecture();
+		if(self::$changed == true) $this->build_architecture();
 	}
 	
 	public function __bundle_response($method = false) {
