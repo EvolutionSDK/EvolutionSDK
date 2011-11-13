@@ -2,6 +2,7 @@
 
 namespace e;
 use e;
+use Exception;
 
 /**
  * Fix backslashes in paths on Windows
@@ -54,6 +55,15 @@ set_error_handler(function($no, $msg, $file, $line) {
  * Show exceptions
  */
 function handle($exception) {
+	
+	/**
+	 * If Evolution framework is loaded, send out an exception event
+	 */
+	if(e::$loaded) {
+		try {
+			e::events()->exception($exception);
+		} catch(Exception $exception) {}
+	}
 	require_once(root.bundles.'/system/debug/message.php');
 }
 

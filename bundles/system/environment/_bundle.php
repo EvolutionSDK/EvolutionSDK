@@ -27,6 +27,12 @@ class Bundle {
 		 * Add to manager
 		 */
 		e\configure::add('manage.bundle', __NAMESPACE__, 'environment');
+		
+		/**
+		 * Check routing
+		 */
+		if($_SERVER['REDIRECT_URL'] === '/@environment.update')
+			$this->update();
 	}
 	
 	/**

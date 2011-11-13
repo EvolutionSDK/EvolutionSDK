@@ -192,10 +192,14 @@ function complete() {
 }
 
 function redirect($url) {
-	if(e::environment()->active)
-		$dev = 'yes';
+	if(e::$loaded) {
+		if(e::environment()->active)
+			$dev = 'yes';
+		else
+			$dev = e::environment()->requireVar('developmentMode', 'yes | no');
+	}
 	else
-		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
+		$dev = 'no';
 	if($dev == 'yes') {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
