@@ -70,6 +70,12 @@ class Connection {
 	 * Run a SQL query
 	 */
 	public function query($sql, $vsprintf = false) {
+	
+		/**
+		 * Trace
+		 */
+		e\trace_enter('SQL Query', $sql, is_array($vsprintf) ? $vsprintf : array(), 7);
+	
 		/**
 		 * Sprint the string with either a value or an array. if there is not an array of queries
 		 */
@@ -99,6 +105,13 @@ class Connection {
 		 * Stop the timer and return how long the query took
 		 */
 		$time = (microtime(true) - $time) * 1000;
+		
+		//e\trace('Query Time: ' . $time);
+		
+		/**
+		 * Trace
+		 */
+		e\trace_exit();
 		
 		/**
 		 * Record total query processing time and history
