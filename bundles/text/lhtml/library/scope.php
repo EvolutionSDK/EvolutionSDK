@@ -38,8 +38,6 @@ class Scope {
 	}
 	
 	public function get($var_map) {
-		var_dump($var_map);
-
 		$source = false;
 		$tt = microtime(true);
 		
