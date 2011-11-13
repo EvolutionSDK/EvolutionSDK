@@ -13,7 +13,7 @@ class Node_Youtube extends Node {
 		/**
 		 * Get the Youtube ID
 		 */
-		if(isset($this->attributes['src']) && strpos($this->attributes['src'], '?') !== false) {
+		if(isset($this->attributes['src']) && strpos($this->attributes['src'], '?') !== false && strpos($this->attributes['src'], 'youtube') !== false) {
 			$src = explode('?', $this->attributes['src']);
 			parse_str(end($src), $src);
 			$src = 'http://www.youtube.com/embed/'.$src['v'];
