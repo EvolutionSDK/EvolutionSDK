@@ -15,8 +15,15 @@ function load($class) {
 	$b = array_shift($path);
 	$c = implode('/', $path);
 	
-	if(empty($c))
-		throw new Exception("The class `$class` does not follow the expected autoload format `bundles\\<i>bundle-name</i>\\<i>some-class</i>`");
+	if(empty($c)) {
+		
+		return false;
+		
+		/**
+		 * Cant't do this for compatibility with 3rd party code (maybe can check for invalid class bundles\\something)
+		 * throw new Exception("The class `$class` does not follow the expected autoload format `bundles\\<i>bundle-name</i>\\<i>some-class</i>`");
+		 */
+	}
 	
 	if($c === 'e')
 		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition");
@@ -28,8 +35,12 @@ function load($class) {
 	foreach($dirs as $dir) {
 		foreach($files as $pattern) {
 			$pattern = "$dir/".strtolower($pattern);
-			foreach(glob($pattern) as $file)
+			foreach(glob($pattern) as $file) {
 				require_once($file);
+				/**
+				 * TODO Why can't we return here if we just included a file?
+				 */
+			}
 		}
 	}
 	
