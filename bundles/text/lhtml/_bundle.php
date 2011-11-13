@@ -13,9 +13,6 @@ class Bundle {
 	
 	public function _on_first_use() {
 		Scope::addHook(':e', new e2);
-		Scope::addHook(':david', function(){
-			return array('name' => 'test');
-		});
 	}
 	
 	public function _on_lhtml_add_hook($hook, $item) {
