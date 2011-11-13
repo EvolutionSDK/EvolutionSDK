@@ -3,7 +3,7 @@
 namespace Bundles\LHTML;
 use Exception;
 
-class tag_if extends Node {
+class Node_if extends Node {
 	
 	public function init() {
 		$this->element = false;

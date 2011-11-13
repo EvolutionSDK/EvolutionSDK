@@ -3,7 +3,7 @@
 namespace Bundles\LHTML;
 use Exception;
 
-class tag_include extends Node {
+class Node_include extends Node {
 	
 	public function init() {
 		$this->element = false;
