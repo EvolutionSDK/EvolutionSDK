@@ -67,13 +67,14 @@ class Node {
 	public function init() {}
 	
 	public function _error($err = 'Error') {
+		echo "<div style='white-space:pre;font-family:courier;'>";
+		debug_print_backtrace();
 		if($err instanceof Exception)
 			$err = $err->getMessage();
-		
-		debug_print_backtrace();
+
 			
 		$err = "$err in tag `<$this->fake_element>` on line `".$this->_code->line.
-			"` at column `".$this->_code->col."` in file `".__file__."`";
+			"` at column `".$this->_code->col."` in file ``";
 		$div = $this->_nchild('div');
 		$div->_attr('style', 'margin: 12px; color: #a00; border: 1px solid #a00; background: #fcc; font-size: 12px; padding: 12px;');
 		$div->_cdata("<b>LHTML Error ::</b> ".preg_replace('/`([^`]*)`/x', '<code>$1</code>', htmlspecialchars($err)));

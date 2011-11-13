@@ -16,7 +16,7 @@ class Scope {
 	
 	public static $hooks = array();
 	
-	public static function addHook($name, &$obj) {
+	public static function addHook($name, $obj) {
 		if(substr($name, 0, 1) !== ':') throw new Exception('You must prefix your LHTML hook with a colon! Error in hook $name');
 		self::$hooks[$name] =& $obj;
 	}
@@ -38,21 +38,30 @@ class Scope {
 	}
 	
 	public function get($var_map) {
+		var_dump($var_map);
+
+		$source = false;
 		$tt = microtime(true);
 		
+		// strip special char for embedded JS vars
 		if(is_string($var_map) AND strpos($var_map, '%') === 0) $var_map = substr($var_map, 1);
 		
 		$allmap = is_string($var_map) ? $this->parse($var_map) : $var_map;
-		
 		$filters = $allmap['filters'];
 		$map = $allmap['vars'];
 		
 		$flag_first = false;
-		
-		if(substr($map[0], 0, 1) == ':') foreach(self::$hooks as $hmap=>$hobj) {
-			if($map[0] !== $hmap) continue;
-			$source = $hobj;
-			$flag_first = 1;
+		if(strpos($map[0],':')===0 && isset(self::$hooks[$map[0]])) {
+			if(is_callable(self::$hooks[$map[0]])) {
+				$v = self::$hooks[$map[0]];
+				$source = $v();
+				$flag_first=1;
+			}
+			else {
+				$source = self::$hooks[$map[0]];	
+				$flag_first=1;
+			}
+			
 		}
 		
 		if(!$flag_first) {
@@ -100,7 +109,7 @@ class Scope {
 		foreach($map as $i=>$var) {
 			if($map[0] == ':get' && $map[1] == 'test') echo(' | i:'.$i.' | flag: '.$flag_first);
 			if($flag_first && $i < $flag_first) continue;
-			if(!$source) return null;
+			if(!isset($source) || !$source) return null;
 			
 			if(is_array($var) && is_object($source)) {
 				if(method_exists($source, $var['func'])) $source = call_user_func_array(array($source, $var['func']), $var['args']);
@@ -114,9 +123,9 @@ class Scope {
 			}
 			
 			else if(is_array($source)) {
-				if($this->pointer !== false && $map[0] == $this->iterator && !$iterated) {
+				if($this->source_pointer !== false && $map[0] == $this->source_as && !$iterated) {
 					$iterated = true;
-					$source = is_object($source[$this->iterator]) ? $source[$this->iterator]->_scope_by_pos($this->pointer) : $source[$this->iterator][$this->pointer];
+					$source = is_object($source[$this->source_as]) ? $source[$this->source_as]->_scope_by_pos($this->source_pointer) : $source[$this->source_as][$this->source_pointer];
 				}
 				else $source = @$source[$var];
 			}
@@ -298,7 +307,7 @@ class Scope {
 	 * Next Source
 	 */
 	public function next() {
-		if($this->source_pointer <= $this->source_count)
+		if($this->source_pointer < $this->source_count)
 			$this->source_pointer++;
 		
 		return $this;
@@ -308,7 +317,7 @@ class Scope {
 	 * Is still in a safe zone
 	 */
 	public function iteratable() {
-		if($this->source_pointer >= 0 && $this->source_pointer <= $this->source_count)
+		if($this->source_pointer >= 0 && $this->source_pointer < $this->source_count)
 			return true;
 		else
 			return false;
