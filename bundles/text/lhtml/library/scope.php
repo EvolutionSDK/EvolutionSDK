@@ -298,7 +298,7 @@ class Scope {
 	 * Next Source
 	 */
 	public function next() {
-		if($this->source_pointer < $this->source_count)
+		if($this->source_pointer <= $this->source_count)
 			$this->source_pointer++;
 		
 		return $this;
