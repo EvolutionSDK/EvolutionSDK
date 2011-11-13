@@ -11,6 +11,10 @@ class Bundle {
 		return new Instance;
 	}
 	
+	public function _on_first_use() {
+		Scope::addHook(':e', new e2);
+	}
+	
 	public function _on_lhtml_add_hook($hook, $item) {
 		
 	}
@@ -98,4 +102,13 @@ class Instance {
 		return $this->stack->build();
 	}
 
+}
+
+class e2 {
+	
+	public function __call($method, $args) {
+		$method = "e::$method";
+		return call_user_func_array($method, $args);
+	}
+	
 }

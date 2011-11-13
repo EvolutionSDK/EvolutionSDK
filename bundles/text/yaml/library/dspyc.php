@@ -67,7 +67,7 @@ class DSpyc {
 		$fileTime = $this->_get_configuration_time($file);
 		$cacheTime = e::cache()->timestamp('yaml-cache', $key);
 		
-		if($fileTime > $cacheTime) {
+		if($fileTime > $cacheTime || $cacheTime === false) {
 			$result = $this->_get_configuration($file);
 			e::cache()->store('yaml-cache', $key, $result, 'base64');
 			
