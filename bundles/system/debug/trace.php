@@ -65,12 +65,26 @@
 		margin-bottom: -1px;
 	}
 	#-e-debug-panel .step {
-		padding: 10px;
+		padding: 10px 10px 10px 80px;
 		background: #f8f8f8;
 		border: 1px solid #aaa;
 		margin-bottom: -1px;
 		font-size: 12px;
 		overflow: hidden;
+		position: relative;
+	}
+	#-e-debug-panel .step .time {
+		border-right: 1px solid #888;
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 50px;
+		padding: 10px;
+		text-align: center;
+		text-shadow: -1px -1px 1px #fff;
+		font-weight: bold;
+		font-size: 10px;
 	}
 	#-e-debug-panel .step.hilite {
 		background: #fff;
@@ -151,9 +165,37 @@ function highestPriority($id) {
 	return $highest;
 }
 
+function insideTime($id) {
+	if(!isset(trace::$arr[$id]))
+		return 'n/a';
+	$idepth = trace::$arr[$id]['depth'];
+	$start = trace::$arr[$id]['time'];
+	while(true) {
+		$id++;
+		if(!isset(trace::$arr[$id]))
+			break;
+		if(trace::$arr[$id]['depth'] <= $idepth)
+			return trace::$arr[$id]['time'] - $start;
+	}
+	return trace_end_time - $start;
+}
+
 $lastDepth = 0;
 $i = 0;
+define('trace_end_time', microtime(true));
+
 foreach(trace::$arr as $id => $trace) {
+	if(!isset($start))
+		$start = $trace['time'];
+	
+	/**
+	 * Get trace time
+	 */
+	$time = number_format(1000 * insideTime($id), 2);
+	
+	/**
+	 * Get trace depth
+	 */
 	$depth = $trace['depth'];
 	if($depth > $lastDepth)
 		echo "<div class=\"branch\">";
@@ -164,7 +206,11 @@ foreach(trace::$arr as $id => $trace) {
 		$priority = 'low';
 	else
 		$priority = 'high';
-	$step = "<div class=\"name\">$trace[title]</div>";
+		
+	/**
+	 * Display the trace
+	 */
+	$step = "<div class=\"time\">$time ms</div><div class=\"name\">$trace[title]</div>";
 	if(strlen(trim($trace['message'])) > 0)
 		$step .= '<div class="message">'.preg_replace('/`([^`]*)`/x', '<code>$1</code>', trim($trace['message'])).'</div>';
 	if(count($trace['args']) > 0) {

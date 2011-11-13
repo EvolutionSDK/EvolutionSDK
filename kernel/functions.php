@@ -148,7 +148,7 @@ function display_trace() {
  */
 function trace($title, $message = '', $args = array(), $priority = 0) {
 	TraceVars::$arr[] = array('title' => $title, 'message' => $message, 'args' => $args, 
-		'priority' => $priority, 'depth' => count(TraceVars::$stack));
+		'priority' => $priority, 'depth' => count(TraceVars::$stack), 'time' => microtime(1));
 }
 
 /**
