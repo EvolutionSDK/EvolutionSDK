@@ -149,7 +149,7 @@ class Node_if extends Node {
 }
 
 
-class tag_else extends Node {
+class Node_else extends Node {
 	public $show_else = 0;
 	public function __construct($element = false, $parent = false) {
 		parent::__construct($element, $parent);
