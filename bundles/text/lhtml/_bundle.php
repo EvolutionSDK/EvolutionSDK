@@ -12,7 +12,7 @@ class Bundle {
 	}
 	
 	public function _on_first_use() {
-		Scope::addHook(':e', new e2);
+		Scope::addHook(':e', new e_handle);
 	}
 	
 	public function _on_lhtml_add_hook($hook, $item) {
@@ -104,7 +104,7 @@ class Instance {
 
 }
 
-class e2 {
+class e_handle {
 	
 	public function __call($method, $args) {
 		$method = "e::$method";
