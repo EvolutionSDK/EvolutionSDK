@@ -129,6 +129,8 @@ class Bundle {
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
+		
+		$this->db_bundle = new SQLBundle($dir);
 	}
 	
 	/**
@@ -137,10 +139,7 @@ class Bundle {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	public function _on_first_use() {
-		
-		$this->db_bundle = new SQLBundle($dir);
-		
+	public function _on_after_framework_load() {
 		/**
 		 * Grab the cookie name
 		 */

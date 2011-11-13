@@ -35,6 +35,14 @@ class Scope {
 		 */
 		self::$hooks[':get'] =& $_GET;
 		self::$hooks[':post'] =& $_POST;
+		
+		/**
+		 * Prepare/Bind URL Hooks
+		 */
+		$url = explode('/', $_SERVER['REQUEST_URI']);
+		$url['first'] = reset($url);
+		$url['last'] = end($url);
+		self::$hooks[':url'] =& $url;
 	}
 	
 	public function get($var_map) {

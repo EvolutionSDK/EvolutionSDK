@@ -1,10 +1,10 @@
 <?php
 
-namespace bundles\Action;
-use Evolutuion\Kernel\Completion;
+namespace Bundles\Action;
+use Exception;
 use e;
 
-class ActionException extends \Exception { }
+class ActionException extends Exception { }
 
 class Action {
 	
@@ -182,7 +182,7 @@ class Action {
 		/**
 		 * If the output is raw stop
 		 */
-		if($this->raw) { throw new Completion; exit; }
+		if($this->raw) { e\Complete(); exit; }
 		/**
 		 * Redirect to respective URL's
 		 */
@@ -194,12 +194,12 @@ class Action {
 			/**
 			 * @todo: Determine if this should even be here
 			 */
-			if(isset($this->data['_url'])) \Evolution\Router\redirect($this->data['_url']);
+			if(isset($this->data['_url'])) e\redirect($this->data['_url']);
 			
 			if(isset($results['success']) && $results['success'])
-				\Evolution\Router\redirect($this->_redirect_success_url);
+				e\redirect($this->_redirect_success_url);
 			if(isset($results['success']) && !$results['success'])
-				\Evolution\Router\redirect($this->_redirect_failure_url);
+				e\redirect($this->_redirect_failure_url);
 		}
 		
 		/**
