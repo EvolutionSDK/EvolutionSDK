@@ -91,7 +91,7 @@ class Action {
 		 * Load File Data
 		 */
 		if(!empty($_FILES)) {
-			$files['files'] = $_FILES;
+			$files = array('files' => $_FILES);
 			$this->_load_data($files);
 		}
 		
