@@ -88,6 +88,14 @@ class Action {
 		else $this->_load_data(e::session()->data('get','_actions', get_class($this)));
 		
 		/**
+		 * Load File Data
+		 */
+		if(!empty($_FILES)) {
+			$files['files'] = $_FILES;
+			$this->_load_data($files);
+		}
+		
+		/**
 		 * Unset the reset variable
 		 */
 		unset($this->data['_reset']);

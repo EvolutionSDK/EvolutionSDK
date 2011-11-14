@@ -324,7 +324,7 @@ class Bundle {
 				/**
 				 * Move down the array based on the args passed
 				 */
-				foreach($args as $arg) if(isset($data['arg'])) $data = $data[$arg];
+				foreach($args as $arg) if(isset($data[$arg])) $data = $data[$arg];
 
 				/**
 				 * Finally return the data
