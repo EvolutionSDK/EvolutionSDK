@@ -14,6 +14,8 @@ class Action {
 	public $raw = false;
 	public $input_data = array();
 	
+	private $_has_checked;
+	
 	/**
 	 * Response type. HTTP will redirect. JSON and XML will return their respective responses.
 	 *
@@ -173,8 +175,6 @@ class Action {
 		 * Save the data to the session
 		 */
 		$data = $this->data;
-				
-		\Evolution\Kernel\Trace::add(__NAMESPACE__, "hit in action");
 		
 		if($this->save_data) 
 			e::session()->data('set', '_actions', get_class($this), $data)->save();

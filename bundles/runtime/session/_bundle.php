@@ -1,8 +1,8 @@
 <?php
 
-namespace bundles\session;
+namespace Bundles\Session;
+use Bundles\SQL\SQLBundle;
 use Exception;
-use bundles\SQL\SQLBundle;
 use e;
 
 class Bundle {
@@ -131,6 +131,7 @@ class Bundle {
 		$this->dir = $dir;
 		
 		$this->db_bundle = new SQLBundle($dir);
+		e::__add_listener($this->db_bundle);
 	}
 	
 	/**
@@ -139,7 +140,7 @@ class Bundle {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	public function _on_after_framework_load() {
+	public function _on_after_framework_loaded() {
 		/**
 		 * Grab the cookie name
 		 */
@@ -158,7 +159,7 @@ class Bundle {
 		$this->_id			= $session->id;
 		$this->_data		= unserialize(base64_decode($session->data));
 		$this->_data_hash	= md5($session->data);
-		$this->_flashdata	= isset($this->data['flashdata']) ? $this->data['flashdata'] : array();
+		$this->_flashdata	= isset($this->_data['flashdata']) ? $this->_data['flashdata'] : array();
 		$this->_flashdata['post']	= $_POST;
 		$this->_flashdata['get']	= $_GET;
 		
@@ -223,7 +224,7 @@ class Bundle {
 	 * @author David Boskovic
 	 */
 	public function flashdata_push($key, $subkey, $value) {
-		$this->data['flashdata'][$key][$subkey][] = $value;
+		$this->_data['flashdata'][$key][$subkey][] = $value;
 	}
 	
 	/**
@@ -235,7 +236,7 @@ class Bundle {
 	 * @author David Boskovic
 	 */
 	public function message($type, $message) {
-		return $this->flashdata_push('result_data', 'messages', array('type' => $type, 'message' => $message));
+		return $this->_flashdata_push('result_data', 'messages', array('type' => $type, 'message' => $message));
 	}
 	
 	/**
@@ -249,19 +250,19 @@ class Bundle {
 	public function flashdata($key, $value = false) {
 		
 		if($value !== false) {
-			if(is_array($this->data['flashdata'][$key]) && $key == 'result_data') foreach($value['messages'] as $msg) 
-				$this->flashdata_push($key, 'messages', $msg);
+			if(isset($this->_data['flashdata'][$key]) && is_array($this->_data['flashdata'][$key]) && $key == 'result_data') foreach($value['messages'] as $msg) 
+				$this->_flashdata_push($key, 'messages', $msg);
 			
-			else $this->data['flashdata'][$key] = $value;
+			else $this->_data['flashdata'][$key] = $value;
 			
 			return true;
 		}
 		
 		else {
-			if(isset($this->data['flashdata'][$key])) 
-				unset($this->data['flashdata'][$key]);
+			if(isset($this->_data['flashdata'][$key])) 
+				unset($this->_data['flashdata'][$key]);
 
-			return $this->flashdata[$key];
+			return $this->_flashdata[$key];
 		}
 		
 	}
@@ -273,7 +274,7 @@ class Bundle {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function save() {
-		if(!($this->_session instanceof \Evolution\SQL\Model))
+		if(!($this->_session instanceof \Bundles\SQL\Model))
 			throw new \Exception("Session has not be instantiated, cannot save.");
 		
 		$serialize = base64_encode(serialize($this->_data));
@@ -319,8 +320,6 @@ class Bundle {
 				return $data;
 			break;
 			case 'set':
-				\Evolution\Kernel\Trace::add(__NAMESPACE__, "hit in session");
-			
 				/**
 				 * Grab the end of the arguments (Data)
 				 */
@@ -343,15 +342,13 @@ class Bundle {
 				
 				return $this;
 			break;
-			case 'unset':
-				\Evolution\Kernel\Trace::add(__NAMESPACE__, "hit in session");
-							
+			case 'unset':	
 				unset($this->_data[$args[0]][$args[1]]);
 				
 				return $this;
 			break;
 			default:
-				throw new \Exception("You cannot call `e::session()->data()` with out providing `get` or `set` as the first arguement");
+				throw new Exception("You cannot call `e::session()->data()` with out providing `get` or `set` as the first arguement");
 			break;
 		}
 		
