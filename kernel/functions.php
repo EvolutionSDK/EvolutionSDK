@@ -223,7 +223,9 @@ function redirect($url) {
 			header("Location: $url");
 		echo "<meta http-equiv=\"refresh\" content=\"0;url=$url\">";
 	}
-	complete();
+	if(e::$loaded)
+		complete();
+	exit;
 }
 
 /**

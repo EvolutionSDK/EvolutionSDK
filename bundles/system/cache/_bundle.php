@@ -159,7 +159,7 @@ class Bundle {
 		
 		# get the string to save to the file
 		if(!is_writable($this->_cache_path."/")) {
-			return false;
+			throw new \Exception("Cache folder is not writable, execute command `sudo mkdir $this->_cache_path; sudo chmod 777 $this->_cache_path;`");
 		} else {
 			if(!is_dir($this->_cache_path."/$library")) {
 				mkdir($this->_cache_path."/$library");
