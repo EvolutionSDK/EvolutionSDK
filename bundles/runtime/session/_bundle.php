@@ -144,12 +144,20 @@ class Bundle {
 		/**
 		 * Grab the cookie name
 		 */
-		$this->_cookie_name = e::environment()->requireVar('cookie');
+		$this->_cookie_name = e::environment()->requireVar('cookie.name', "Cookie Name Must be Alpha Numeric + Underscores");
+		if(!preg_match('/^[_a-zA-Z0-9]+$/', $this->_cookie_name))
+			e::environment()->invalidVar('cookie.name');
+
+		/**
+		 * Grab the cookie url
+		 */
+		$cookie_url = e::environment()->requireVar('cookie.url');
+		$this->_cookie_url = $cookie_url ? $cookie_url : false;
 		
 		/**
 		 * Grab the cookie contents and save it to the class
 		 */
-		$this->_cookie =& $_COOKIE[$this->_cookie_name];
+		$this->_cookie = isset($_COOKIE[$this->_cookie_name]) ? $_COOKIE[$this->_cookie_name] : false;
 		
 		$session = $this->_get_session();
 		
@@ -286,6 +294,10 @@ class Bundle {
 		$session->hits++;
 		
 		$session->save();
+	}
+	
+	public function __destruct() {
+		$this->save();
 	}
 	
 	/**
