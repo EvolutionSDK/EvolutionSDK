@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\SQL;
+namespace Bundles\SQL;
 use Exception;
 use e;
 
@@ -72,7 +72,7 @@ class SQLBundle {
 	 */
 	public function __call($func, $args) {
 		if(!$this->initialized)
-			throw new Exception("Cannot use SQL before the framework has finished loading");
+			throw new Exception("SQL for `".__CLASS__."` was not initialized in system startup. Use `ALT + &#x60;`</em> for extended details.");
 		
 		$search = preg_split('/([A-Z])/', $func, 2, PREG_SPLIT_DELIM_CAPTURE);
 		$method = array_shift($search);
