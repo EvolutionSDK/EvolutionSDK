@@ -139,6 +139,7 @@
 	<span class='link' id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
 	<span class='link' id='-e-show-important' onclick='return _e_show(0)' style='display:none;'>Show Important</span>
 </h1>
+<h1 style="position: absolute; top: 0; left: 300px; right: 260px; text-align: center; margin: 30px 0 30px;">You are on <?php echo gethostname(); ?></h1>
 
 <?php
 
