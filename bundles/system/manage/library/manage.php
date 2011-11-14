@@ -15,7 +15,7 @@ class Manage {
 	
 	public function page() {
 		self::$bundles = Configure::get('manage.bundle');
-		$out = '';
+		$out = '<div style="padding: 30px;">';
 		foreach(self::$bundles as $namespace => $link) {
 			if(strlen($namespace) < 3)
 				throw new Exception("Invalid namespace `$namespace` for manage page `$link`");
@@ -28,6 +28,7 @@ class Manage {
 				throw new Exception("Bundle manager `$class` tile is not a valid Tile class");
 			$out .= $tile->output($manage->title);
 		}
+		$out .= '</div>';
 		return $out;
 	}
 	

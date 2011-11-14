@@ -78,9 +78,6 @@ class Bundle {
 		.tile > ul {
 			padding: 0 0 0 18px;
 		}
-		.manage-page {
-			padding: 30px 0 0 30px;
-		}
 EOF;
 	}
 }
