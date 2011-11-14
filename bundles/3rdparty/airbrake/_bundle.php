@@ -17,7 +17,7 @@ class Bundle {
 	
 		$lib = __DIR__ . '/php-airbrake';
 
-		if(!is_dir($lib) || !is_dir($lib.'/.git'))
+		if(!is_dir($lib))
 			throw new Exception("PHP Airbrake library is not installed, run command `sudo git clone git://github.com/nodrew/php-airbrake.git $lib`");
 	}
 	
