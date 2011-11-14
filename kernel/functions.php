@@ -176,10 +176,17 @@ function trace_exit() {
 /**
  * Complete page output
  */
-function complete() {
-	if(e::environment()->active){ eval(d);
+function complete($exception = false) {
+	
+	/**
+	 * If Evolution framework is loaded, send out an complete event
+	 */
+	if(!$exception && e::$loaded)
+		e::events()->complete();
+	
+	if(e::environment()->active) {
 		$dev = 'yes';
-	}else
+	} else
 		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
 	if($dev == 'yes') {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
@@ -188,6 +195,10 @@ function complete() {
 			display_trace();
 		}
 	}
+	
+	/**
+	 * This should be the only time exit or die is used in all code
+	 */
 	exit;
 }
 
@@ -203,14 +214,16 @@ function redirect($url) {
 	if($dev == 'yes') {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
-			<h1><a href='$url'>Continue...</a></h1><p>Redirecting to <code>$url</code></p></div>";
+			<h1><a href='$url' id='redirect'>Continue...</a></h1><p>Redirecting to <code>$url</code></p></div>";
+		echo "<script>var x = confirm('Redirect now?');
+			if(x) window.location.replace(document.getElementById('redirect').href);</script>";
 	}
 	else {
 		if(!headers_sent())
 			header("Location: $url");
-		echo "<meta http-equiv=\"refresh\" content=\"2;url=$url\">";
-		exit;
+		echo "<meta http-equiv=\"refresh\" content=\"0;url=$url\">";
 	}
+	complete();
 }
 
 /**

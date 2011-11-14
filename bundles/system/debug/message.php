@@ -12,5 +12,5 @@ if(isset($exception)) {
 	echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><h1>$title</h1>";
 	echo e\render_exception($exception);
 	echo "</body></html>";
-	e\complete();
+	e\complete(true);
 }
