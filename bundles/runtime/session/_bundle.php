@@ -297,7 +297,8 @@ class Bundle {
 	}
 	
 	public function _on_complete() {
-		$this->save();
+		if($this->_session instanceof \Bundles\SQL\Model)
+			$this->save();
 	}
 	
 	/**
