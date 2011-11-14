@@ -296,7 +296,7 @@ class Bundle {
 		$session->save();
 	}
 	
-	public function __destruct() {
+	public function _on_complete() {
 		$this->save();
 	}
 	
