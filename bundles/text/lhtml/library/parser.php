@@ -158,6 +158,7 @@ class Parser {
 		
 		// Add file to scope
 		$stack->_data->__file__ = $lexer->getFile();
+		$openFile = $lexer->getFile();
 		
 		// Source code positions
 		$openLine = 0;
@@ -184,7 +185,8 @@ class Parser {
 					// Add element to the node stack
 					$stack = $stack->_nchild($token->value, (object) array(
 						'line' => $openLine,
-						'col' => $openCol
+						'col' => $openCol,
+						'file' => $openFile
 					));
 					break;
 					

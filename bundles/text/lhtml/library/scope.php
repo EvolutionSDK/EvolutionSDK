@@ -275,7 +275,7 @@ class Scope {
 	 * Load source into the scope
 	 */
 	public function source($source, $as = false) {
-		if(count($source) < 1) throw new \Exception("You must provide a foreachable row or object with at least one key. When calling `\bundles\lhtml\scope::source()`");
+		if(!(is_array($source) || $source instanceof \Traversable)) throw new \Exception("You must provide a foreachable row or object with at least one key. When calling `\bundles\lhtml\scope::source()`");
 		
 		/**
 		 * Set the source as
