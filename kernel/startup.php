@@ -5,6 +5,11 @@ use e;
 use Exception;
 
 /**
+ * Ensure the user can't stop the script
+ */
+ignore_user_abort(true);
+
+/**
  * Fix backslashes in paths on Windows
  */
 function convert_backslashes($str) {

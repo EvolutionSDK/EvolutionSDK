@@ -36,6 +36,13 @@ class Bundle {
 	}
 	
 	/**
+	 * Require dev mode before page load
+	 */
+	public function _on_framework_loaded() {
+		e::environment()->requireVar('developmentMode', 'yes | no');
+	}
+	
+	/**
 	 * Non-static Versions
 	 */
 	public function invalidVar($var, $ex = null) {
