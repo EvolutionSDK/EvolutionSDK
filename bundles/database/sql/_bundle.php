@@ -16,7 +16,7 @@ class InvalidRequestException extends Exception { }
  */
 class Bundle {
 	
-	public static $db_structure;
+	public static $db_structure = array();
 	public static $changed = false;
 	
 	private $connections = array();
@@ -31,6 +31,7 @@ class Bundle {
 		// return useConnection on the default bundle
 		return $this->useConnection('default');
 	}
+	
 	/**
 	 * Run a query e::sql("query string");
 	 *

@@ -131,7 +131,13 @@ class Bundle {
 		$this->dir = $dir;
 		
 		$this->db_bundle = new SQLBundle($dir);
-		e::__add_listener($this->db_bundle);
+	}
+	
+	/**
+	 * Initialize SQL
+	 */
+	public function _on_framework_loaded() {
+		$this->db_bundle->_sql_initialize();
 	}
 	
 	/**

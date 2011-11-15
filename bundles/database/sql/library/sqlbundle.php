@@ -20,6 +20,10 @@ class SQLBundle {
 	}
 	
 	public function _on_framework_loaded() {
+		$this->_sql_initialize();
+	}
+	
+	public function _sql_initialize() {
 		$this->initialized = true;
 		$file = $this->dir.'/configure/sql_structure.yaml';
 		

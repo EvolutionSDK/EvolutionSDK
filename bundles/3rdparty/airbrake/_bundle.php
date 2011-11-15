@@ -32,7 +32,7 @@ class Bundle {
 		
 		self::$options = array(); // This is optional
 		
-		self::$options['environmentName'] = e::environment()->requireVar('EnvironmentName', 'Name your individual computer / environment');
+		self::$options['environmentName'] = gethostname();
 		
 		self::$config = new Airbrake\Configuration(self::$apiKey, self::$options);
 		self::$client = new Airbrake\Client(self::$config);

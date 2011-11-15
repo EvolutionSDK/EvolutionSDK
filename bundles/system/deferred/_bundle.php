@@ -16,7 +16,10 @@ class Bundle {
 	public function __construct($dir) {
 		$this->dir = $dir;
 		$this->sql = new SQLBundle($this->dir);
-		e::__add_listener($this->sql);
+	}
+	
+	public function _on_framework_loaded() {
+		$this->sql->_sql_initialize();
 	}
 	
 	public function _on_deferred_register() {
