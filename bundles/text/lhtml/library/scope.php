@@ -276,7 +276,7 @@ class Scope {
 	 */
 	public function source($source, $as = false) {
 		if(!(is_array($source) || $source instanceof \Traversable)) 
-			throw new \Exception("You must provide a foreachable row or object with at least one key. When calling `\bundles\lhtml\scope::source()`");
+			throw new \Exception("LHTML Scope Error: You must source a traversable object. When calling `\bundles\lhtml\scope::source(source, as)`");
 		
 		/**
 		 * Set the source as
