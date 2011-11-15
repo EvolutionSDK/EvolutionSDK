@@ -276,7 +276,6 @@ class Node {
 		$vars = $this->extract_vars($value);
 		
 		if($vars) foreach($vars as $var) {
-			var_dump($var);
 			$data_response = ($this->_data()->$var);
 			if(is_object($data_response))
 				$data_response = describe($data_response);

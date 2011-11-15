@@ -48,6 +48,21 @@ require_once(kernel.'/configure.php');
  * Handle Fatal Errors as Exceptions
  */
 set_error_handler(function($no, $msg, $file, $line) {
+	/**
+	* Ignore warnings and notices unless in strict mode 
+	*/
+	if(!isset($_GET['_strict'])) {
+		switch ($no) {
+			case E_WARNING:
+			case E_NOTICE:
+			case E_USER_WARNING:
+			case E_USER_NOTICE:
+			case E_STRICT:
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+			return true;
+		}
+	}
 	throw new \ErrorException($msg, 0, $no, $file, $line);
 });
 

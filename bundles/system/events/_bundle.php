@@ -96,7 +96,7 @@ class Bundle {
 			e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event', '', null, 9);
 			
 			try {
-				$results[] = call_user_func_array(array($obj, $method), $args);
+				$results[$class] = call_user_func_array(array($obj, $method), $args);
 				e\trace_exit();
 			}
 			
