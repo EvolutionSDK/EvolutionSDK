@@ -7,39 +7,31 @@ use e;
 
 class Bundle {
 	
-	private static $enabled;
-	private static $apiKey;
-	private static $options;
-	private static $config;
-	private static $client;
+	private static $_in_airbrake = false;
 	
-	public function __construct() {
-	
-		$lib = __DIR__ . '/php-airbrake';
+	public function _on_exception(Exception $exception) {
+		
+		if(self::$_in_airbrake == true)
+			return;
+			
+		self::$_in_airbrake = true;
+		
+		$enabled = e::environment()->requireVar('Airbrake.Enabled', 'yes | no');
 
-		if(!is_dir($lib))
-			throw new Exception("PHP Airbrake library is not installed, run command `sudo git clone git://github.com/nodrew/php-airbrake.git $lib`");
-	}
-	
-	public function _on_framework_loaded() {
-		
-		self::$enabled = e::environment()->requireVar('Airbrake.Enabled', 'yes | no');
-		
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Client.php';
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Configuration.php';
 		
-		self::$apiKey  = e::environment()->requireVar('Airbrake.APIKey'); // This is required
+		e::environment()->_reset_exception_status();
+		$apiKey  = e::environment()->requireVar('Airbrake.APIKey'); // This is required
+
+		$options = array(); // This is optional
+
+		$options['environmentName'] = gethostname();
+
+		$config = new Airbrake\Configuration($apiKey, $options);
+		$client = new Airbrake\Client($config);
 		
-		self::$options = array(); // This is optional
-		
-		self::$options['environmentName'] = gethostname();
-		
-		self::$config = new Airbrake\Configuration(self::$apiKey, self::$options);
-		self::$client = new Airbrake\Client(self::$config);
-	}
-	
-	public function _on_exception(Exception $exception) {
-		self::$client->notifyOnException($exception);
+		$client->notifyOnException($exception);
 	}
 	
 }

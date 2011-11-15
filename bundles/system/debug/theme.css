@@ -79,6 +79,17 @@ h4 {
 	box-shadow: inset 0 4px 10px #ccc;
 	font-weight: bold;
 }
+.reveal {
+	opacity: 0.1;
+	margin-top: 3em;
+	-webkit-transition: all 250ms ease;
+	-moz-transition: all 250ms ease;
+	-o-transition: all 250ms ease;
+	transition: all 250ms ease;
+}
+.reveal:hover {
+	opacity: 1;
+}
 .trace {
 	clear: left;
 	font-family: Consolas, monospace;
