@@ -1,6 +1,6 @@
 <?php
 
-namespace evolution;
+namespace e;
 use e;
 
 /**
