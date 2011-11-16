@@ -1,39 +1,182 @@
 <script>
 	setTimeout(function() {
 		window.document.body.onkeydown = function(e) {
-			if(e.keyCode == 192 && (e.altKey || e.ctrlKey || e.metaKey))
-				__trace('toggle');
+			if(e.keyCode == 192 && (e.altKey || e.ctrlKey))
+				_e_debug_toggle();
 		};
 	}, 100);
 	
-	function __trace(x) {
-		var w = document.getElementById('-e-debug-panel');
-		if(x == 'toggle')
-			x = w.style.display == 'block' ? 'none' : 'block';
-		w.style.display = x;
+	function _e_debug_toggle() {
+		var classOld = 'closed';
+		var classNew = 'open';
+		var w = document.getElementById('-e-debug-panel-wrap');
+		console.log(w);
+		if(classOld && w.className.indexOf(classOld) > -1)
+			w.className = w.className.replace(classOld, classNew);
+		else
+			w.className = w.className.replace(classNew, classOld);
 	}
 	
 	function _e_show(x) {
-		var w = document.getElementById('-e-debug-panel');
-		var imp = '-e-show-important';
-		var all = '-e-show-all';
-		w.className = (x == 1 ? all : imp);
-		document.getElementById(imp).style.display = (x == 1 ? 'inline' : 'none');
-		document.getElementById(all).style.display = (x == 1 ? 'none' : 'inline');
+		var w = _e_debug_getpanel('show-important', 'show-all');
+		document.getElementById('-e-show-important').style.display = (x == 1 ? 'inline' : 'none');
+		document.getElementById('-e-show-all').style.display = (x == 1 ? 'none' : 'inline');
 		return false;
+	}
+	
+	function _e_debug_getpanel(classOld, classNew) {
+		var w = document.getElementById('-e-debug-panel');
+		if(classOld && w.className.indexOf(classOld) > -1)
+			w.className = w.className.replace(classOld, classNew);
+		else
+			w.className = w.className.replace(classNew, classOld);
+		return w;
+	}
+	
+	function _e_debug_zoom() {
+		_e_debug_getpanel('windowed', 'fullscreen');
+	}
+	
+	function _e_debug_hide() {
+		_e_debug_toggle();
+	}
+	
+	function _e_debug_close() {
+		_e_debug_toggle();
 	}
 </script>
 <style>
-	#-e-debug-panel {
-		font-family: Sans, Lucida Grande, Tahoma, Verdana, Helvetica, sans-serif;
-		font-size: 14px;
-		position: fixed; left: 50px; right: 50px; bottom: 50px; top: 50px;
-		overflow: auto; padding: 30px;
-		background: #eee; box-shadow: 0 0 8px black, 0 0 20px 20px #fff;
-		border-radius: 20px;
-		z-index: 10000000;
-		display: none;
+	#-e-debug-panel-wrap {
+		-webkit-transition: all 125ms ease;
+		-moz-transition: all 125ms ease;
+		-o-transition: all 125ms ease;
+		transition: all 125ms ease;
 	}
+	#-e-debug-panel {
+		-webkit-transition: all 250ms ease;
+		-moz-transition: all 250ms ease;
+		-o-transition: all 250ms ease;
+		transition: all 250ms ease;
+	}
+	#-e-debug-panel-wrap {
+		position: fixed;
+		left: 0;
+		right: 0;
+		top: 0;
+		z-index: 9999999999;
+	}
+	#-e-debug-panel-wrap.closed {
+		height: 0;
+		opacity: 0;
+	}
+	#-e-debug-panel-wrap.open {
+		opacity: 1;
+		height: 100%;
+	}
+	#-e-debug-panel {
+		font-family: Sans, "Lucida Grande", Tahoma, Verdana, Helvetica, sans-serif;
+		font-size: 14px;
+		overflow: hidden;
+		background: #eee;
+		z-index: 10000000;
+	}
+	#-e-debug-panel.windowed {
+		margin: 50px auto;
+		width: 600px;
+		height: 400px;
+		box-shadow: 0 20px 50px rgba(0,0,0,0.75);
+		border: 1px solid #888;
+		border-radius: 4px;
+		border-radius: 4px 4px 0 0;
+		position: relative;
+	}
+	#-e-debug-panel.fullscreen {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+	}
+	#-e-debug-panel .body {
+		position: absolute;
+		top: 56px;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 20px;
+		overflow: auto;
+		background: #fff;
+	}
+	#-e-debug-panel .title-bar {
+		cursor: default;
+		font-size: 13px;
+		height: 53px;
+		padding-top: 2px;
+		border-bottom: 1px solid #6B6B6B;
+		position: relative;
+		background-image: linear-gradient(bottom, rgb(169,169,170) 0%, rgb(225,225,225) 80%);
+		background-image: -o-linear-gradient(bottom, rgb(169,169,170) 0%, rgb(225,225,225) 80%);
+		background-image: -moz-linear-gradient(bottom, rgb(169,169,170) 0%, rgb(225,225,225) 80%);
+		background-image: -webkit-linear-gradient(bottom, rgb(169,169,170) 0%, rgb(225,225,225) 80%);
+		background-image: -ms-linear-gradient(bottom, rgb(169,169,170) 0%, rgb(225,225,225) 80%);
+
+		background-image: -webkit-gradient(
+			linear,
+			left bottom,
+			left top,
+			color-stop(0, rgb(169,169,170)),
+			color-stop(0.8, rgb(225,225,225))
+		);
+		text-align: center;
+		color: #2F2F2F;
+		text-shadow: 1px 1px 1px #DBD9D4;
+	}
+	#-e-debug-panel.windowed .title-bar {
+		border-radius: 4px 4px 0 0;
+	}
+	#-e-debug-panel .title-bar .window-icon {
+		height: 13px;
+		width: 13px;
+		position: absolute;
+		top: 5px;
+		left: 8px;
+		background: url(http://i.imgur.com/Xz6DO.png);
+	}
+	/* CLOSE icon */
+	#-e-debug-panel .title-bar .close-icon {
+		background-position: 0 0;
+	}
+	#-e-debug-panel .title-bar .close-icon:hover {
+		background-position: 0 -13px;
+	}
+	#-e-debug-panel .title-bar .close-icon:active {
+		background-position: 0 -26px;
+	}
+	/* HIDE icon */
+	#-e-debug-panel .title-bar .hide-icon {
+		left: 27px;
+		background-position: -19px 0;
+	}
+	#-e-debug-panel .title-bar .hide-icon:hover {
+		background-position: -19px -13px;
+	}
+	#-e-debug-panel .title-bar .hide-icon:active {
+		background-position: -19px -26px;
+	}
+	/* ZOOM icon */
+	#-e-debug-panel .title-bar .zoom-icon {
+		left: 47px;
+		background-position: 13px 0;
+	}
+	#-e-debug-panel .title-bar .zoom-icon:hover {
+		background-position: 13px -13px;
+	}
+	#-e-debug-panel .title-bar .zoom-icon:active {
+		background-position: 13px -26px;
+	}
+	/* END ICONS */
 	#-e-debug-panel a.link {
 		margin-left: 10px;
 	}
@@ -65,7 +208,7 @@
 		margin-bottom: -1px;
 	}
 	#-e-debug-panel .step {
-		padding: 10px 10px 10px 80px;
+		padding: 10px 10px 10px 90px;
 		background: #f8f8f8;
 		border: 1px solid #aaa;
 		margin-bottom: -1px;
@@ -79,7 +222,7 @@
 		left: 0;
 		top: 0;
 		bottom: 0;
-		width: 50px;
+		width: 60px;
 		padding: 10px;
 		text-align: center;
 		text-shadow: -1px -1px 1px #fff;
@@ -89,13 +232,13 @@
 	#-e-debug-panel .step.hilite {
 		background: #fff;
 	}
-	#-e-debug-panel.-e-show-important .low {
+	#-e-debug-panel.show-important .low {
 		display: none;
 	}
-	#-e-debug-panel.-e-show-all .step.high {
+	#-e-debug-panel.show-all .step.high {
 		background: #ffb;
 	}
-	#-e-debug-panel.-e-show-all .step.high.hilite {
+	#-e-debug-panel.show-all .step.high.hilite {
 		background: #ffa;
 	}
 	#-e-debug-panel .line, #-e-debug-panel .func, #-e-debug-panel .parens {
@@ -132,14 +275,18 @@
 	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 </style>
-<div id="-e-debug-panel" class="-e-show-important">
-<a class='link' onclick="return __trace('none')" style="float:right;">Hide</a>
-<a class='link' href="/@manage" style="float:right;">Manage System</a>
-<h1>Execution Trace
-	<span class='link' id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
-	<span class='link' id='-e-show-important' onclick='return _e_show(0)' style='display:none;'>Show Important</span>
-</h1>
-<h1 style="position: absolute; top: 0; left: 300px; right: 260px; text-align: center; margin: 30px 0 30px;">You are on <?php echo gethostname(); ?></h1>
+<div id="-e-debug-panel-wrap" class="closed">
+	<div id="-e-debug-panel" class="windowed show-important">
+		<div class="title-bar">
+			<div class="window-icon close-icon" onclick="_e_debug_close()"></div>
+			<div class="window-icon hide-icon" onclick="_e_debug_hide()"></div>
+			<div class="window-icon zoom-icon" onclick="_e_debug_zoom()"></div>
+			<span>Evolution SDK&trade; &mdash; Page Event Log</span>
+		</div>
+		<div class="body">
+			<span class='link' style="float:right;" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
+			<span class='link' style="float:right;display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
+			<p style="margin-top: 0;">You are on <?php echo gethostname(); ?></p>
 
 <?php
 
@@ -223,3 +370,7 @@ foreach(trace::$arr as $id => $trace) {
 
 // Close any open trees
 echo str_repeat('</div>', count(trace::$stack) + 1);
+
+?>
+	</div>
+</div>
