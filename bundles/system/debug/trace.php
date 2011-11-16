@@ -257,6 +257,7 @@
 	#-e-debug-panel .exception 	{color: #b00;		}
 	
 	#-e-debug-panel code {
+		display: inline;
 		background: #fe8;
 		text-shadow: 1px 1px 1px #ffa;
 		font-family: Consolas, monospace;
