@@ -87,10 +87,10 @@ class DSpyc {
 	public function save($file, $array) {
 		# get the string to save to the file
 		if(!is_writable(dirname($file))) {
-			throw new \Exception("Can't write YAML file for saving: `$file`");
+			throw new \Exception("Can't write YAML file directory for saving, execute command `chmod 777 ".dirname($file)."`");
 		} else {
 			$fh = fopen($file, 'w');
-			if(!$fh) throw new \Exception("Can't open YAML file for saving: `$file`");
+			if(!$fh) throw new \Exception("Can't open YAML file for saving, execute command `file='$file';touch \$file;chmod 777 \$file`");
 			fwrite($fh, $this->dump($array));
 			fclose($fh);
 			return true;

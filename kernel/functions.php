@@ -126,12 +126,14 @@ class TraceVars {
 	public static $arr = array();
 	public static $enabled = true;
 	public static $stack = array();
+	public static $disabled_at = null;
 }
 
 /**
  * Trace disable
  */
 function disable_trace() {
+	TraceVars::$disabled_at = debug_backtrace();
 	TraceVars::$enabled = false;
 }
 
@@ -141,6 +143,14 @@ function disable_trace() {
 function display_trace() {
 	if(TraceVars::$enabled)
 		require_once(root.bundles.'/system/debug/trace.php');
+	else if(isset($_GET['_trace'])) {
+		echo '<style>';
+		include(root.bundles.'/system/debug/theme.css');
+		echo '</style>';
+		echo '<div style="clear:both"></div><div class="section"><h1>Trace Disabled</h1>';
+		echo stylize_stack_trace(TraceVars::$disabled_at);
+		echo '</div>';
+	}
 }
 
 /**
@@ -188,7 +198,7 @@ function complete($exception = false) {
 		$dev = 'yes';
 	} else
 		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
-	if($dev == 'yes') {
+	if($dev == 'yes' || $dev == true) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
@@ -253,6 +263,27 @@ function stylize_array($array, $depth = 0) {
 		}
 	}
 	return $array;
+}
+
+/**
+ * Stylize a stack trace array
+ */
+function stylize_stack_trace($trace) {
+	$out .= '<h4>Stack Trace</h4><div class="trace">';
+	foreach($trace as $i => $step) {
+		if($step['function'] == 'evolution\{closure}')
+			continue;
+		
+		$class = isset($step['class']) 		? "<span class='class'>$step[class]</span>$step[type]" : '';
+		$args = isset($step['args']) 		? implode(', ', e\stylize_array($step['args'], 1)) : '';
+		$func = isset($step['function']) 	? "<span class='func'>$step[function]</span><span class='parens'>(</span>$args<span class='parens'>)</span>" : '';
+		$file = isset($step['file']) 		? "<span class='file'>in $step[file]</span>" : '';
+		$line = isset($step['line']) 		? "on <span class='line'>line $step[line]</span>" : '';
+		
+		$out .= "<div class='step'>$class$func $file $line</div>";
+	}
+	$out .= '</div>';
+	return $out;
 }
 
 /**

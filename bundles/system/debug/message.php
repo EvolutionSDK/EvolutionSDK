@@ -41,21 +41,7 @@ function render_exception(&$exception) {
 	/**
 	 * Show stack trace
 	 */
-	$out .= '<h4>Stack Trace</h4><div class="trace">';
-	$trace = (array) $exception->getTrace();
-	foreach($trace as $i => $step) {
-		if($step['function'] == 'evolution\{closure}')
-			continue;
-		
-		$class = isset($step['class']) 		? "<span class='class'>$step[class]</span>$step[type]" : '';
-		$args = isset($step['args']) 		? implode(', ', e\stylize_array($step['args'], 1)) : '';
-		$func = isset($step['function']) 	? "<span class='func'>$step[function]</span><span class='parens'>(</span>$args<span class='parens'>)</span>" : '';
-		$file = isset($step['file']) 		? "<span class='file'>in $step[file]</span>" : '';
-		$line = isset($step['line']) 		? "on <span class='line'>line $step[line]</span>" : '';
-		
-		$out .= "<div class='step'>$class$func $file $line</div>";
-	}
-	$out .= '</div>';
+	$out .= stylize_stack_trace($exception->getTrace());
 	
 	/**
 	 * End reveal div
