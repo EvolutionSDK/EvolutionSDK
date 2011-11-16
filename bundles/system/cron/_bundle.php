@@ -23,10 +23,10 @@ class Bundle extends SQLBundle {
 			if($job->interval == '24hr') $interval = 60 * 60 * 24;
 			else if($job->interval == 'custom') $interval = $job->interval_custom * 60;
 			
-			if($lastrun > (strtotime(date("Y-m-d h:i:s")) - $interval)) continue;
+			if($lastrun > (strtotime(date("Y-m-d H:i:s")) - $interval)) continue;
 			
 			$log = $this->newCronlog();
-			$log->start = date("Y-m-d h:i:s");
+			$log->start = date("Y-m-d H:i:s");
 			$log->save();
 						
 			$log->linkCronjob($job->id);
@@ -50,7 +50,7 @@ class Bundle extends SQLBundle {
 				catch(Exception $e) { $log->message = $e->getMessage(); $log->message_type = 'error'; }
 			}
 			
-			$log->end = date("Y-m-d h:i:s");
+			$log->end = date("Y-m-d H:i:s");
 			$log->save();
 			$job->lastrun = $log->start;
 			$job->save();
@@ -64,8 +64,11 @@ class Bundle extends SQLBundle {
 	}
 	
 	public function _on_after_framework_loaded() {
-		e\disable_trace();
-		if(!is_null($this->run)) $this->run();
+		if(!is_null($this->run)) {
+			e\disable_trace();
+			$this->run();
+			e\complete();
+		}
 	}
 	
 }
