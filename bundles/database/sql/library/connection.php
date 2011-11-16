@@ -62,7 +62,7 @@ class Connection {
 	public function checkTimeSync() {
 		static $checked = false;
 		extract($this->query("SELECT NOW() as `mysqltime`;")->row());
-		$phptime = date("Y-m-d g:i:s");
+		$phptime = date("Y-m-d H:i:s");
 		$diff = strtotime($mysqltime) - strtotime($phptime);
 		$diff_hours = $diff / 3600;
 		if(abs($diff) > 10) {
@@ -139,7 +139,7 @@ class Connection {
 		 * Record total query processing time and history
 		 */
 		self::$time += $time;
-		self::$history[] = array('sql' => $sql, 'ms' => round($time,3), 'time' => date("m/d/Y h:i:s a"));
+		self::$history[] = array('sql' => $sql, 'ms' => round($time,3), 'time' => date("m/d/Y H:i:s a"));
 			
 		/**
 		 * Return the database result object

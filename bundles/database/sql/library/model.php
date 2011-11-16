@@ -299,7 +299,7 @@ class Model {
 		$this->_modified = false;
 		if($this->id) $this->_connection->update_by_id($this->_table, $save, $this->id);
 		else {
-			$save['created_timestamp'] = date("Y-m-d h:i:s");
+			$save['created_timestamp'] = date("Y-m-d H:i:s");
 			$this->_data['id'] = (int) $this->_connection->insert($this->_table, $save)->insertId();
 		}
 		
