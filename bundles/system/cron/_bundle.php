@@ -6,6 +6,8 @@ use e;
 
 class Bundle extends SQLBundle {
 	
+	public $run;
+	
 	public function run($return = 0) {
 		$jobs = $this->getCronjobs();
 		
@@ -44,8 +46,7 @@ class Bundle extends SQLBundle {
 			}
 			
 			else if($job->command_type == 'call_url') {
-				$curl = e::curl();
-				try { $log->return = json_encode($curl->get($job->command, true)); }
+				try { $log->return = json_encode(e::curl()->get($job->command, true)); }
 				catch(Exception $e) { $log->message = $e->getMessage(); $log->message_type = 'error'; }
 			}
 			
@@ -55,6 +56,15 @@ class Bundle extends SQLBundle {
 			$job->save();
 			$i++;
 		}
+	}
+	
+	public function route() {
+		$this->run = true;
+		return true;
+	}
+	
+	public function _on_after_framework_loaded() {
+		if(!is_null($this->run)) $this->run();
 	}
 	
 }
