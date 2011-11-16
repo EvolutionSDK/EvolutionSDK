@@ -156,6 +156,7 @@ h4 {
 .var input, .var select {border: 1px solid #bbb; background: white; padding: 8px 6px; margin: 0 0 0 -1px; font-size: 14px;}
 .var h3 {margin-top: 0}
 .clear {clear:both; height: 1px; margin-top: -1px}
+
 /* List Styles */
 table.list {
 	border-collapse: collapse;
