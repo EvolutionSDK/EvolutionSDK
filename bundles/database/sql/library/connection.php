@@ -62,7 +62,7 @@ class Connection {
 	public function checkTimeSync() {
 		static $checked = false;
 		extract($this->query("SELECT NOW() as `mysqltime`;")->row());
-		$phptime = date("Y-m-d h:i:s");
+		$phptime = date("Y-m-d g:i:s");
 		$diff = strtotime($mysqltime) - strtotime($phptime);
 		$diff_hours = $diff / 3600;
 		if(abs($diff) > 10) {
