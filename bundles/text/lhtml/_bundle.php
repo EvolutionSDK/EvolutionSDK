@@ -56,8 +56,10 @@ class Bundle {
 			$file = "$dir/$name.lhtml";
 			
 			// Skip if incorrect file
-			if(!is_file($file))
-				continue;
+			if(!is_file($file)) {
+				$file = "$dir/$name/index.lhtml";
+				if(!is_file($file)) continue;
+			}
 	
 			// Parse the lhtml file and build the stack
 			echo e::lhtml()->file($file)->parse()->build();
