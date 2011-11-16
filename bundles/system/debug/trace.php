@@ -64,6 +64,7 @@
 		right: 0;
 		top: 0;
 		z-index: 9999999999;
+		overflow: hidden;
 	}
 	#-e-debug-panel-wrap.closed {
 		height: 0;

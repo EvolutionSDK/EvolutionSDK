@@ -40,6 +40,10 @@ class Bundle {
 		if(!is_writable($this->_cache_path)) chmod($this->_cache_path, 0777);
 	}
 	
+	public function path() {
+		return $this->_cache_path;
+	}
+	
 	/**
 	 * Check the library to see if there's a cached value for the requested variable.
 	 *

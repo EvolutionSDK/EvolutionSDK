@@ -79,7 +79,7 @@ class Parser {
 										"'" => '#error',
 										'/' => '#error'				),
 		# <a ... />_ or </a>_							
-		'tag-end-outside'	=> array(	'*' => 'default'			),
+		'tag-end-outside'	=> array(	'*' => '&default'			),
 		
 		# <a ... >_ or <a>_							
 		'tag-end-inside'	=> array(	'*' => 'tag-contents',
