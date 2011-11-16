@@ -3,6 +3,7 @@
 namespace bundles\less;
 use Exception;
 use e;
+use lessc;
 
 /**
  * Less compile bundle
