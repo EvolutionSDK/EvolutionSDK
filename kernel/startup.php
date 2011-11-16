@@ -10,6 +10,11 @@ use Exception;
 ignore_user_abort(true);
 
 /**
+ * Set UTC timezone
+ */
+date_default_timezone_set('UTC');
+
+/**
  * Fix backslashes in paths on Windows
  */
 function convert_backslashes($str) {
