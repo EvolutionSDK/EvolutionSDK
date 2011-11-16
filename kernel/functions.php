@@ -321,21 +321,3 @@ $sel.disabled {
 
 EOF;
 }
-
-/**
- * Include Into a NameSpace
- */
-function include($file, $namespace = '\\') {
-	$file = "namespace $namespace;\nuse Exception;\nuse e;\n";
-	$file .= file_get_contents($file);
-	return eval($file);
-}
-
-function include_once($file, $namespace = '\\') {
-	if(isset($loaded)) && in_array($file, $loaded)) return false;
-	static $loaded[] = $file;
-	
-	$file = "namespace $namespace;\nuse Exception;\nuse e;\n";
-	$file .= file_get_contents($file);
-	return eval($file);
-}
