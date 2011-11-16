@@ -50,6 +50,24 @@ class Connection {
 		} catch(PDOException $e) {
 			throw new ConnectionException("Could not connect to database `$slug`", 0, $e);
 		}
+	
+	}
+	
+	/**
+	 * Checks TimeSync and Potentially Fixes It
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	public function checkTimeSync() {
+		extract($this->query("SELECT NOW() as `mysqltime`;")->row());
+		$phptime = date("Y-m-d h:i:s");
+		$diff = strtotime($mysqltime) - strtotime($phptime);
+		$diff_hours = $diff / 3600;
+		if(abs($diff) > 10) {
+			if(e::environment()->getVar('sql.set_timezone')) $this->query("SET time_zone='+00:00';");
+			else throw new Exception("<strong>MySQL Time</strong> is `$diff_hours hours` off from <strong>PHP Time</strong>.<br /><br /><strong>MySQL Time</strong> is `$mysqltime`. <strong>PHP Time</strong> is `$phptime`.<br /><br /><strong>Fix #1:</strong> Set `default-time-zone = '+00:00'` in `my.cnf` under `[mysqld]`<br /><br /><strong>Fix #2:</strong> Set `sql.set_timezone` in your environment file to `1`");
+		}
 	}
 	
 	/**

@@ -51,6 +51,10 @@ class Bundle {
 		return $this->_require($var, $format, $why, $new, $ex);
 	}
 	
+	public function getVar($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null) {
+		return $this->_require($var, $format, $why, $new, $ex, false);
+	}
+	
 	public function _reset_exception_status() {
 		self::$in_exception = false;
 	}
@@ -62,7 +66,7 @@ class Bundle {
 		return $this->_require($var, self::$environment[self::$scope . ".$var---format"], 'is Invalid', true, $ex);
 	}
 	
-	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $addscope = true) {
+	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $throw = true) {
 		
 		// If in exception, just return null
 		if(self::$in_exception)
@@ -78,7 +82,9 @@ class Bundle {
 		
 		$file = self::$file;
 		self::$in_exception = true;
-		throw new Exception("<strong>Environment Variable $why:</strong> `$var` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
+		if($throw) throw new Exception("<strong>Environment Variable $why:</strong> `$var` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
+		
+		else return null;
 	}
 	
 	public static function getAll() {

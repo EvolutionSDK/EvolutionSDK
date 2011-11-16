@@ -83,6 +83,8 @@ class Bundle {
 			e::environment()->invalidVar("sql.connection.$slug", $e);
 		}
 		
+		$conn->checkTimeSync();
+		
 		return $conn;
 	}
 	
