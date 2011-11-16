@@ -64,6 +64,7 @@ class Bundle extends SQLBundle {
 	}
 	
 	public function _on_after_framework_loaded() {
+		e\disable_trace();
 		if(!is_null($this->run)) $this->run();
 	}
 	
