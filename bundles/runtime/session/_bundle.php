@@ -182,7 +182,7 @@ class Bundle {
 		/**
 		 * Bind Flashdata to a LHTML Var
 		 */
-		\Bundles\LHTML\Scope::addHook(':flash', $this->_data['flashdata']);
+		\Bundles\LHTML\Scope::addHook(':flash', new flash);
 	}
 	
 	/**
@@ -269,10 +269,17 @@ class Bundle {
 	public function flashdata($key, $value = false) {
 		
 		if($value !== false) {
-			if(isset($this->_data['flashdata'][$key]) && is_array($this->_data['flashdata'][$key]) && $key == 'result_data') foreach($value['messages'] as $msg) 
+			if(isset($value['messages']) && is_array($value['messages']) && $key == 'result_data') foreach($value['messages'] as $msg) {
 				$this->flashdata_push($key, 'messages', $msg);
+			}
+			
+			else if(isset($this->_data['flashdata'][$key])) {
+				$this->flashdata_push($key, 'messages', $msg);
+			}
 			
 			else $this->_data['flashdata'][$key] = $value;
+			
+			$this->save();
 			
 			return true;
 		}
@@ -302,14 +309,15 @@ class Bundle {
 		if(md5($serialize) !== $this->_data_hash)
 			$session->data = $serialize;
 		
-		$session->hits++;
-		
 		$session->save();
 	}
 	
 	public function _on_complete() {
-		if($this->_session instanceof \Bundles\SQL\Model)
+		if($this->_session instanceof \Bundles\SQL\Model) {
+			$this->_session->hits++;
 			$this->save();
+		}
+		e\trace('flashdata', null, $this->_data['flashdata']['result_data']);
 	}
 	
 	/**
@@ -431,6 +439,14 @@ class Bundle {
 		if(!is_object($this->_session))
 			throw new Exception("Trying to load a session instance before initialized");
 		return call_user_func_array(array($this->_session, $func), $args);
+	}
+	
+}
+
+class flash {
+	
+	public function __call($function, $args) {
+		return e::session()->flashdata($function);
 	}
 	
 }

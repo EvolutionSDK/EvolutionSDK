@@ -82,9 +82,9 @@ class Scope {
 			 */
 			
 			/**
-			 * Return Object
+			 * Return Traverable Object
 			 */	
-			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_object($this->source_data[$map[0]])) {
+			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && $this->source_data[$map[0]] instanceof \Traversable) {
 				$i=0; foreach($this->source_data[$map[0]] as $source) {
 					if($i === $this->source_pointer) break;
 					unset($source);
@@ -92,6 +92,14 @@ class Scope {
 				}
 				
 				if(isset($source)) $flag_first = 1;
+			}
+			
+			/**
+			 * Return Object
+			 */
+			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && !($this->source_data[$map[0]] instanceof \Traversable)) {
+				$source = $this->source_data[$map[0]];
+				$flag_first = 1;
 			}
 			
 			/**
@@ -109,7 +117,7 @@ class Scope {
 			
 			else if(is_string($map[0]) && !isset($this->source_data[$map[0]]) && $this->parent) return $this->parent->get($var_map);
 			
-			else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
+			//else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
 		}
 		
 		foreach($map as $i=>$var) {
@@ -275,9 +283,6 @@ class Scope {
 	 * Load source into the scope
 	 */
 	public function source($source, $as = false) {
-		if(!(is_array($source) || $source instanceof \Traversable)) 
-			throw new \Exception("LHTML Scope Error: You must source a traversable object. When calling `\bundles\lhtml\scope::source(source, as)`");
-		
 		/**
 		 * Set the source as
 		 */
@@ -290,9 +295,14 @@ class Scope {
 		$this->source_data[$this->source_as] = $source;
 		
 		/**
-		 * Set the count of the source
+		 * If string or non traversable object
 		 */
-		if($source instanceof \Bundles\SQL\ListObj) $this->source_count = $source->count(true);
+		if(!(is_array($source) || $source instanceof \Traversable))
+			$this->source_count = 1;
+		
+		/**
+		 * Else count the iterations
+		 */
 		else $this->source_count = count($source);
 		
 		/**
@@ -338,6 +348,13 @@ class Scope {
 			$this->source_pointer--;
 		
 		return $this;
+	}
+	
+	/**
+	 * Count the Sources
+	 */
+	public function count() {
+		return $this->source_count;
 	}
 	
 	/**
