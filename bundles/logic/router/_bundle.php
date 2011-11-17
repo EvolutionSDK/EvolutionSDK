@@ -8,35 +8,7 @@ class Bundle {
 	
 	public $url;
 	public $path;
-	
-	public function _on_framework_loaded() {
-		
-		$url = $_SERVER['REDIRECT_URL'];
-		$path = explode('/', $url);
-		if($path[0] === '')
-		    array_shift($path);
-		
-		/**
-		 * Direct bundle access
-		 */
-		if(substr($url, 0, 2) == '/@') {
-			$tmp = array_shift($path);
-			$tmp = explode('.', substr($tmp, 1));
-			if(count($tmp) < 2)
-				$tmp[] = 'route';
-			list($class, $method) = $tmp;
-			e\trace(__CLASS__, "URL access for method `$method` on bundle `$class`");
-			if(strlen($class) === 0)
-				throw new Exception("No bundle specified for routing after `@`");
-			$bundle = \e::$class();
-			if(!method_exists($bundle, $method))
-				throw new Exception("No method `$method` found for bundle `$class`");
-		
-			e\trace(__CLASS__, "Processing `".get_class($bundle)."->$method()`");
-			$continue = $bundle->$method($path);
-			if($continue !== true) e\complete();
-		}
-	}
+	public $type;
 	
 	public function _on_route($url) {
 		
@@ -48,7 +20,129 @@ class Bundle {
 		if($this->path[count($this->path) - 1] === '')
 		    array_pop($this->path);
 		
+		/**
+		 * Router bundle access
+		 */
+		if(substr($url, 0, 2) == '/@')
+			$this->route_bundle();
+		
 		e::events()->router_route($this->path);
 	}
 	
+	public function route_bundle() {
+		$path = $this->path;
+		$bundle = substr(array_shift($path), 1);
+		$realm = array_shift($path);
+	
+		switch($realm) {
+			case 'api';
+				$this->route_bundle_api($bundle, $path);
+				break;
+		}
+		
+		throw new Exception("Bundle routing realm `$realm` does not exist");
+	}
+		
+	
+	public function route_bundle_api($bundle, $path) {
+		
+		$version = array_shift($path);
+		$type = array_shift($path);
+		
+		if($type !== 'json')
+			throw new Exception("API format `$type` is not a valid type");
+		
+		e\trace(__CLASS__, "API `$type` access for bundle `$bundle`");
+		
+		/**
+		 * Wrap any exceptions
+		 */
+		try {
+		
+			if(strlen($bundle) === 0)
+				throw new Exception("No bundle specified for routing after API access `@`");
+			
+			$class = "Bundles\\$bundle\\api\\$version";
+			$result = new $class($path);
+			
+			e\trace(__CLASS__, "Processing API access with `".get_class($api)."`");
+			foreach($path as $segment) {
+				/**
+				 * Null
+				 */
+				if(is_null($result))
+					break;
+				
+				/**
+				 * Handle String access
+				 */
+				if(is_string($result)) {
+					$subs = explode(',', $segment);
+					$temp = '';
+					foreach($subs as $sub) {
+						$sub = explode('-', $sub);
+						if(count($sub) == 1)
+							$sub[] = $sub[0];
+						$temp .= substr($result, $sub[0], $sub[1] - $sub[0] + 1);
+					}
+					$result = $temp;
+				}
+		
+				/**
+				 * Handle Array access
+				 */
+				else if(is_array($result)) {
+					if(isset($result[$result]))
+						$result = $result[$result];
+					else
+						$result = null;
+				}
+		
+				/**
+				 * Handle Object access
+				 */
+				else if(is_object($result)) {
+					if(isset($result->{$segment}))
+						$result = $result->{$segment};
+					else if(method_exists($result, $segment))
+						$result = $result->$segment();
+					else
+						$result = null;
+				}
+			}
+			
+			/**
+			 * API output
+			 */
+			switch($type) {
+				case 'plain':
+					echo $result;
+					break;
+				case 'json':
+					echo json_encode($result);
+					break;
+			}
+		}
+		catch(Exception $exception) {
+			if(isset($_GET['--debug']))
+				throw $exception;
+			
+			/**
+			 * Format exception for API
+			 */
+			switch($type) {
+				case 'plain':
+					throw $exception;
+				case 'json':
+					echo json_encode(array('exception' => $exception->getMessage()));
+					break;
+				default:
+					throw $exception;
+			}
+		}
+		
+		if(!isset($_GET['--debug']))
+			e\disable_trace();
+		e\complete();
+	}
 }

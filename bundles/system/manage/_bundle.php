@@ -39,6 +39,7 @@ class Bundle {
 			$name = 'manage';
 			
 		$bundles = e::configure('manage')->bundle;
+		
 		$ns = array_search($name, $bundles);
 		if($ns === false)
 			throw new Exception("No manage panel for `$name`");
