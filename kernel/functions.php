@@ -225,8 +225,7 @@ function redirect($url) {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
 			<h1><a href='$url' id='redirect'>Continue...</a></h1><p>Redirecting to <code>$url</code></p></div>";
-		echo "<script>var x = confirm('Redirect now?');
-			if(x) window.location.replace(document.getElementById('redirect').href);</script>";
+		echo "<script>if(false && confirm('Redirect now?'))window.location.replace(document.getElementById('redirect').href);</script>";
 	}
 	else {
 		if(!headers_sent())
