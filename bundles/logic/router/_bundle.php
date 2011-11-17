@@ -24,22 +24,35 @@ class Bundle {
 		 * Router bundle access
 		 */
 		if(substr($url, 0, 2) == '/@')
-			$this->api();
+			$this->route_bundle();
 		
 		e::events()->router_route($this->path);
 	}
 	
-	public function api() {
+	public function route_bundle() {
 		$path = $this->path;
-		$tmp = array_shift($path);
-		$tmp = explode('.', substr($tmp, 1));
-		if(count($tmp) < 2)
-			$tmp[] = 'plain';
-		if(count($tmp) < 3)
-			$tmp[] = 'v1';
+		$bundle = substr(array_shift($path), 1);
+		$realm = array_shift($path);
+	
+		switch($realm) {
+			case 'api';
+				$this->route_bundle_api($bundle, $path);
+				break;
+		}
 		
-		list($bundle, $type, $version) = $tmp;
-		e\trace(__CLASS__, "API access `$type` for bundle `$class`");
+		throw new Exception("Bundle routing realm `$realm` does not exist");
+	}
+		
+	
+	public function route_bundle_api($bundle, $path) {
+		
+		$version = array_shift($path);
+		$type = array_shift($path);
+		
+		if($type !== 'json')
+			throw new Exception("API format `$type` is not a valid type");
+		
+		e\trace(__CLASS__, "API `$type` access for bundle `$bundle`");
 		
 		/**
 		 * Wrap any exceptions
@@ -103,17 +116,11 @@ class Bundle {
 			 */
 			switch($type) {
 				case 'plain':
-					if(is_array($result))
-						foreach($result as $r)
-							echo $r;
-					else
-						echo $result;
+					echo $result;
 					break;
 				case 'json':
 					echo json_encode($result);
-					exit;
-				default:
-					throw $exception;
+					break;
 			}
 		}
 		catch(Exception $exception) {
@@ -128,12 +135,14 @@ class Bundle {
 					throw $exception;
 				case 'json':
 					echo json_encode(array('exception' => $exception->getMessage()));
-					exit;
+					break;
 				default:
 					throw $exception;
 			}
 		}
 		
+		if(!isset($_GET['--debug']))
+			e\disable_trace();
 		e\complete();
 	}
 }
