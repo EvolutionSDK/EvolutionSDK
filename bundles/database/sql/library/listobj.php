@@ -613,4 +613,20 @@ class ListObj implements \Iterator, \Countable {
 	 * END ITERATOR METHODS ----------------------------------------------------------------
 	 */
 	
+	/**
+	 * Standard query access
+	 */
+	public function auto() {
+		$fields = Bundle::$db_structure[$this->_table]['fields'];
+		foreach($_REQUEST as $key => $value) {
+			if($key === '_search') {
+				
+			} else if(isset($fields[$key])) {
+				$value = preg_replace('[^a-zA-Z0-9_.-]', '', $value);
+				dump($value);
+				$this->condition("$key LIKE", "%$value$%");
+			}
+		}
+		return $this;
+	}
 }
