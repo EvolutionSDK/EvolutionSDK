@@ -7,19 +7,16 @@ class Bundle {
 	public static $currentPortalDir;
 	public static $currentPortalName;
 	
-	public function __construct() {
-		
-		/**
-		 * Add the site dir to portal locations
-		 */
-		e\configure::add('portal.location', e::$site);
-	}
-
 	/**
 	 * Route the portal
 	 */
 	public function _on_router_route($path) {
 
+		/**
+		 * Add the site dir to portal locations
+		 */
+		e::configure('portal')->activeAdd('locations', e::$site);
+		
 		/**
 		 * Check for null first segment
 		 */
@@ -40,7 +37,7 @@ class Bundle {
 		/**
 		 * Get portal paths
 		 */
-		$searchdirs = e\configure::getArray('portal.location');
+		$searchdirs = e::configure('portal')->locations;
 		
 		/**
 		 * Check for portal in paths
@@ -127,7 +124,7 @@ class Bundle {
 			return '';
 
 		$out = '<h4>Portal Locations</h4><div class="trace">';
-		foreach(e\configure::getArray('portal.location') as $dir) {
+		foreach(e::configure('portal')->locations as $dir) {
 			
 			/**
 			 * Get portals in dir

@@ -8,24 +8,23 @@ class Bundle {
 	
 	private static $actions = array();
 	
-	public function __construct() {
-		e\configure::add('action.class-format', '\\Action\\%');
-		e\configure::add('action.location', e::$site);
-	}
-	
 	public function _on_portal_route($path, $dir) {
 		$this->route($path, array($dir));
 	}
 	
 	public function _on_router_route($path) {
-		$this->route($path, e\configure::getArray('action.location'));
+		$this->route($path, e::configure('action')->locations);
 	}
 	
 	public static function route($path, $dirs = null) {
 		
+		// Add defaults
+		e::configure('action')->activeAdd('class_format', '\\Action\\%');
+		e::configure('action')->activeAdd('locations', e::$site);
+		
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
-			$dirs = e\configure::getArray('action.location');
+			$dirs = e::configure('action')->locations;
 		
 		// Make sure path contains valid action name
 		if(!isset($path[0]) || $path[0] == '')
@@ -58,7 +57,7 @@ class Bundle {
 				require_once($file);
 				
 				// action class
-				$classFormats = e\configure::getArray('action.class-format');
+				$classFormats = e::configure('action')->class_format;
 				
 				// Check each class format
 				$found = false;

@@ -2,16 +2,16 @@
 
 namespace Bundles\Manage;
 use Exception;
-use e\Configure;
 use e;
 
 class Bundle {
 	
-	public function __construct() {
+	public function _on_framework_loaded() {
+		
 		// Add manager
-		e\Configure::add('manage.bundle', __NAMESPACE__, 'manage');
-	}
-	
+		e::configure('manage')->activeAddKey('bundle', __NAMESPACE__, 'manage');
+	}	
+
 	public function route($path) {
 		
 		// Get name
@@ -38,7 +38,7 @@ class Bundle {
 		if($name === '' || is_null($name))
 			$name = 'manage';
 			
-		$bundles = e\Configure::get('manage.bundle');
+		$bundles = e::configure('manage')->bundle;
 		$ns = array_search($name, $bundles);
 		if($ns === false)
 			throw new Exception("No manage panel for `$name`");

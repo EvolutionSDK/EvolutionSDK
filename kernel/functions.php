@@ -239,6 +239,19 @@ function redirect($url) {
 }
 
 /**
+ * Stylize newlines in variables for HTML output
+ */
+function stylize_string(&$value) {
+	$value = htmlspecialchars($value);
+	$replace_nl = '<span class="invisibles crarr">&crarr;</span>';
+	$replace_tab = '<span class="invisibles rarr">&rarr;</span>';
+	$value = str_replace("\r\n", $replace_nl, $value);
+	$value = str_replace("\n",   $replace_nl, $value);
+	$value = str_replace("\r",   $replace_nl, $value);
+	$value = str_replace("\t",   $replace_tab, $value);
+}
+
+/**
  * Color PHP values in an array
  */
 function stylize_array($array, $depth = 0) {
@@ -249,6 +262,7 @@ function stylize_array($array, $depth = 0) {
 			else
 				$array[$key] = "<span class='array'>Array [".count($value)."]</span>";
 		} else if(is_string($value)) {
+			stylize_string($value);
 			$array[$key] = "<span class='string'>&apos;$value&apos;</span>";
 		} else if($value === null) {
 			$array[$key] = "<span class='boolean'>null</span>";

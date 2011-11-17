@@ -22,11 +22,6 @@ class Bundle {
 		 * Load from EvolutionSDK sites folder
 		 */
 		self::$file = e::$site . '.environment.yaml';
-		
-		/**
-		 * Add to manager
-		 */
-		e\configure::add('manage.bundle', __NAMESPACE__, 'environment');
 	}
 	
 	public function _on_first_use() {
@@ -37,6 +32,15 @@ class Bundle {
 	 * Require dev mode before page load
 	 */
 	public function _on_framework_loaded() {
+		
+		/**
+		 * Add to manager
+		 */
+		e::configure('manage')->activeAddKey('bundle', __NAMESPACE__, 'environment');
+		
+		/**
+		 * Check dev mode to avoid issues later
+		 */
 		e::environment()->requireVar('developmentMode', 'yes | no');
 	}
 	

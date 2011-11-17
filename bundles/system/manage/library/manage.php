@@ -1,7 +1,6 @@
 <?php
 
 namespace Bundles\Manage;
-use e\Configure;
 
 /**
  * Evolution Manage Manage
@@ -14,7 +13,7 @@ class Manage {
 	private static $bundles = array();
 	
 	public function page() {
-		self::$bundles = Configure::get('manage.bundle');
+		self::$bundles = e::configure('manage')->bundle);
 		$out = '<div style="padding: 30px;">';
 		foreach(self::$bundles as $namespace => $link) {
 			if(strlen($namespace) < 3)

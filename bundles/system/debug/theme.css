@@ -136,6 +136,10 @@ h4 {
 .class 		{	color: darkred;		}
 .line 		{	color: purple;		}
 
+.invisibles {
+	color: gray; padding: 0 2px;
+}
+
 .selected {
 	padding: 2px 4px;
 	border-radius: 4px;

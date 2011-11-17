@@ -1,6 +1,6 @@
 <?php
 
-namespace evolution;
+namespace e;
 use e;
 
 const Dump = true;
@@ -175,7 +175,8 @@ function dumpVar($var, $value, $depth = 0) {
 	}
 	
 	else if(is_string($value)) {
-		$out .= '<span class="string">\'' . htmlspecialchars($value) . '\'</span>';
+		stylize_string($value);
+		$out .= '<span class="string">\'' . $value . '\'</span>';
 	}
 	
 	else if($value === true) {

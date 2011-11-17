@@ -1,7 +1,6 @@
 <?php
 
 namespace bundles\LHTML;
-use e\Configure;
 use Exception;
 use e;
 
@@ -31,7 +30,7 @@ class Bundle {
 		
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
-			$dirs = Configure::getArray('lhtml.location');
+			$dirs = e::configure('lhtml')->locations;
 		
 		// Make sure path contains valid controller name
 		if(!isset($path[0]) || $path[0] == '')
@@ -74,15 +73,6 @@ class Instance {
 	
 	private $file;
 	private $stack;
-	
-	public function __construct() {
-		
-		/**
-		 * Add lhtml to default router and portal routing
-		 */
-		Configure::add('portal.defaults.run_with', 'lhtml');
-		Configure::add('router.defaults.run_with', 'lhtml');
-	}
 	
 	public function file($file) {
 		$this->file = $file;

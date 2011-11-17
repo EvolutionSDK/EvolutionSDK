@@ -45,11 +45,6 @@ require_once(kernel.'/autoload.php');
 require_once(kernel.'/functions.php');
 
 /**
- * Configure class
- */
-require_once(kernel.'/configure.php');
-
-/**
  * Handle Fatal Errors as Exceptions
  */
 set_error_handler(function($no, $msg, $file, $line) {

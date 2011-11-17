@@ -8,20 +8,21 @@ class Bundle {
 	
 	private static $controllers = array();
 	
-	public function __construct() {
-		e\configure::add('controller.class-format', '\\Controller\\%');
-		e\configure::add('controller.location', e::$site);
-	}
-	
 	public function _on_portal_route($path, $dir) {
 		$this->route($path, array($dir));
 	}
 	
 	public function _on_router_route($path) {
-		$this->route($path, e\configure::getArray('controller.location'));
+		$this->route($path, e::configure('controller')->locations);
 	}
 	
 	public function route($path, $dirs) {
+		
+		/**
+		 * Add defaults
+		 */
+		e::configure('controller')->activeAdd('class_formats', '\\Controller\\%');
+		e::configure('controller')->activeAdd('locations', e::$site);
 		
 		/**
 		 * Make sure path contains valid controller name
@@ -75,7 +76,7 @@ class Bundle {
 				/**
 				 * Controller class
 				 */
-				$classFormats = e\configure::getArray('controller.class-format');
+				$classFormats = e::configure('controller')->class_formats;
 
 				/**
 				 * Check each class format
