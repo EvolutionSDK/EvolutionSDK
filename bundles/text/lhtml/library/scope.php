@@ -131,7 +131,7 @@ class Scope {
 			else if(is_array($source)) {
 				if($this->source_pointer !== false && $map[0] == $this->source_as && !$iterated) {
 					$iterated = true;
-					$source = is_object($source[$this->source_as]) ? $source[$this->source_as]->_scope_by_pos($this->source_pointer) : $source[$this->source_as][$this->source_pointer];
+					$source = $source[$map[1]];
 				}
 				else $source = @$source[$var];
 			}

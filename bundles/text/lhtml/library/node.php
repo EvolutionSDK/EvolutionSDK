@@ -239,7 +239,7 @@ class Node {
 			/**
 			 * Instantiate a new scope for the children of this element
 			 */
-			list($source, $as) = explode(' as ', $var);	
+			list($source, $as) = explode(' as ', $var);
 			$source = '{'.$source.'}';
 			$vars = $this->extract_vars($source);
 			if($vars) foreach($vars as $var) {

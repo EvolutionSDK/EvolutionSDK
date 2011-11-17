@@ -178,6 +178,11 @@ class Bundle {
 		$this->_flashdata['get']	= $_GET;
 		
 		$this->_session =& $session;
+		
+		/**
+		 * Bind Flashdata to a LHTML Var
+		 */
+		\Bundles\LHTML\Scope::addHook(':flash', $this->_data['flashdata']);
 	}
 	
 	/**
@@ -265,7 +270,7 @@ class Bundle {
 		
 		if($value !== false) {
 			if(isset($this->_data['flashdata'][$key]) && is_array($this->_data['flashdata'][$key]) && $key == 'result_data') foreach($value['messages'] as $msg) 
-				$this->_flashdata_push($key, 'messages', $msg);
+				$this->flashdata_push($key, 'messages', $msg);
 			
 			else $this->_data['flashdata'][$key] = $value;
 			

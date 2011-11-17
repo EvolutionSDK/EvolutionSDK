@@ -165,9 +165,9 @@ class Action {
 	
 	protected function _dependency_checks() {
 		if(strlen($this->_redirect_success_url) == 0)
-			throw new ActionException('You must have a value in `$this->_redirection_success_url` in the action `'.__FILE__.'`.');
+			throw new ActionException('You must have a value in `$this->_redirect_success_url` in the action `'.get_class($this).'`.');
 		if(strlen($this->_redirect_failure_url) == 0)
-			throw new ActionException('You must have a value in `$this->_redirection_failure_url` in the action `'.__FILE__.'`.');
+			throw new ActionException('You must have a value in `$this->_redirect_failure_url` in the action `'.get_class($this).'`.');
 	}
 	
 	/**

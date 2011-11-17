@@ -82,7 +82,7 @@ class Parser {
 		'tag-end-outside'	=> array(	'*' => '&default'			),
 		
 		# <a ... >_ or <a>_							
-		'tag-end-inside'	=> array(	'*' => 'tag-contents',
+		'tag-end-inside'	=> array(	'*' => '&tag-contents',
 										'<' => 'tag-start'			),
 						
 		# <a>_						

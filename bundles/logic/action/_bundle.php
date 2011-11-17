@@ -69,7 +69,7 @@ class Bundle {
 				foreach($classFormats as $format) {
 					
 					// Format class with action name
-					$class = str_replace("%", $name, $format);
+					$class = str_replace(array('%', '/'), array($name, '\\'), $format);
 					
 					// Check if this is a valid class
 					if(class_exists($class, false)) {
