@@ -14,7 +14,7 @@ class Action {
 	public $raw = false;
 	public $input_data = array();
 	
-	private $_has_checked;
+	private $_has_checked = array();
 	
 	/**
 	 * Response type. HTTP will redirect. JSON and XML will return their respective responses.
@@ -72,7 +72,7 @@ class Action {
 		 * Reset the currently stored data if it is requested and allowed
 		 */
 		if(!isset($this->_allow_reset) || $this->_allow_reset) {
-			if(isset($_REQUEST['_reset']) || isset($data['_reset']))
+			if(isset($_REQUEST['_reset']) || isset($this->data['_reset']))
 				$this->reset();
 		}
 		
@@ -146,6 +146,13 @@ class Action {
 		 */
 		$results = $this->results();
 		
+		//dump($results);
+		
+		/**
+		 * Save Messages
+		 */
+		e::session()->flashdata('result_data', $results);
+		
 		/**
 		 * If things validated properly and we need to complete the action go ahead and compelte it
 		 */
@@ -156,6 +163,7 @@ class Action {
 		 * Remove the completion from the action
 		 */	
 		unset($this->data['_complete']);
+		unset($this->data['_reset']);
 		
 		/**
 		 * Lets destruct our action
@@ -197,8 +205,6 @@ class Action {
 		if($this->type == 'http') {
 			$results = $this->results();
 			
-			e::session()->flashdata('result_data', $results);
-			
 			/**
 			 * @todo: Determine if this should even be here
 			 */
@@ -234,7 +240,7 @@ class Action {
 		$success = true;
 		
 		foreach($this->messages as $key=>$result) {
-			if($result['type'] == 'error') $success = 'error';
+			if($result['type'] === 'error') $success = false;
 		}
 		
 		return array('success' => $success, 'messages' => $this->messages, 'data' => $this->data);
@@ -272,23 +278,20 @@ class Action {
 	 */
 	protected function check_formats() {
 		foreach($this->data as $key => $value) {
-			if(isset($this->_has_checked[$key]) 
-				&& $this->_has_checked[$key] == true 
-				&& !isset($_REQUEST[$key]) 
-				&& !isset($this->input_data[$key]))
+			if(isset($this->_has_checked[$key]) && $this->_has_checked[$key] === 1)
 				continue;
 			
 			if(method_exists($this, '_validate_'.$key))
 				$result = call_user_func(array($this, '_validate_'.$key), $value);
 			else $result = true;
 			
-			if($result !== true) {
-				$this->_has_checked[$key] = 1;
-				return isset($this->error_messages[$key]) ? $this->_message('error', $this->error_messages[$key]) : false;
+			if($result === true || is_null($result)) {
+				$result = $this->results();
+				$result = $result['success'];
 			}
 			
-			else $this->_has_checked[$key] = 1;
-			
+			if($result === true) $this->_has_checked[$key] = 1;
+			else $this->_has_checked[$key] = 0;
 		}
 		
 		if(method_exists($this, '_validate_all')) $this->_validate_all();
@@ -319,6 +322,7 @@ class Action {
 	public function reset() {
 		$this->data = array();
 		e::session()->data('unset', '_actions', get_class($this));
+		e::session()->save();
 	}
 	
 	/**

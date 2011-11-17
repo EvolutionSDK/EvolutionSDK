@@ -109,7 +109,7 @@ class Scope {
 			
 			else if(is_string($map[0]) && !isset($this->source_data[$map[0]]) && $this->parent) return $this->parent->get($var_map);
 			
-			else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
+			//else throw new \Exception("IXML Scope no function was called when calling {$var_map}");
 		}
 		
 		foreach($map as $i=>$var) {
@@ -338,6 +338,13 @@ class Scope {
 			$this->source_pointer--;
 		
 		return $this;
+	}
+	
+	/**
+	 * Count the Sources
+	 */
+	public function count() {
+		return $this->source_count;
 	}
 	
 	/**
