@@ -106,10 +106,10 @@ class Bundle {
 	}
 
 	public function _on_attribute_href($url) {
-		if(strpos(strtolower($url), '//') !== false
-			|| strpos(strtolower($url), '/') === 0)
-			return $url;
-		return '/' . self::$currentPortalName . "/$url";
+		if(strpos($url, 'portal://') !== false)
+			return str_replace('portal://', '/' . self::$currentPortalName . '/', $url);
+		
+		return $url;
 	}
 
 	/**
