@@ -25,13 +25,18 @@ class Bundle {
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
 			$dirs = e::configure('action')->locations;
-		
+			
 		// Make sure path contains valid action name
-		if(!isset($path[0]) || $path[0] == '')
+		if(!isset($path[0]) || $path[0] !== 'do')
 			return;
+			
+		/**
+		 * Take off the /do
+		 */
+		array_shift($path);
 		
 		// Get the action name
-		$name = strtolower($path[0]);
+		$name = strtolower(implode('/',$path));
 		
 		// Check all dirs for a matching action
 		foreach($dirs as $dir) {
