@@ -9,7 +9,7 @@ class Bundle {
 	private static $actions = array();
 	
 	public function __construct() {
-		e\configure::add('action.class-format', '\\Action\\%');
+		e\configure::add('action.class-format', '\\Action\\%\\%');
 		e\configure::add('action.location', e::$site);
 	}
 	
@@ -26,13 +26,18 @@ class Bundle {
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
 			$dirs = e\configure::getArray('action.location');
-		
+			
 		// Make sure path contains valid action name
-		if(!isset($path[0]) || $path[0] == '')
+		if(!isset($path[0]) || $path[0] !== 'do')
 			return;
+			
+		/**
+		 * Take off the /do
+		 */
+		array_shift($path);
 		
 		// Get the action name
-		$name = strtolower($path[0]);
+		$name = strtolower(implode('/',$path));
 		
 		// Check all dirs for a matching action
 		foreach($dirs as $dir) {
