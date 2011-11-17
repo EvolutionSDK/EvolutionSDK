@@ -143,7 +143,7 @@ function disable_trace() {
 function display_trace() {
 	if(TraceVars::$enabled)
 		require_once(root.bundles.'/system/debug/trace.php');
-	else if(isset($_GET['_trace'])) {
+	else if(isset($_GET['--debug'])) {
 		echo '<style>';
 		include(root.bundles.'/system/debug/theme.css');
 		echo '</style>';

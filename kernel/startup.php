@@ -51,7 +51,7 @@ set_error_handler(function($no, $msg, $file, $line) {
 	/**
 	* Ignore warnings and notices unless in strict mode 
 	*/
-	if(!isset($_GET['_strict'])) {
+	if(!isset($_GET['--debug'])) {
 		switch ($no) {
 			case E_WARNING:
 			case E_NOTICE:
@@ -67,9 +67,9 @@ set_error_handler(function($no, $msg, $file, $line) {
 });
 
 /**
- * Use this to debug weird errors
+ * Report All Errors
  */
-//error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 
 /**
  * Show exceptions
