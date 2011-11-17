@@ -5,6 +5,7 @@ use Exception;
 use e;
 
 class Bundle {
+	public static $url_vars = array();
 	
 	public function __bundle_response() {
 		return new Instance;
@@ -12,7 +13,11 @@ class Bundle {
 	
 	public function _on_first_use() {
 		Scope::addHook(':e', new e_handle);
+		Scope::addHook(':slug', function() { return e::lhtml()->_get_special_vars(':slug'); });
+		Scope::addHook(':id', function() { return e::lhtml()->_get_special_vars(':id'); });
+		Scope::addHook(':urlVars', function() { return e::lhtml()->_get_special_vars(':urlVars'); } );
 	}
+	
 	
 	public function _on_lhtml_add_hook($hook, $item) {
 		
@@ -50,16 +55,35 @@ class Bundle {
 			// Skip if missing
 			if(!is_dir($dir))
 				continue;
-				
-			// File to check
-			$file = "$dir/$name.lhtml";
 			
-			// Skip if incorrect file
-			if(!is_file($file)) {
-				$file = "$dir/$name/index.lhtml";
-				if(!is_file($file)) continue;
+			$matched = false;	$vars = array();	$nodir = false; $badmatch = false;
+			$p = 1;
+			foreach($path as $key => $segment) {
+				if($matched == 'file') $vars[] = $segment;
+				if((!$matched || $matched == 'dir') && is_dir("$dir/$segment")) {
+					$dir .= "/$segment";
+					$matched = 'dir';
+				}
+				elseif(is_file("$dir/$segment.lhtml")) {
+					$file = "$dir/$segment.lhtml";
+					$matched = 'file';
+				}
+				elseif($matched != 'file') {
+					$badmatch = true;
+				}
 			}
-	
+			
+			if(!$badmatch && $matched != 'file' && is_file("$dir/index.lhtml")) {
+				$file = "$dir/index.lhtml";
+				$matched = 'index';
+			}
+
+			# no match at all, just continue
+			if($matched == false) continue;
+			
+			# set the url vars to use
+			self::$url_vars = $vars;
+			
 			// Parse the lhtml file and build the stack
 			echo e::lhtml()->file($file)->parse()->build();
 			            
@@ -74,6 +98,20 @@ class Instance {
 	private $file;
 	private $stack;
 	
+	public function _get_special_vars($matcher) {
+		switch($matcher) {
+			case ':id' :
+				if(isset(Bundle::$url_vars[0]) && is_numeric(Bundle::$url_vars[0])) return Bundle::$url_vars[0];
+			break;
+			case ':slug':
+				if(isset(Bundle::$url_vars[0])) return Bundle::$url_vars[0];
+			break;
+			case ':urlVars':
+				if(isset(Bundle::$url_vars[0])) return Bundle::$url_vars;
+			break;
+		}
+		return null;
+	}
 	public function file($file) {
 		$this->file = $file;
 		if($this->stack)

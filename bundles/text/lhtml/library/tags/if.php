@@ -120,12 +120,34 @@ class Node_if extends Node {
 				$v = $this->_data()->$var;
 			}
 			
-			if($v instanceof \Bundles\SQL\ListObj) $v = $v->count(true);
-			else if(is_array($v)) $v = count($v);
+			if($v instanceof \Traversable || is_array($v)) count($v);
 			else $v = 1;
 			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
 				if($v > $this->attributes['gt'])$retval = true;
+				else $retval = false;
+			}
+			
+			else if(isset($this->attributes['lt']) && is_numeric($this->attributes['lt'])) {
+				if($v < $this->attributes['lt']) $retval = true;
+				else $retval = false;
+			}
+			
+		}
+		
+		if(isset($this->attributes['num'])) {
+		
+			$v = $this->attributes['num'];
+			
+			if(strpos($v, '{') === false) $v = '{'.$v.'}';
+
+			$vars = $this->extract_vars($v);
+			if($vars) foreach($vars as $var) {
+				$v = $this->_data()->$var;
+			}
+			
+			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
+				if($v > $this->attributes['gt']) $retval = true;
 				else $retval = false;
 			}
 			
