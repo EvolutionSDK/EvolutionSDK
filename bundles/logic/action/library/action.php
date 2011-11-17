@@ -104,7 +104,7 @@ class Action {
 		 * Set the Success and Failure URL's Based on if they are in the data or not
 		 */
 		if(isset($this->data['_success_url'])) $this->_redirect_success_url = $this->data['_success_url'];
-		if(isset($this->data['_failure_url'])) $this->_redirect_success_url = $this->data['_failure_url'];
+		if(isset($this->data['_failure_url'])) $this->_redirect_failure_url = $this->data['_failure_url'];
 		
 		if(isset($this->data['_action_type'])) $this->type = $this->data['_action_type'];
 		if(isset($this->data['_has_checked'])) $this->_has_checked = $this->data['_has_checked'];
@@ -146,13 +146,6 @@ class Action {
 		 */
 		$results = $this->results();
 		
-		//dump($results);
-		
-		/**
-		 * Save Messages
-		 */
-		e::session()->flashdata('result_data', $results);
-		
 		/**
 		 * If things validated properly and we need to complete the action go ahead and compelte it
 		 */
@@ -164,6 +157,11 @@ class Action {
 		 */	
 		unset($this->data['_complete']);
 		unset($this->data['_reset']);
+		
+		/**
+		 * Save Messages
+		 */
+		e::session()->flashdata('result_data', $this->results());
 		
 		/**
 		 * Lets destruct our action

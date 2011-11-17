@@ -75,16 +75,20 @@ class Scope {
 			else if(is_string($map[0]) && is_numeric($map[0])) return $map[0];
 			
 			/**
-			 * Return Source Array
-			 *
-			 * else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && !is_object($this->source_data[$map[0]])) 
-			 *	return $this->data[$map[0]][$this->source_pointer]->{$map[1]};
-			 */
-			
-			/**
 			 * Return Traverable Object
 			 */	
 			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && $this->source_data[$map[0]] instanceof \Traversable) {
+				$i=0; foreach($this->source_data[$map[0]] as $source) {
+					if($i === $this->source_pointer) break;
+					unset($source);
+					$i++;
+				}
+			}
+			
+			/**
+			 * Return Array
+			 */
+			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_array($this->source_data[$map[0]])) {
 				$i=0; foreach($this->source_data[$map[0]] as $source) {
 					if($i === $this->source_pointer) break;
 					unset($source);
@@ -98,19 +102,15 @@ class Scope {
 			 * Return Object
 			 */
 			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && !($this->source_data[$map[0]] instanceof \Traversable)) {
-				$source = $this->source_data[$map[0]];
-				$flag_first = 1;
-			}
-			
-			/**
-			 * Return Array
-			 */
-			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_array($this->source_data[$map[0]])) {
-				$i=0; foreach($this->source_data[$map[0]] as $source) {
-					if($i === $this->source_pointer) break;
-					unset($source);
-					$i++;
-				}
+				$tmp = $this->source_data[$map[0]];
+				
+				if(is_array($source)) {
+					$i=0; foreach($tmp as $source) {
+						if($i === $this->source_pointer) break;
+						unset($source);
+						$i++;
+					}
+				} else $source = $tmp;
 				
 				if(isset($source)) $flag_first = 1;
 			}
