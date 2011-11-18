@@ -23,9 +23,14 @@ class e {
 	public static function __load($root, $sites, $bundles, $host) {
 		
 		/**
+		 * Look for domains
+		 */
+		$domainFiles = "$sites/*/configure/domains.txt";
+		
+		/**
 		 * Discover which site to use
 		 */
-		foreach(glob("$sites/*/configure/domains.txt") as $file) {
+		foreach(glob($domainFiles) as $file) {
 			$domains = file($file);
 			array_walk($domains, function(&$v){ $v = trim($v); });
 			foreach($domains as $domain) {
