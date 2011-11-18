@@ -11,7 +11,7 @@ class Parser {
 	private static $grammar = array(
 		
 		# _
-		'default' 			=> array(	'<' => 'tag-start' 			),
+		'default' 			=> array(	'<' => 'tag-start' 				),
 		
 		# <_
 		'tag-start' 		=> array(	' ' => '#error',
@@ -20,7 +20,16 @@ class Parser {
 										'"' => '#error',
 										"'" => '#error',
 										'/' => 'tag-close',
-										'*' => 'tag-open-name' 		),
+										'*' => 'tag-open-name',
+										'!' => 'tag-special'			),
+		# <!_
+		'tag-special'		=> array(	'!' => '#error',
+										'-' => 'tag-comment',
+										'*' => '&tag-contents'			),
+										
+		# <!-_
+		'tag-comment'		=> array(	'>' => 'tag-end-outside'		),
+		
 		# </_					
 		'tag-close'			=> array(	' ' => '#error',
 										'/' => '#error',
@@ -35,14 +44,14 @@ class Parser {
 										'>' => 'tag-end-inside',
 										'"' => '#error',
 										"'" => '#error',
-										'/' => 'tag-end-close'		),
+										'/' => 'tag-end-close'			),
 		# </a_							
 		'tag-close-name' 	=> array(	' ' => '#error',
 										'<' => '#error',
 										'>' => 'tag-end-outside',
 										'"' => '#error',
 										"'" => '#error',
-										'/' => '#error'				),
+										'/' => '#error'					),
 		# <a ... _						
 		'tag-open-body'		=> array(	' ' => '#self',
 										'<' => '#error',
@@ -50,7 +59,7 @@ class Parser {
 										'"' => '#error',
 										"'" => '#error',
 										'/' => 'tag-end-close',
-										'*' => 'tag-attr-name'		),
+										'*' => 'tag-attr-name'			),
 		# <a ... b_						
 		'tag-attr-name'		=> array(	' ' => '#error',
 										'<' => '#error',
@@ -58,18 +67,18 @@ class Parser {
 										'"' => '#error',
 										"'" => '#error',
 										'/' => '#error',
-										'=' => 'tag-attr-equal'		),
+										'=' => 'tag-attr-equal'			),
 		# <a ... b=_						
 		'tag-attr-equal'		=> array(	'"' => 'tag-attr-quote',
-											'*' => '#error'			),
+											'*' => '#error'				),
 		# <a ... b="_						
 		'tag-attr-quote'	=> array(	'"' => 'tag-attr-qend',
 										'*' => 'tag-attr-value'	),
 		# <a ... b="c_						
 		'tag-attr-value'	=> array(	'escape' => '\\',
-										'"' => 'tag-attr-qend'		),
+										'"' => 'tag-attr-qend'			),
 		# <a ... b="c"_						
-		'tag-attr-qend'		=> array(	'*' => '&tag-open-body'		),
+		'tag-attr-qend'		=> array(	'*' => '&tag-open-body'			),
 		
 		# <a ... /_								
 		'tag-end-close' 	=> array(	' ' => '#error',
@@ -77,13 +86,13 @@ class Parser {
 										'>' => 'tag-end-outside',
 										'"' => '#error',
 										"'" => '#error',
-										'/' => '#error'				),
+										'/' => '#error'					),
 		# <a ... />_ or </a>_							
-		'tag-end-outside'	=> array(	'*' => '&default'			),
+		'tag-end-outside'	=> array(	'*' => '&default'				),
 		
 		# <a ... >_ or <a>_							
 		'tag-end-inside'	=> array(	'*' => '&tag-contents',
-										'<' => 'tag-start'			),
+										'<' => 'tag-start'				),
 						
 		# <a>_						
 		'tag-contents' 		=> array(	'type' => 'conditional',
@@ -99,7 +108,7 @@ class Parser {
 					),
 					
 					'"' => 'cdata-string-double',
-					"'" => 'cdata-string-single'		),
+					"'" => 'cdata-string-single'						),
 			
 			# <style...>_
 			array(	'token' 	=> 'tag-open-name',
@@ -111,10 +120,10 @@ class Parser {
 					),
 					
 					'"' => 'cdata-string-double',
-					"'" => 'cdata-string-single'		),
+					"'" => 'cdata-string-single'						),
 					
 			# <other...>_
-			array(	'*' => '&default'					)
+			array(	'*' => '&default'									)
 		),
 		
 	);
