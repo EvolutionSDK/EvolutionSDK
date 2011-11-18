@@ -619,11 +619,16 @@ class ListObj implements \Iterator, \Countable {
 	public function auto() {
 		$fields = Bundle::$db_structure[$this->_table]['fields'];
 		foreach($_REQUEST as $key => $value) {
-			if($key === '_search') {
-				
+			$value = preg_replace('[^a-zA-Z0-9_.-]', '', $value);
+			if($key === 'search') {
+				$cond = array();
+				foreach(explode(' ', 'title') as $field) {
+					if(isset($fields[$field]))
+						$cond[] = "`$field` LIKE '%$value%'";
+				}
+				$cond = implode(' OR ', $cond);
+				$this->manual_condition($cond);
 			} else if(isset($fields[$key])) {
-				$value = preg_replace('[^a-zA-Z0-9_.-]', '', $value);
-				dump($value);
 				$this->condition("$key LIKE", "%$value$%");
 			}
 		}
