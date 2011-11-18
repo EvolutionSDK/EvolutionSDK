@@ -28,9 +28,11 @@ class e {
 		foreach(glob("$sites/*/configure/domains.txt") as $file) {
 			$domains = file($file);
 			array_walk($domains, function(&$v){ $v = trim($v); });
-			if(in_array($host, $domains)) {
-				self::__load_site($root, dirname(dirname($file)), $bundles);
-				return;
+			foreach($domains as $domain) {
+				if(preg_match('/^'.str_replace('*', '.+', str_replace('.', '\\.', $domain)).'$/', $host)) {
+					self::__load_site($root, dirname(dirname($file)), $bundles);
+					return;
+				}
 			}
 		}
 		
