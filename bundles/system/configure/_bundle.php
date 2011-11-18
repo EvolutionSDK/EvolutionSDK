@@ -25,6 +25,12 @@ class Bundle {
 		);
 	}
 	
+	public function _on_configuration_save($path, $value) {
+		$path = str_replace('.', '/', $path);
+		$file = e::$site . '/configure/' . $path . '.yaml';
+		return e::yaml()->save($file, $value);
+	}
+	
 }
 
 class Configuration {
