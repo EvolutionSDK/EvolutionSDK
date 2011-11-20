@@ -1,16 +1,26 @@
 <script>
+	function _attach_event(target, eventName, handlerName) {
+		if ( target.addEventListener )
+			target.addEventListener(eventName, handlerName, false);
+		else if ( target.attachEvent )
+			target.attachEvent("on" + eventName, handlerName);
+		else
+			target["on" + eventName] = handlerName;
+	}
+	function _e_keypress(e) {
+		if((e.keyCode == 192 || e.keyCode == 96) && (e.altKey || e.ctrlKey))
+			_e_debug_toggle();
+	}
 	setTimeout(function() {
-		window.document.body.onkeydown = function(e) {
-			if(e.keyCode == 192 && (e.altKey || e.ctrlKey))
-				_e_debug_toggle();
-		};
+		document.body.tabIndex = 1;
+		_attach_event(document.body, 'keydown', _e_keypress);
 	}, 100);
 	
 	function _e_debug_toggle() {
 		var classOld = 'closed';
 		var classNew = 'open';
 		var w = document.getElementById('-e-debug-panel-wrap');
-		console.log(w);
+		
 		if(classOld && w.className.indexOf(classOld) > -1)
 			w.className = w.className.replace(classOld, classNew);
 		else
