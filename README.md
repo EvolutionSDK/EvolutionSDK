@@ -12,6 +12,53 @@ You can also count on E3 do these things reliably:
 * Help you debug your code in seconds.
 * And more...
 
+# Installing and Creating your first site
+
+Install git and clone this repository or download and extract it into a folder.
+
+    myfolder/EvolutionSDK
+    
+Create a folder for your new site and a configure folder
+
+    myfolder/MySite
+    myfolder/MySite/configure
+    
+Add your domain to hosts file
+    
+Add domains.txt with your domain
+
+    myfolder/MySite/configure/domains.txt
+
+Contents:
+
+    mysite.dev
+    
+Create an en environment yaml file:
+
+    myfolder/MySite.environment.yaml
+    
+Contents:
+
+    ---
+        Airbrake.Enabled: no
+        DevelopmentMode: yes
+        Session.Enabled: no
+        SQL.Enabled: no
+
+Then setup Apache with virtual hosts:
+
+    NameVirtualHost *:80
+    
+    # EvolutionSDK
+    <VirtualHost *:80>
+      DocumentRoot "/path/to/myfolder/EvolutionSDK"
+    	ServerName evolution.dev
+      ServerAlias mysite.dev
+    <Directory /path/to/myfolder/EvolutionSDK>
+    	AllowOverride All
+    </Directory>
+    </VirtualHost>
+
 # Getting Started
 The EvolutionSDK is built around this simple concept:  
 **"Make it easy to write code that anybody can implement into their development process without the slightest pain."**
