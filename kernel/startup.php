@@ -32,17 +32,6 @@ define(__NAMESPACE__.'\\sites', convert_backslashes(dirname(dirname(__DIR__))));
 define(__NAMESPACE__.'\\root', convert_backslashes(dirname(__DIR__)));
 define(__NAMESPACE__.'\\kernel', convert_backslashes(__DIR__));
 define(__NAMESPACE__.'\\bundles', '/bundles');
-chdir(root.'/cache');
-
-/**
- * Include autoloader
- */
-require_once(kernel.'/autoload.php');
-
-/**
- * Include some functions
- */
-require_once(kernel.'/functions.php');
 
 /**
  * Handle Fatal Errors as Exceptions
@@ -93,14 +82,32 @@ function handle($exception) {
 }
 
 /**
- * Show exceptions
+ * Include autoloader
  */
-set_exception_handler(__NAMESPACE__.'\\handle');
+require_once(kernel.'/autoload.php');
+
+/**
+ * Include some functions
+ */
+require_once(kernel.'/functions.php');
 
 /**
  * Use Evolution framework
  */
 require_once(kernel.'/framework.php');
+
+/**
+ * Show exceptions
+ */
+set_exception_handler(__NAMESPACE__.'\\handle');
+
+/**
+ * Use cache dir as working directory
+ */
+if(!is_dir(root.'/cache'))
+	if(!mkdir(root.'/cache'))
+		throw new Exception("Could not create cache folder, run command `dir=".root."/cache; mkdir \$dir;chmod 777 \$dir`");
+chdir(root.'/cache');
 
 /**
  * Check for site folder and load bundles
