@@ -135,7 +135,13 @@ class Bundle {
 	 * Initialize SQL
 	 */
 	public function _on_framework_loaded() {
-		if(e::environment()->requireVar('Session.Enabled', "yes | no") === 'yes')
+		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		if($enabled !== true || $enabled !== 'yes')
+			return false;
+		
+		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
+			$enabled = e::environment()->requireVar('Session.Enabled', "yes | no");
+		if($enabled === true || $enabled === 'yes')
 			$this->db_bundle = new SQLBundle($dir);
 		if(is_object($this->db_bundle))
 			$this->db_bundle->_sql_initialize();
