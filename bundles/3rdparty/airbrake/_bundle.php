@@ -17,6 +17,8 @@ class Bundle {
 		self::$_in_airbrake = true;
 		
 		$enabled = e::environment()->requireVar('Airbrake.Enabled', 'yes | no');
+		if($enabled !== true || $enabled === 'yes')
+			return;
 
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Client.php';
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Configuration.php';
