@@ -15,11 +15,13 @@ class Bundle {
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
-		$this->sql = new SQLBundle($this->dir);
 	}
 	
 	public function _on_framework_loaded() {
-		$this->sql->_sql_initialize();
+		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
+			$this->sql = new SQLBundle($this->dir);
+		if(is_object($this->sql))
+			$this->sql->_sql_initialize();
 	}
 	
 	public function _on_deferred_register() {
@@ -38,6 +40,8 @@ class Bundle {
 	}
 	
 	public function _on_after_framework_loaded() {
+		if(!is_object($this->sql))
+			return;
 		e\trace('Processing Deferred Events', '', null, 8);
 		$pending = e::sql()->select('deferred.pending')->all();
 		

@@ -11,7 +11,7 @@ use e;
 class Bundle {
 	
 	private static $in_exception = false;
-	private static $environment = null;
+	private static $environment = array();
 	private static $scope = '';
 	private static $file;
 	private static $url;
@@ -41,7 +41,7 @@ class Bundle {
 		/**
 		 * Check dev mode to avoid issues later
 		 */
-		e::environment()->requireVar('developmentMode', 'yes | no');
+		e::environment()->requireVar('DevelopmentMode', 'yes | no');
 	}
 	
 	/**
@@ -72,11 +72,16 @@ class Bundle {
 	
 	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $throw = true) {
 		
+		// Make active to prevent exceptions
+		$this->active = true;
+		
 		// If in exception, just return null
 		if(self::$in_exception)
 			return null;
 		
 		// Check for var
+		$orig = $var;
+		$var = strtolower($var);
 		$value = '';
 		if(isset(self::$environment[$var])) {
 			$value = self::$environment[$var];
@@ -86,7 +91,7 @@ class Bundle {
 		
 		$file = self::$file;
 		self::$in_exception = true;
-		if($throw) throw new Exception("<strong>Environment Variable $why:</strong> `$var` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
+		if($throw) throw new Exception("<strong>Environment Variable $why:</strong> `$orig` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
 		
 		else return null;
 	}
@@ -101,6 +106,8 @@ class Bundle {
 			throw new Exception();
 		
 		// Load environment file
-		self::$environment = e::yaml()->file(self::$file);
+		$tmp = e::yaml()->file(self::$file);
+		foreach($tmp as $key => $value)
+			self::$environment[strtolower($key)] = $value;
 	}
 }

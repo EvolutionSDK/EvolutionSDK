@@ -77,6 +77,11 @@ error_reporting(E_ALL | E_STRICT);
 function handle($exception) {
 	
 	/**
+	 * Trace the exception
+	 */
+	trace_exception($exception);
+	
+	/**
 	 * If Evolution framework is loaded, send out an exception event
 	 */
 	if(e::$loaded) {

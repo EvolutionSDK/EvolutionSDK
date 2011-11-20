@@ -129,15 +129,16 @@ class Bundle {
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
-		
-		$this->db_bundle = new SQLBundle($dir);
 	}
 	
 	/**
 	 * Initialize SQL
 	 */
 	public function _on_framework_loaded() {
-		$this->db_bundle->_sql_initialize();
+		if(e::environment()->requireVar('Session.Enabled', "yes | no") === 'yes')
+			$this->db_bundle = new SQLBundle($dir);
+		if(is_object($this->db_bundle))
+			$this->db_bundle->_sql_initialize();
 	}
 	
 	/**
@@ -147,17 +148,19 @@ class Bundle {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function _on_after_framework_loaded() {
+		if(!is_object($this->db_bundle))
+			return;
 		/**
 		 * Grab the cookie name
 		 */
-		$this->_cookie_name = e::environment()->requireVar('cookie.name', "Cookie Name Must be Alpha Numeric + Underscores");
+		$this->_cookie_name = e::environment()->requireVar('Session.Cookie.Name', "Cookie Name Must be Alphanumeric + Underscores");
 		if(!preg_match('/^[_a-zA-Z0-9]+$/', $this->_cookie_name))
-			e::environment()->invalidVar('cookie.name');
+			e::environment()->invalidVar('Session.Cookie.Name');
 
 		/**
 		 * Grab the cookie url
 		 */
-		$cookie_url = e::environment()->requireVar('cookie.url');
+		$cookie_url = e::environment()->requireVar('Session.Cookie.URL');
 		$this->_cookie_url = $cookie_url ? $cookie_url : false;
 		
 		/**
@@ -313,6 +316,8 @@ class Bundle {
 	}
 	
 	public function _on_complete() {
+		if(!is_object($this->db_bundle))
+			return;
 		if($this->_session instanceof \Bundles\SQL\Model) {
 			$this->_session->hits++;
 			$this->save();

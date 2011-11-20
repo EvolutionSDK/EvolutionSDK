@@ -22,6 +22,9 @@ class e {
 	 */
 	public static function __load($root, $sites, $bundles, $host) {
 		
+
+		e\trace('EvolutionSDK Framework', "Looking for sites matching host `$host`");
+		
 		/**
 		 * Look for domains
 		 */
@@ -54,6 +57,8 @@ class e {
 		
 		self::$site = $site;
 		
+		e\trace_enter('EvolutionSDK Framework', "Loading site `$site`");
+		
 		foreach(array($root.$bundles, $site.$bundles) as $dir) {
 			foreach(glob($dir.'/*/*/_bundle.php') as $file)
 				self::__load_bundle($file);
@@ -71,15 +76,21 @@ class e {
 			e::events()->framework_loaded();
 			e::events()->after_framework_loaded();
 		}
+		
+		e\trace_exit();
 	}
 	
 	/**
 	 * Load and cache a bundle
 	 */
 	public static function __load_bundle($file) {
-		require_once($file);
+		
 		$dir = dirname($file);
 		$bundle = strtolower(basename($dir));
+		
+		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
+		
+		require_once($file);
 		self::$dirs[$bundle] = $dir;
 		$class = "\\bundles\\$bundle\\bundle";
 		if(!class_exists($class, false))
@@ -87,6 +98,8 @@ class e {
 		self::$bundles[$bundle] = new $class($dir);
 		self::$used[$bundle] = false;
 		self::__add_listener(self::$bundles[$bundle]);
+		
+		e\trace_exit();
 	}
 	
 	/**

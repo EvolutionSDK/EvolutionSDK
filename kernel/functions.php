@@ -191,13 +191,16 @@ function complete($exception = false) {
 	/**
 	 * If Evolution framework is loaded, send out an complete event
 	 */
-	if(!$exception && e::$loaded)
+	if(e::$loaded && !$exception)
 		e::events()->complete();
 	
-	if(e::environment()->active) {
+	if(!e::$loaded)
+		$dev = 'yes';
+	else if(e::environment()->active) {
 		$dev = 'yes';
 	} else
 		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
+	
 	if($dev == 'yes' || $dev == true) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
 		if(!defined('E_COMPLETE_RAN')) {

@@ -14,6 +14,14 @@ class Bundle {
 		
 		$this->url = $url;
 		
+		/**
+		 * Handle special URLs
+		 */
+		switch($url) {
+			case '/humans.txt':
+				return $this->humans();
+		}
+		
 		$this->path = explode('/', $this->url);
 		if($this->path[0] === '')
 		    array_shift($this->path);
@@ -27,6 +35,20 @@ class Bundle {
 			$this->route_bundle();
 		
 		e::events()->router_route($this->path);
+	}
+
+	/**
+	 * Humans.txt handling
+	 */
+	public function humans() {
+		header('Content-Type: text/plain');
+		if(file_exists(e::$site.'/humans.txt')) {
+			readfile(e::$site.'/humans.txt');
+			echo "\n\n";
+		}
+		if(is_file(e\root.'/humans.txt'))
+			readfile(e\root.'/humans.txt');
+		exit;
 	}
 	
 	public function route_bundle() {

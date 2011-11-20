@@ -20,7 +20,8 @@ class SQLBundle {
 	}
 	
 	public function _on_framework_loaded() {
-		$this->_sql_initialize();
+		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
+			$this->_sql_initialize();
 	}
 	
 	public function _sql_initialize() {

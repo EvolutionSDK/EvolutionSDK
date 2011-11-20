@@ -22,7 +22,8 @@ class Bundle {
 	private $connections = array();
 	
 	public function _on_first_use() {
-		if(self::$changed == true || e::sql()->query("SHOW TABLES")->count() == 0) $this->build_architecture();
+		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
+			if(self::$changed == true || e::sql()->query("SHOW TABLES")->count() == 0) $this->build_architecture();
 	}
 	
 	public function __bundle_response($method = false) {

@@ -1,7 +1,10 @@
 <?php
 
-namespace bundles\portal;
+namespace Bundles\Portal;
+use Exception;
 use e;
+
+class NotFoundException extends Exception {}
 
 class Bundle {
 	public static $currentPortalDir;
@@ -75,6 +78,11 @@ class Bundle {
 			array_shift($path);
 			
 			/**
+			 * URL
+			 */
+			$url = implode('/', $path);
+			
+			/**
 			 * Save current portal location
 			 */
 			self::$currentPortalDir = $matched;
@@ -90,17 +98,27 @@ class Bundle {
 				 * Route inside of the portal
 				 */
 				e::events()->portal_route($path, $matched, "allow:$matched/portal.yaml");
+				
+				/**
+				 * If nothing found, throw exception
+				 */
+				throw new NotFoundException("Resource `$url` not found in portal `$matched`");
 			}
 			
 			/**
 			 * Handle any exceptions
 			 */
-			catch(Exception $e) {
+			catch(Exception $exception) {
 
 				/**
 				 * Try to resolve with error pages
 				 */
-				e::events()->portal_exception($path, $matched, $e);
+				e::events()->portal_exception($path, $matched, $exception);
+				
+				/**
+				 * Throw if not completed
+				 */
+				throw $exception;
 			}
 		}
 	}

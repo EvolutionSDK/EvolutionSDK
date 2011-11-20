@@ -1,0 +1,64 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                             #
+#                  EvolutionSDK - humans.txt                  #
+#                                                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# About this File
+
+	http://humanstxt.org
+
+# Project
+
+	EvolutionSDK
+	http://evolutionsdk.com
+
+# Description
+
+	EvolutionSDK is a full feature framework that doesn't
+	compromize. Speed, flexibility, and featureset can 
+	actually live in perfect harmony!
+
+# Authors
+
+	David Boskovic
+	
+	[Add info]
+
+	-
+
+	Nate Ferrero
+	
+	Los Angeles | Raleigh | Grand Rapids
+	@nateferrero
+	nateferrero@gmail.com
+	http://nateferrero.com
+	http://github.com/NateFerrero
+	
+	-
+	
+	Kelly Becker
+	
+	[Add info]
+
+# Technologies
+
+	Language: PHP 5.3+
+	Software: TextMate, Git
+	Platforms: Airbrake
+	Components: LessCSS
+	
+# Credits
+
+	LessPHP
+	http://leafo.net/lessphp/
+	
+# Thank You
+
+	GitHub, TextMate, PHP development teams
+	
+	MomentumOS, Inc for the opportunity to work
+	with a super badass dev and product team
+	
+	David Boskovic for turning me (Nate) into a tenfold
+	better coder in rapid time
