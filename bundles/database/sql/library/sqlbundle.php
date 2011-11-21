@@ -20,7 +20,8 @@ class SQLBundle {
 	}
 	
 	public function _on_framework_loaded() {
-		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
+		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		if($enabled === true || $enabled === 'yes')
 			$this->_sql_initialize();
 	}
 	
@@ -77,7 +78,7 @@ class SQLBundle {
 	 */
 	public function __call($func, $args) {
 		if(!$this->initialized)
-			throw new Exception("SQL for `".__CLASS__."` was not initialized in system startup. Use `ALT + &#x60;`</em> for extended details.");
+			throw new Exception("SQL for `".__CLASS__."` was not initialized in system startup. Most likely, the environment variable `SQL.Enabled` is off.");
 		
 		$search = preg_split('/([A-Z])/', $func, 2, PREG_SPLIT_DELIM_CAPTURE);
 		$method = array_shift($search);
