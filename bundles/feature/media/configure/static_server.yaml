@@ -1,0 +1,6 @@
+static_server:
+  use: 0
+  address: my.server.com
+  port: 80
+  user: root
+  pass: 'pass'

@@ -24,11 +24,15 @@ class Parser {
 										'!' => 'tag-special'			),
 		# <!_
 		'tag-special'		=> array(	'!' => '#error',
+										'd' => 'tag-doctype',
 										'-' => 'tag-comment',
 										'*' => '&tag-contents'			),
 										
 		# <!-_
 		'tag-comment'		=> array(	'>' => 'tag-end-outside'		),
+		
+		# <!d_
+		'tag-doctype'		=> array(	'>' => 'tag-end-outside'		),
 		
 		# </_					
 		'tag-close'			=> array(	' ' => '#error',
@@ -177,6 +181,16 @@ class Parser {
 			
 			// Decide what to do based on token
 			switch($token->name) {
+				
+				// Doctype tag works but TODO possible improvement
+				case 'tag-doctype':
+					$stack->_nchild($token->value, (object) array(
+						'line' => $openLine,
+						'col' => $openCol,
+						'file' => $openFile,
+						'special' => 'doctype'
+					));
+					break;
 				
 				// Start tag, just to record line and column
 				case 'tag-start':
