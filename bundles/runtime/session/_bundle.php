@@ -136,13 +136,14 @@ class Bundle {
 	 */
 	public function _on_framework_loaded() {
 		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
-		if($enabled !== true || $enabled !== 'yes')
+		
+		if($enabled !== true && $enabled !== 'yes')
 			return false;
 		
 		$enabled = e::environment()->requireVar('Session.Enabled', "yes | no");
-		
+
 		if($enabled === true || $enabled === 'yes')
-			$this->db_bundle = new SQLBundle($dir);
+			$this->db_bundle = new SQLBundle($this->dir);
 		if(is_object($this->db_bundle))
 			$this->db_bundle->_sql_initialize();
 	}
@@ -156,6 +157,7 @@ class Bundle {
 	public function _on_after_framework_loaded() {
 		if(!is_object($this->db_bundle))
 			return;
+
 		/**
 		 * Grab the cookie name
 		 */
