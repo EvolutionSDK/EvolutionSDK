@@ -139,8 +139,8 @@ class Bundle {
 		if($enabled !== true || $enabled !== 'yes')
 			return false;
 		
-		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
-			$enabled = e::environment()->requireVar('Session.Enabled', "yes | no");
+		$enabled = e::environment()->requireVar('Session.Enabled', "yes | no");
+		
 		if($enabled === true || $enabled === 'yes')
 			$this->db_bundle = new SQLBundle($dir);
 		if(is_object($this->db_bundle))
@@ -310,7 +310,7 @@ class Bundle {
 	 */
 	public function save() {
 		if(!($this->_session instanceof \Bundles\SQL\Model))
-			throw new \Exception("Session has not be instantiated, cannot save.");
+			return false;
 		
 		$serialize = base64_encode(serialize($this->_data));
 		$session =& $this->_session;
