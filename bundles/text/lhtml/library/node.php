@@ -100,6 +100,7 @@ class Node {
 		 * Save the source
 		 */
 		$nchild->_code = $code;
+		
 		/**
 		 * Set the new child element to this object and return the new child
 		 */
@@ -177,9 +178,16 @@ class Node {
 		if(in_array($this->element, self::$complete_tags)) return "<$this->element".$this->_attributes_parse().' />';
 		
 		/**
+		 * If it's a doctype element TODO clean this up / standardize
+		 */
+		if(isset($this->_code) && isset($this->_code->special) && $this->_code->special === 'doctype') {
+			$output .= "<!$this->element>\n";
+		}
+		
+		/**
 		 * If is a real element create the opening tag
 		 */
-		if($this->element !== '' && $this->element) $output .= "<$this->element".$this->_attributes_parse().'>';
+		else if($this->element !== '' && $this->element) $output .= "<$this->element".$this->_attributes_parse().'>';
 		
 		/**
 		 * Loop thru the children and populate this tag
