@@ -18,8 +18,13 @@ class Bundle {
 	}
 	
 	public function _on_framework_loaded() {
-		if(e::environment()->requireVar('SQL.Enabled', "yes | no") === 'yes')
-			$this->sql = new SQLBundle($this->dir);
+		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		
+		if($enabled !== true && $enabled !== 'yes')
+			return false;
+			
+		$this->sql = new SQLBundle($this->dir);
+		
 		if(is_object($this->sql))
 			$this->sql->_sql_initialize();
 	}

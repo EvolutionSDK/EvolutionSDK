@@ -622,7 +622,8 @@ class ListObj implements \Iterator, \Countable {
 			$value = preg_replace('[^a-zA-Z0-9_.-]', '', $value);
 			if($key === 'search') {
 				$cond = array();
-				foreach(explode(' ', 'title') as $field) {
+				$search = array('title', 'name');
+				foreach($search as $field) {
 					if(isset($fields[$field]))
 						$cond[] = "`$field` LIKE '%$value%'";
 				}

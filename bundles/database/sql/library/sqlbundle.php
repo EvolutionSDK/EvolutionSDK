@@ -11,7 +11,7 @@ class SQLBundle {
 	public $database = 'default';
 	private $initialized = false;
 	
-	private static $local_structure = array();
+	private $local_structure = array();
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
@@ -64,7 +64,7 @@ class SQLBundle {
 		 * Save the DB structure
 		 */
 		foreach($sql as $table=>$val) Bundle::$db_structure[$this->bundle.'.'.$table] = $val;
-		foreach($sql as $table=>$val) self::$local_structure[$table] = $val;
+		foreach($sql as $table=>$val) $this->local_structure[$table] = $val;
 		
 	}
 	
@@ -84,9 +84,9 @@ class SQLBundle {
 		$method = array_shift($search);
 		$search = strtolower(implode('', $search));
 		
-		if(empty(self::$local_structure)) return false;
+		if(empty($this->local_structure)) return false;
 		
-		foreach(self::$local_structure as $table=>$relations) {
+		foreach($this->local_structure as $table=>$relations) {
 			if($search == $table) {
 				$plural = false;
 				break;
