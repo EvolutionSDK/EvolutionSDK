@@ -218,6 +218,7 @@ class Action {
 		 * Return JSON of the output
 		 */
 		else if($this->type == 'json') {
+			e\disable_trace();
 			header("Content-Type: application/json");
 			echo json_encode($this->results());
 		}
