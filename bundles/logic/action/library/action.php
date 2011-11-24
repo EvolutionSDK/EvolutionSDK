@@ -91,8 +91,22 @@ class Action {
 		 * Load File Data
 		 */
 		if(!empty($_FILES)) {
-			$files = array('files' => $_FILES);
-			$this->_load_data($files);
+			$files = $_FILES;
+			
+			// Handle Single File
+			// @todo
+			
+			// Handle Multiple Files
+			$out = array();
+			foreach($files as $key => $data) {
+				foreach($data as $key1 => $data1) {
+					foreach($data1 as $key2 => $data2) {
+						$out[$key]['files'][$key2][$key1] = $data2;
+					}
+				}
+			}
+			
+			$this->_load_data($out);
 		}
 		
 		/**
@@ -307,7 +321,7 @@ class Action {
 		$args = func_get_args();
 		foreach($args as $pd) {
 			if(!is_array($pd) || count($pd) == 0) continue;
-			$this->data = array_merge($this->data, $pd);
+			$this->data = array_merge_recursive($this->data, $pd);
 		}
 		return true;
 	}
