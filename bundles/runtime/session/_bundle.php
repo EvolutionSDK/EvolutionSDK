@@ -16,13 +16,26 @@ class Bundle {
 	
 	private $_key;
 	public $_id;
-	private $_data = array();
+	public $_data = array(); // @todo make this private, but make sure DataAccess can manipulate this somehow
+	private $data;
 	private $_data_hash;
 	private $_flashdata;
 	
 	private $_session;
 	
 	private $_robot = false;
+	
+	/**
+	 * Wrap the public access to ->data so that you can call ->data->var = whatever; without being able to call ->data = false;
+	 *
+	 * @param string $var 
+	 * @return void
+	 * @author David Boskovic
+	 */
+	public function __get($var) {
+		if($var == 'data') return $this->data;
+		return false;
+	}
 	
 	private static $_robots = array(
 		"Facebook",
@@ -129,6 +142,7 @@ class Bundle {
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
+		$this->data = new DataAccess($this);
 	}
 	
 	/**
@@ -454,6 +468,32 @@ class Bundle {
 		return call_user_func_array(array($this->_session, $func), $args);
 	}
 	
+}
+
+/**
+ * Use this for data access e::session()->data->varname= whatever;
+ *
+ * @package default
+ * @author David Boskovic
+ */
+class DataAccess {
+	private $session;
+	public function __construct($session) {
+		$this->session = $session;
+	}
+	public function __set($var, $val) {
+		$this->session->_data[$var] = $val;
+		var_dump($val);
+		return true;
+	}
+	public function __get($var) {
+		return isset($this->session->_data[$var]) ? $this->session->_data[$var] : null;
+	}
+	
+	public function __unset($var) {
+		if(isset($this->session->_data[$var])) unset($this->session->_data[$var]);
+		return true;
+	}
 }
 
 class flash {
