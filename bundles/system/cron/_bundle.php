@@ -6,8 +6,6 @@ use e;
 
 class Bundle extends SQLBundle {
 	
-	public $run;
-	
 	public function run($return = 0) {
 		$jobs = $this->getCronjobs();
 		
@@ -59,16 +57,9 @@ class Bundle extends SQLBundle {
 	}
 	
 	public function route() {
-		$this->run = true;
-		return true;
-	}
-	
-	public function _on_after_framework_loaded() {
-		if(!is_null($this->run)) {
-			e\disable_trace();
-			$this->run();
-			e\complete();
-		}
+		e\disable_trace();
+		$this->run();
+		e\complete();
 	}
 	
 }

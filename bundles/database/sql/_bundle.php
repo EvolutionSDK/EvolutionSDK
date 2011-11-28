@@ -119,7 +119,6 @@ class Bundle {
 			 */
 			if(isset($config['hasOne'])) foreach($config['hasOne'] as $tbl) {
 				self::$db_structure[$table]['fields']['$'.$tbl.'_id'] = 'number';
-				//self::$db_structure[$tbl]['hasMany'][] = $tbl;
 			}
 
 			/**

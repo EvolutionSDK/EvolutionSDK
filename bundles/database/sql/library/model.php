@@ -460,6 +460,8 @@ class Model {
 			break;
 			case 'link':
 			
+				if(!$args[0]) return false;
+			
 				/**
 				 * Let everything know
 				 */

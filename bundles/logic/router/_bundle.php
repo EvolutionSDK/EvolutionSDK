@@ -57,9 +57,13 @@ class Bundle {
 		$realm = array_shift($path);
 	
 		switch($realm) {
-			case 'api';
+			case 'api':
 				$this->route_bundle_api($bundle, $path);
-				break;
+			break;
+			default:
+				try { e::$bundle()->route(); }
+				catch(Exception $e) {}
+			break;
 		}
 		
 		throw new Exception("Bundle routing realm `$realm` does not exist");

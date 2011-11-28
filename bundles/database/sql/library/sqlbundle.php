@@ -77,6 +77,14 @@ class SQLBundle {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function __call($func, $args) {
+		/**
+		 * Allow Overriding the Call in the child elements
+		 */
+		if(method_exists($this, '__callExtend')) {
+			try { return $this->__callExtend($func, $args); }
+			catch(e\AutoLoadException $e) { }
+		}
+		
 		if(!$this->initialized)
 			throw new Exception("SQL for `".__CLASS__."` was not initialized in system startup. Most likely, the environment variable `SQL.Enabled` is off.");
 		
