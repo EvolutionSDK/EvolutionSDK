@@ -483,7 +483,6 @@ class DataAccess {
 	}
 	public function __set($var, $val) {
 		$this->session->_data[$var] = $val;
-		var_dump($val);
 		return true;
 	}
 	public function __get($var) {

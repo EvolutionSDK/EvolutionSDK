@@ -77,7 +77,7 @@ class Scope {
 			/**
 			 * Return Traverable Object
 			 */	
-			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && $this->source_data[$map[0]] instanceof \Traversable) {
+			else if($this->source_pointer !== false && is_string($map[0]) && isset($this->source_data[$map[0]]) && $this->source_data[$map[0]] instanceof \Traversable) {
 				$i=0; foreach($this->source_data[$map[0]] as $source) {
 					if($i === $this->source_pointer) break;
 					unset($source);
@@ -88,7 +88,7 @@ class Scope {
 			/**
 			 * Return Array
 			 */
-			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && is_array($this->source_data[$map[0]])) {
+			else if($this->source_pointer !== false && is_string($map[0]) && isset($this->source_data[$map[0]]) && is_array($this->source_data[$map[0]])) {
 				$i=0; foreach($this->source_data[$map[0]] as $source) {
 					if($i === $this->source_pointer) break;
 					unset($source);
@@ -104,7 +104,7 @@ class Scope {
 			else if(is_string($map[0]) && isset($this->source_data[$map[0]]) && !($this->source_data[$map[0]] instanceof \Traversable)) {
 				$tmp = $this->source_data[$map[0]];
 				
-				if(is_array($source)) {
+				if(is_array($source) && $this->source_pointer !== false) {
 					$i=0; foreach($tmp as $source) {
 						if($i === $this->source_pointer) break;
 						unset($source);
@@ -308,7 +308,7 @@ class Scope {
 		/**
 		 * Reset the pointer
 		 */
-		$this->source_pointer = 0;
+		$this->source_pointer = false;
 	}
 	
 	/**

@@ -14,7 +14,7 @@ class Action {
 	public $raw = false;
 	public $input_data = array();
 	
-	private $_has_checked = array();
+	protected $_has_checked = array();
 	
 	/**
 	 * Response type. HTTP will redirect. JSON and XML will return their respective responses.
@@ -38,12 +38,14 @@ class Action {
 	protected $messages = array();
 	
 	public function __construct($data = false) {
+		$this->_inject_data(e::session()->data('get','_actions', get_class($this)));
+		
 		
 		if(isset($_REQUEST['_method'])) {
 			/**
 			 * Load the data from the session, and $_POST, $_GET variables
 			 */
-			$this->_load_data(e::session()->data('get','_actions', get_class($this)), $_POST, $_GET);
+			$this->_load_data($_POST, $_GET);
 			
 			/**
 			 * Set the Success and Failure URL's Based on if they are in the data or not
@@ -79,13 +81,13 @@ class Action {
 		/**
 		 * Load the data from where ever it is preset/requested
 		 */
-		if(!$data) $this->_load_data(e::session()->data('get','_actions', get_class($this)), $_POST, $_GET);
+		if(!$data) $this->_load_data($_POST, $_GET);
 		else if(is_array($data)) {
 			$this->input_data = $data;
 			$this->type = false;
-			$this->_load_data(e::session()->data('get','_actions', get_class($this)), $data);
+			$this->_load_data($data);
 		}
-		else $this->_load_data(e::session()->data('get','_actions', get_class($this)));
+		else $this->_load_data();
 		
 		/**
 		 * Load File Data
@@ -317,11 +319,33 @@ class Action {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	protected function _load_data($var) {
+	protected function _load_data() {
+		$args = func_get_args();
+		foreach($args as $pd) {
+			// unset the has_checked of this item
+			foreach($pd as $k => $d) {
+				if(isset($this->_has_checked[$k]) || isset($this->data['_has_checked'][$k])) {
+					unset($this->_has_checked[$k]);
+					unset($this->data['_has_checked'][$k]);
+				}
+			}
+			if(!is_array($pd) || count($pd) == 0) continue;
+			$this->data = array_merge($this->data, $pd);
+		}
+		return true;
+	}
+	
+	/**
+	 * This injects data into the action without overriding the has_checked list.
+	 *
+	 * @return void
+	 * @author David Boskovic
+	 */
+	protected function _inject_data() {
 		$args = func_get_args();
 		foreach($args as $pd) {
 			if(!is_array($pd) || count($pd) == 0) continue;
-			$this->data = array_merge_recursive($this->data, $pd);
+			$this->data = array_merge($this->data, $pd);
 		}
 		return true;
 	}
