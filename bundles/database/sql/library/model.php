@@ -259,6 +259,9 @@ class Model {
 	public function get_array() {
 		return $this->_data;
 	}
+	public function getArray() {
+		return $this->get_array();
+	}
 
 	/**
 	 * Save the $this->_data into the table as a new row or update

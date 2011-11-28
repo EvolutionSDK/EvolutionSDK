@@ -77,6 +77,9 @@ class Bundle {
 		
 		if($type !== 'json')
 			throw new Exception("API format `$type` is not a valid type");
+		else {
+			header("Content-type: application/json");
+		}
 		
 		e\trace(__CLASS__, "API `$type` access for bundle `$bundle`");
 		
