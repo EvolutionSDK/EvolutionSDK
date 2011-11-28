@@ -292,6 +292,8 @@ class Action {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	protected function check_formats() {
+		if(method_exists($this, '_extend')) $this->_extend();
+		
 		foreach($this->data as $key => $value) {
 			if(isset($this->_has_checked[$key]) && $this->_has_checked[$key] === 1)
 				continue;
