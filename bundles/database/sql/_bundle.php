@@ -24,6 +24,14 @@ class Bundle {
 	public function _on_first_use() {
 		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
 		
+		/**
+		 * Build Relationships
+		 */
+		if($enabled === true || $enabled === 'yes') $this->build_relationships();
+		
+		/**
+		 * Build Architecture
+		 */
 		if($enabled === true || $enabled === 'yes')
 			if(self::$changed == true || e::sql()->query("SHOW TABLES")->count() == 0 || isset($_GET['_build_sql'])) $this->build_architecture();
 	}
@@ -105,12 +113,12 @@ class Bundle {
 	}
 	
 	/**
-	 * Load the Conglomerate of DB Structure Info and Run it through architect
+	 * Build hasOne and hasMany Relationships
 	 *
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	private function build_architecture() {
+	private function build_relationships() {
 		if(empty(self::$db_structure)) return false;
 		
 		foreach(self::$db_structure as $table=>$config) {
@@ -131,6 +139,16 @@ class Bundle {
 			
 			$config = array();
 		}
+	}
+	
+	/**
+	 * Load the Conglomerate of DB Structure Info and Run it through architect
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	private function build_architecture() {
+		if(empty(self::$db_structure)) return false;
 				
 		$tables = array();
 		foreach(self::$db_structure as $table=>$struct) {
