@@ -204,6 +204,14 @@ class Model {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function __isset($field) {
+		/**
+		 * Allow Overriding the Magic Method in the child class
+		 */
+		if(method_exists($this, '__issetExtend')) {
+			try { return $this->__issetExtend($field); }
+			catch(Exception $e) { }
+		}
+		
 		return isset($this->_data[$field]);
 	}
 
@@ -215,6 +223,14 @@ class Model {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function __get($field) {
+		/**
+		 * Allow Overriding the Magic Method in the child class
+		 */
+		if(method_exists($this, '__getExtend')) {
+			try { return $this->__getExtend($field); }
+			catch(Exception $e) { }
+		}
+		
 		if(!isset($this->_data[$field])) return NULL;
 
 		return $this->_data[$field];
@@ -229,6 +245,14 @@ class Model {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function __set($field, $nval) {
+		/**
+		 * Allow Overriding the Magic Method in the child class
+		 */
+		if(method_exists($this, '__setExtend')) {
+			try { return $this->__setExtend($field, $nval); }
+			catch(Exception $e) { }
+		}
+		
 		if(!array_key_exists($field, $this->_data)) return;
 		if($field == 'id') return;
 

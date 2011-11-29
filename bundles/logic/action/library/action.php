@@ -330,7 +330,7 @@ class Action {
 				}
 			}
 			if(!is_array($pd) || count($pd) == 0) continue;
-			$this->data = array_merge($this->data, $pd);
+			$this->data = e\array_merge_recursive_simple($this->data, $pd);
 		}
 		return true;
 	}
@@ -345,7 +345,7 @@ class Action {
 		$args = func_get_args();
 		foreach($args as $pd) {
 			if(!is_array($pd) || count($pd) == 0) continue;
-			$this->data = array_merge($this->data, $pd);
+			$this->data = e\array_merge_recursive_simple($this->data, $pd);
 		}
 		return true;
 	}
