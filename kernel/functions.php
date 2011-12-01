@@ -120,6 +120,22 @@ function encode64_file($file, $arr) {
 }
 
 /**
+ * Disable Hit for this page load
+ */
+function disable_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
+}
+
+/**
+ * Add Hit
+ */
+function add_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'add_hit'), $args);
+}
+
+/**
  * Trace class to store variables
  */
 class TraceVars {
@@ -208,6 +224,11 @@ function complete($exception = false) {
 			display_trace();
 		}
 	}
+	
+	/**
+	 * Save total time required to exec to hit
+	 */
+	e::session()->complete_hit(timer(true));
 	
 	/**
 	 * This should be the only time exit or die is used in all code
@@ -367,4 +388,40 @@ $sel.disabled {
 }
 
 EOF;
+}
+
+function timer($return = false) {
+	static $start = 0;
+	
+	if(!$return && !($start > 0)) $start = microtime();
+	else if(!($start > 0)) return false;
+	
+	else return microtime() - $start;
+}
+
+function array_merge_recursive_simple() {
+    if (func_num_args() < 2) {
+        trigger_error(__FUNCTION__ .' needs two or more array arguments', E_USER_WARNING);
+        return;
+    }
+    $arrays = func_get_args();
+    $merged = array();
+    while ($arrays) {
+        $array = array_shift($arrays);
+        if (!is_array($array)) {
+            trigger_error(__FUNCTION__ .' encountered a non array argument', E_USER_WARNING);
+            return;
+        }
+        if (!$array)
+            continue;
+        foreach ($array as $key => $value)
+            if (is_string($key))
+                if (is_array($value) && array_key_exists($key, $merged) && is_array($merged[$key]))
+                    $merged[$key] = call_user_func(__FUNCTION__, $merged[$key], $value);
+                else
+                    $merged[$key] = $value;
+            else
+                $merged[] = $value;
+    }
+    return $merged;
 }

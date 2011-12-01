@@ -11,29 +11,27 @@ class File extends \Bundles\SQL\Model {
 	
 	public function __set($field, $nval) {
 		if($field == 'file') {
-			if(file_exists($nval['file']['tmp_name'])) {
-				if($nval['file']['error'] > 0) throw new FileUploadException(_\Bundle::$upload_error[$nval['file']['error']]);
-				$file = file_get_contents($nval['file']['tmp_name']);
-				$type = $nval['file']['type'];
-				$name = $nval['file']['name'];
-			}
-			
-			else if(is_array($nval)) {
-				$file = $nval['file'];
+			if(is_array($nval)) {
+				if((isset($nval['error']) && $nval['error'] > 0) && !isset($nval['file'])) 
+					throw new FileUploadException(_\Bundle::$upload_error[$nval['error']]);
+				
+				$file = isset($nval['file']) ? $nval['file'] : file_get_contents($nval['tmp_name']);
 				$type = $nval['type'];
 				$name = $nval['name'];
 			}
+			
+			else throw new Exception("You must pass an array containing the keys `name`, `type`, (`tmp_name` or `file` where file is an actucal result of `file_get_contents()`), and <em>optionally</em> `error` where error is a numerical representation of a file upload error as <a href=\"http://us3.php.net/manual/en/features.file-upload.errors.php\" target=\"_blank\">described here</a>");
 			
 			if(strpos($type, 'image') !== false) $this->filetype = 'photo';
 						
 			$ext = explode('.', $name);
 			$ext = end($ext);
-			$filename = substr(md5($name),0,5).'_'.date("Y-m-d_h-i-s").'.'.$ext;
+			$filename = substr(md5($name),0,5).'_'.date("Y-m-d_H-i-s").'.'.$ext;
 			
 			$this->filename = $filename;
 			$this->filemime = ($type ? $type : _\Bundle::$mimes[$ext]);
 			
-			e::events()->put_file($file, $filename, 'allow:'.e::$site.'/configure/upload.yaml');
+			dump(e::events()->put_file($file, $filename, 'allow:'.e::$site.'/configure/upload.yaml'));
 			
 			return $this->save();
 		}

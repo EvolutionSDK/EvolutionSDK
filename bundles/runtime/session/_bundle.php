@@ -16,6 +16,9 @@ class Bundle {
 	
 	private $_key;
 	public $_id;
+	private $_log_hit = true;
+	private $_child_hit = false;
+	private $_hit;
 	public $_data = array(); // @todo make this private, but make sure DataAccess can manipulate this somehow
 	private $data;
 	private $_data_hash;
@@ -340,6 +343,21 @@ class Bundle {
 	public function _on_complete() {
 		if(!is_object($this->db_bundle))
 			return;
+		if($this->_log_hit || $this->_child_hit) {
+			$this->_hit = $this->db_bundle->newHit();
+			$this->_hit->url = $_SERVER['REQUEST_URI'];
+			$this->_hit->referer = $_SERVER['HTTP_REFERER'];
+			$this->_hit->save();
+			$this->_hit->linkSession($this->_session);
+			
+			if($this->_log_hit) {
+				$this->_session->last_hit = $this->_hit->id;
+				$this->_session->save();
+			} else if($this->_child_hit) {
+				$this->_hit->parent = $this->_session->last_hit;
+				$this->_hit->save();
+			}
+		}
 		if($this->_session instanceof \Bundles\SQL\Model) {
 			$this->_session->hits++;
 			$this->save();
@@ -468,6 +486,37 @@ class Bundle {
 		return call_user_func_array(array($this->_session, $func), $args);
 	}
 	
+	/**
+	 * Disable Page Load Hit - Useful for static files
+	 */
+	public function disable_hit($type = 'none') {
+		if($type = 'child') $this->_child_hit = true;
+		return $this->_log_hit = false;
+	}
+	
+	/**
+	 * Add a Hit log to the session
+	 */
+	public function add_hit($url = '', $referer = '', $time = 0) { 
+		$hit = $this->db_bundle->newHit();
+		$hit->url = $url;
+		$hit->referer = $referer;
+		$hit->exec_time_ms = $time;
+		$hit->parent = $this->_session->last_hit;
+		$hit->save();
+		$hit->linkSession($this->_session);
+		return $hit;
+	}
+	
+	/**
+	 * Add total time to page hit - Used in e\complete() only!
+	 */
+	public function complete_hit($time) {
+		if(method_exists($this->_hit, 'save')) {
+			$this->_hit->exec_time_ms = abs($time);
+			$this->_hit->save();	
+		}
+	}
 }
 
 /**

@@ -92,6 +92,11 @@ require_once(kernel.'/autoload.php');
 require_once(kernel.'/functions.php');
 
 /**
+ * Start Timer
+ */
+e\timer();
+
+/**
  * Use Evolution framework
  */
 require_once(kernel.'/framework.php');

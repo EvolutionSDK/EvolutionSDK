@@ -80,6 +80,12 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 		return true;
 	}
 	
+	public function get_error($code) {
+		if(!isset(self::$upload_error[$code]))
+			return "Invalid upload error code";
+		return self::$upload_error[$code];
+	}
+	
 	public function _on_after_framework_loaded() {
 		if(is_null($this->path)) return;
 		$path = $this->path;
