@@ -4,6 +4,8 @@ namespace Bundles\Action;
 use Exception;
 use e;
 
+ini_set('max_file_uploads', 20);
+
 class ActionException extends Exception { }
 
 class Action {
