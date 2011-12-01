@@ -16,6 +16,9 @@ hits:
     url: string
     referer: string
     exec_time_ms: float
-    parent: int
+    parent: 
+      Type: int
+      Default: null
+      Null: 'YES'
   hasOne: 
     - list
