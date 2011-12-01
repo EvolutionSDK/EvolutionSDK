@@ -106,8 +106,6 @@ class Architect {
 		 */
 		foreach($fields as $field=>$val) {
 			
-			//var_dump(array($field, $val));
-			
 			if($val == '_suppress') { unset($fields[$field]); continue; }
 			
 			if(!is_array($val)) {
