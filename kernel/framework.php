@@ -177,6 +177,12 @@ class e {
 		 */
 		if(method_exists(self::$bundles[$bundle], '__bundle_response'))
 			return self::$bundles[$bundle]->__bundle_response();
+			
+		/**
+		 * If bundle has a response, return it - Allow use of the New Camel Case Method
+		 */
+		if(method_exists(self::$bundles[$bundle], '__bundleResponse'))
+			return self::$bundles[$bundle]->__bundle_response();
 		
 		/**
 		 * If bundle has an invoke method, call that
@@ -184,6 +190,13 @@ class e {
 		if(count($args) > 0 && method_exists(self::$bundles[$bundle], '__invoke_bundle'))
 			return call_user_func_array(
 				array(self::$bundles[$bundle], '__invoke_bundle'), $args);
+				
+		/**
+		 * If bundle has an invoke method, call that - Allow use of the New Camel Case Method
+		 */
+		if(count($args) > 0 && method_exists(self::$bundles[$bundle], '__invokeBundle'))
+			return call_user_func_array(
+				array(self::$bundles[$bundle], '__invokeBundle'), $args);
 		
 		/**
 		 * Return instance
