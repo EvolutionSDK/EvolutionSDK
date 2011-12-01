@@ -314,6 +314,11 @@ class Action {
 		if(method_exists($this, '_validate_all')) $this->_validate_all();
 	}
 	
+	public function success() {
+		$result = $this->results();
+		return $result['success'] ? true : false;
+	}
+	
 	/**
 	 * Merge all the data together
 	 *
