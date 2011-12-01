@@ -14,10 +14,6 @@ use e;
 class Bundle {
 	
 	public function _on_portal_route($path, $dirs) {
-		/**
-		 * Disable Trace
-		 */
-		e\disable_trace();
 		
 		/**
 		 * Load media to instantiate the mimes
@@ -27,6 +23,12 @@ class Bundle {
 		// Make sure path contains valid action name
 		if(!isset($path[0]) || 	$path[0] !== 'assets')
 			return;
+			
+		/**
+		 * Disable Trace and Hit Count
+		 */
+		e\disable_trace();
+		e\disable_hit('child');
 		
 		/**
 		 * Get Filename and Extension

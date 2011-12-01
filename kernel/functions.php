@@ -120,6 +120,22 @@ function encode64_file($file, $arr) {
 }
 
 /**
+ * Disable Hit for this page load
+ */
+function disable_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
+}
+
+/**
+ * Add Hit
+ */
+function add_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'add_hit'), $args);
+}
+
+/**
  * Trace class to store variables
  */
 class TraceVars {
@@ -208,6 +224,11 @@ function complete($exception = false) {
 			display_trace();
 		}
 	}
+	
+	/**
+	 * Save total time required to exec to hit
+	 */
+	e::session()->complete_hit(timer(true));
 	
 	/**
 	 * This should be the only time exit or die is used in all code
@@ -367,6 +388,15 @@ $sel.disabled {
 }
 
 EOF;
+}
+
+function timer($return = false) {
+	static $start = 0;
+	
+	if(!$return && !($start > 0)) $start = microtime();
+	else if(!($start > 0)) return false;
+	
+	else return microtime() - $start;
 }
 
 function array_merge_recursive_simple() {
