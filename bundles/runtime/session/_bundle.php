@@ -283,7 +283,7 @@ class Bundle {
 	 * @author David Boskovic
 	 */
 	public function message($type, $message) {
-		return $this->_flashdata_push('result_data', 'messages', array('type' => $type, 'message' => $message));
+		return $this->flashdata_push('result_data', 'messages', array('type' => $type, 'message' => $message));
 	}
 	
 	/**

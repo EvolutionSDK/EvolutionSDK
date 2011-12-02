@@ -240,6 +240,8 @@ class Action {
 			header("Content-Type: application/json");
 			echo json_encode($this->results());
 		}
+		else if($this->type == 'php') {
+		}
 		
 		/**
 		 * @author: Kelly Lauren Summer Becker has deprecated the XML output.
