@@ -84,6 +84,8 @@ class Scope {
 					unset($source);
 					$i++;
 				}
+				
+				if(isset($source)) $flag_first = 1;
 			}
 			
 			/**
