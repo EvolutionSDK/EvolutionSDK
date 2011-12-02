@@ -150,6 +150,7 @@ class Scope {
 		 * Perform Filters
 		 */
 		if(is_array($filters)) foreach($filters as $filter) {
+			var_dump(array($map, $filters, 'hit'));
 			if(is_array($filter)); //
 			else; //
 		}

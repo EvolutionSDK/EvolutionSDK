@@ -286,7 +286,7 @@ class Node {
 		if($vars) foreach($vars as $var) {
 			$data_response = ($this->_data()->$var);
 			if(is_object($data_response))
-				$data_response = describe($data_response);
+				$data_response = $this->describe($data_response);
 				
 			$value = str_replace('{'.$var.'}', $data_response, $value);							
 		}
@@ -311,7 +311,7 @@ class Node {
 				foreach($vars as $var) {
 					$data_response = ($this->_data()->$var);
 					if(is_object($data_response))
-						$data_response = describe($data_response);
+						$data_response = $this->describe($data_response);
 					$value = str_replace('{'.$var.'}', $data_response, $value);				
 				}				
 			}
@@ -390,6 +390,19 @@ class Node {
 		}
 		
 		return $vars;
+	}
+	
+	protected function describe(&$object) {
+		if(method_exists($object, '__toString'))
+			return $object->__toString();
+		$class = get_class($object);
+	    $xtra = '';
+	    $xtra .= @$object->name;
+	    if(strlen($xtra) < 1)
+	        $xtra .= @$object->name();
+	    if(strlen($xtra) > 0)
+	        $xtra = ': ' . $xtra;
+		return "[$class$xtra]";
 	}
 	
 }
