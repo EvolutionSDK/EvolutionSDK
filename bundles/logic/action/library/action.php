@@ -42,7 +42,6 @@ class Action {
 	public function __construct($data = false) {
 		$this->_inject_data(e::session()->data('get','_actions', get_class($this)));
 		
-		
 		if(isset($_REQUEST['_method'])) {
 			/**
 			 * Load the data from the session, and $_POST, $_GET variables
@@ -163,6 +162,7 @@ class Action {
 		 * How did the validation go
 		 */
 		$results = $this->results();
+		//var_dump($results);
 		
 		/**
 		 * If things validated properly and we need to complete the action go ahead and compelte it
@@ -173,6 +173,7 @@ class Action {
 		/**
 		 * Remove the completion from the action
 		 */	
+		//var_dump($this->data);
 		unset($this->data['_complete']);
 		unset($this->data['_reset']);
 		
@@ -368,8 +369,8 @@ class Action {
 	}
 	
 	public function reset() {
-		$this->data = array();
-		e::session()->data('unset', '_actions', get_class($this));
+		//$this->data = array();
+		//e::session()->data('unset', '_actions', get_class($this));
 		e::session()->save();
 	}
 	

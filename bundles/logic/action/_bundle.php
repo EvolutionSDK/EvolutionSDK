@@ -16,6 +16,16 @@ class Bundle {
 		$this->route($path, e::configure('action')->locations);
 	}
 	
+	public function __invokeBundle($action) {
+		if($action) {
+			$action = str_replace('.','\\', $action);
+			$r = $this->load(array(\Bundles\Portal\Bundle::$currentPortalName, $action), true);
+			return $r;
+		}
+		
+		return $this;
+	}
+	
 	public function load($action, $data) {
 		if(is_array($action)) {
 			$dirs = array(e::$site.'/portals/'.array_shift($action));

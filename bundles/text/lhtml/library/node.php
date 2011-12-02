@@ -397,9 +397,9 @@ class Node {
 			return $object->__toString();
 		$class = get_class($object);
 	    $xtra = '';
-	    $xtra .= @$object->name;
+	    $xtra .= $object->name;
 	    if(strlen($xtra) < 1)
-	        $xtra .= @$object->name();
+	        $xtra .= $object->name();
 	    if(strlen($xtra) > 0)
 	        $xtra = ': ' . $xtra;
 		return "[$class$xtra]";

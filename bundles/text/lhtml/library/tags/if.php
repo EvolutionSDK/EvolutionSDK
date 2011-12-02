@@ -69,12 +69,13 @@ class Node_if extends Node {
 			$v = $this->attributes['cond'];
 
 			$vars = $this->extract_vars($v);
+
 			if($vars) foreach($vars as $var) {
 				$data_response = $this->_data()->$var;
 				
 				if(is_object($data_response))
-					$data_response = describe($data_response);
-				
+					$data_response = $this->describe($data_response);
+								
 				$v = str_replace('{'.$var.'}', $data_response, $v);				
 			}
 
@@ -106,6 +107,7 @@ class Node_if extends Node {
 			$v = implode(' ', $v);
 
 			eval("\$retval = ".$v.';');
+			
 
 		}
 		
@@ -120,9 +122,8 @@ class Node_if extends Node {
 				$v = $this->_data()->$var;
 			}
 			
-			if($v instanceof \Traversable || is_array($v)) count($v);
+			if($v instanceof \Traversable || is_array($v)) $v = count($v);
 			else $v = 1;
-			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
 				if($v > $this->attributes['gt'])$retval = true;
 				else $retval = false;
