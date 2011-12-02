@@ -2,6 +2,7 @@
 
 namespace Bundles\LHTML;
 use Exception;
+use e;
 
 class Scope {
 	
@@ -150,9 +151,8 @@ class Scope {
 		 * Perform Filters
 		 */
 		if(is_array($filters)) foreach($filters as $filter) {
-			var_dump(array($map, $filters, 'hit'));
-			if(is_array($filter)); //
-			else; //
+			if(!is_array($filter)) $source = e::filters($filter, $source);
+			else $source = e::filters($filter['func'], $source, $filter['args']);
 		}
 		
 		$this->timers['scope->get'] += microtime(true) - $tt;
@@ -257,7 +257,7 @@ class Scope {
 			if(substr($v, 0, 2) == '%F') $v = $ef[substr($v, 2)];
 		}
 		
-		if(is_array($filters)) foreach($filters as $filter) {
+		if(is_array($filters)) foreach($filters as &$filter) {
 			if(substr($filter, 0, 2) == '%F') $filter = $ef[substr($filter, 2)];
 		}
 		
