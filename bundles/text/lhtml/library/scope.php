@@ -41,8 +41,12 @@ class Scope {
 		 * Prepare/Bind URL Hooks
 		 */
 		$url = explode('/', $_SERVER['REQUEST_URI']);
-		$url['first'] = reset($url);
+		$url = array_filter($url, function($val) {
+			if(strlen($val) > 0 || is_array($val) || is_object($val))
+				return true;
+		});
 		$url['last'] = end($url);
+		$url['first'] = reset($url);
 		self::$hooks[':url'] =& $url;
 	}
 	
