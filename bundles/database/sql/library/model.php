@@ -474,7 +474,7 @@ class Model {
 				
 				if($plural) {
 					$return = new ListObj($matched, $this->_connection->slug);
-					return $return->condition_array($conds)->all();
+					return $return->condition_array($conds);
 				}
 				
 				else if(!$plural) {
