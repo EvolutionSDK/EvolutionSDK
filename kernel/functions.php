@@ -120,22 +120,6 @@ function encode64_file($file, $arr) {
 }
 
 /**
- * Disable Hit for this page load
- */
-function disable_hit() {
-	$args = func_get_args();
-	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
-}
-
-/**
- * Add Hit
- */
-function add_hit() {
-	$args = func_get_args();
-	return call_user_func_array(array(e::session(), 'add_hit'), $args);
-}
-
-/**
  * Trace class to store variables
  */
 class TraceVars {
@@ -226,9 +210,14 @@ function complete($exception = false) {
 	}
 	
 	/**
-	 * Save total time required to exec to hit
+	 * Can only save hits if the framework is operational
 	 */
-	e::session()->complete_hit(timer(true));
+	if(e::$loaded) {
+		/**
+		 * Save total time required to exec to hit
+		 */
+		e::session()->complete_hit(timer(true));
+	}
 	
 	/**
 	 * This should be the only time exit or die is used in all code
