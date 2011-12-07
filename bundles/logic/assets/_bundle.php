@@ -28,7 +28,7 @@ class Bundle {
 		 * Disable Trace and Hit Count
 		 */
 		e\disable_trace();
-		e\disable_hit('child');
+		e::session()->disable_hit('child');
 		
 		/**
 		 * Get Filename and Extension
