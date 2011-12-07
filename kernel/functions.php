@@ -120,6 +120,22 @@ function encode64_file($file, $arr) {
 }
 
 /**
+ * Disable Hit for this page load
+ */
+function disable_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
+}
+
+/**
+ * Add Hit
+ */
+function add_hit() {
+	$args = func_get_args();
+	return call_user_func_array(array(e::session(), 'add_hit'), $args);
+}
+
+/**
  * Trace class to store variables
  */
 class TraceVars {

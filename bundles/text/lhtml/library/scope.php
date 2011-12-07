@@ -22,6 +22,19 @@ class Scope {
 		self::$hooks[$name] =& $obj;
 	}
 	
+	public static function getHook($name) {
+		if(isset(self::$hooks[$name])) return self::$hooks[$name];
+		else return false;
+	}
+	
+	public static function rmvHook($name) {
+		if(isset(self::$hooks[$name])) {
+			unset(self::$hooks[$name]);
+			return true;
+		}
+		else return false;
+	}
+	
 	public function __construct($parent = false) {
 		$this->timers['scope->map'] = 0;
 		$this->timers['scope->get'] = 0;
