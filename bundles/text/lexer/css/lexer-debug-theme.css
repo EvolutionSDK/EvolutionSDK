@@ -89,7 +89,8 @@ body {
 	padding: 1px 20px 0;
 	margin: 0 1px;
 }
-.clear {
+.tokens > div.clear {
 	clear: left;
 	padding: 1px 0;
+	margin: 0;
 }

@@ -102,34 +102,44 @@ class Parser {
 		'tag-contents' 		=> array(	'type' => 'conditional',
 		
 			# <script...>_
-			array(	'token' 	=> 'tag-open-name',
-					'value'		=> 'script',
-					
-					'special'	=> array(
-						'</script>'	=> '&default',
-						'//'		=> 'cdata-line-comment',
-						'/*'		=> 'cdata-block-comment',
+			array(	'match-sequence' 	=> array(
+						'tag-start' 		=> '<',
+						'tag-open-name' 	=> 'script',
+						'tag-end-inside'	=> '>',
 					),
 					
-					'"' => 'cdata-string-double',
-					"'" => 'cdata-string-single'						),
+					'token' 	=> 'cdata-block',
+					'end'		=> '</script>'
+			),
 			
 			# <style...>_
-			array(	'token' 	=> 'tag-open-name',
-					'value'		=> 'style',
-					
-					'special'	=> array(
-						'</style>'	=> '&default',
-						'/*'		=> 'cdata-block-comment',
+			array(	'match-sequence' 	=> array(
+						'tag-start' 		=> '<',
+						'tag-open-name' 	=> 'style',
+						'tag-end-inside'	=> '>',
 					),
 					
-					'"' => 'cdata-string-double',
-					"'" => 'cdata-string-single'						),
+					'token' 	=> 'cdata-block',
+					'end'		=> '</style>'
+			),
+			
+			/*	For Later?
+					
+					'default'		=> array(
+						'</script>'	=> '!default',
+						'//'		=> 'cdata-line-comment',
+						'/*'		=> 'cdata-block-comment',
+						'"' 		=> 'cdata-string-double',
+						"'" 		=> 'cdata-string-single'
+					)
+			),*/
 					
 			# <other...>_
 			array(	'*' => '&default'									)
 		),
 		
+		# cdata
+		'cdata-block' 		=> array(	'<' => 'tag-start'				)
 	);
 	
 	public static function parseString($string) {
@@ -177,6 +187,7 @@ class Parser {
 		$openLine = 0;
 		$openCol = 0;
 		
+		// Loop through tokens
 		foreach($tokens as $token) {
 			
 			// Decide what to do based on token
@@ -248,6 +259,7 @@ class Parser {
 				// Tag contents
 				case 'default':
 				case 'tag-contents':
+				case 'cdata-block':
 					
 					// Save the string as a child
 					$stack->_cdata($token->value);

@@ -154,32 +154,71 @@ class Lexer {
 					// Check if the token is conditional, which means that there's a choice of
 					// which token rules to follow, depending on the conditions specified.
 					case 'conditional':
-						$last = count($tokens);
-						$last = $tokens[$last - 1];
 						
 						// Loop through all possible conditions
 						foreach($xtoken as $key => $condtoken) {
-						
+							
 							// Skip the type
 							if($key === 'type')
 								continue;
 						
-							// Check that the token matches the condition, if set
-							if(isset($condtoken['token']) && $condtoken['token'] !== $last->name)
-								continue;
-								
-							// Check for matching value or catch-all condition
-							if(!isset($condtoken['value']) || $condtoken['value'] === $last->value) {
-								
-								// Switch to this version of the token
+							if(!isset($condtoken['match-sequence'])) {
 								$xtoken = $condtoken;
 								break 2;
+							}
+							$seq = $condtoken['match-sequence'];
+							$index = count($tokens) - count($seq);
+							foreach($condtoken['match-sequence'] as $match_token => $match_value) {
+								$actual_token = $tokens[$index]->name;
+								$actual_value = $tokens[$index]->value;
+								
+								/* DEBUG * /
+									echo "<p>Comparing match token <strong>$match_token</strong> with actual <strong>$actual_token</strong>
+									and expected value <strong>$match_value</strong> with <strong>$actual_value</strong></p>";
+								/* END DEBUG */
+								
+								if($actual_token != $match_token || $actual_value != $match_value)
+									continue 2;
+								$index++;
+							}
+							
+							/**
+							 * The condition token is matched
+							 */
+							if(isset($condtoken['token'])) {
+								switch($condtoken['token']) {
+									case 'cdata-block':
+										
+										/**
+										 * Jump to end of block
+										 */
+										$token = $condtoken['token'];
+										$start = $pointer;
+										$pointer = strpos($this->source, $condtoken['end'], $start);
+										if($pointer === false)
+											$pointer = strlen($this->source);
+										$char .= substr($this->source, $start, $pointer - $start);
+										$len = strlen($char);
+										for($i = 0; $i < $len; $i++) {
+											$cx = substr($char, $i, 1);
+											
+											// Increment line count
+											if($cx == "\n" || $cx == "\r") {
+												$lineNumber++;
+												$colNumber = -1;
+											}
+											
+											// Increment column count
+											$colNumber++;
+										}
+										break 3;
+								}
 							}
 						}
 						
 						// If no conditional match found, throw exception
 						throw new Exception("Tokenize Error: The tokenizer has encountered a conditional token `<i>$token</i>` ".
-							"that has no valid match for the last token `<i>$last[token]</i>` and value `$last[value]` in `$this->file`");
+							"that has no valid match in `$this->file`");
 						
 					default:
 						throw new Exception("Tokenize Error: The tokenizer has encountered an invalid token type `<i>$xtoken[type]`
