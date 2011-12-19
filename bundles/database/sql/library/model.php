@@ -506,6 +506,8 @@ class Model {
 						$where = "WHERE `id` = '".$args[0]."'";
 						$this->_connection->update($matched, $update, $where);
 					}
+					
+					$this->save();
 					return true;
 				}
 				
@@ -513,6 +515,8 @@ class Model {
 					$update =  array("\$".$matched.'_id' => (string) $args[0]);
 					$where = "WHERE `id` = '".$this->id."'";
 					$this->_connection->update($this->_table, $update, $where);
+					
+					$this->save();
 					return true;
 				}
 				
@@ -555,6 +559,8 @@ class Model {
 						try { $this->_connection->insert($use, $insert); }
 						catch(\PDOException $e) { }
 					}
+					
+					$this->save();
 					return true;
 				}				
 			break;
@@ -577,6 +583,8 @@ class Model {
 						$where = "WHERE `id` = '".$args[0]."'";
 						$this->_connection->update($matched, $update, $where);
 					}
+					
+					$this->save();
 					return true;
 				}
 				
@@ -585,6 +593,7 @@ class Model {
 					$where = "WHERE `id` = '".$this->id."'";
 					$this->_connection->update($this->_table, $update, $where);
 					
+					$this->save();
 					return true;
 				}
 				
@@ -603,6 +612,7 @@ class Model {
 						$this->_connection->delete($use, $delete);
 					}
 					
+					$this->save();
 					return true;
 				}				
 			break;

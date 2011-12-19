@@ -66,7 +66,7 @@ class Bundle {
 			break;
 		}
 		
-		throw new Exception("Bundle routing realm `$realm` does not exist");
+		throw new Exception("Bundle routing realm `$bundle.$realm` does not exist");
 	}
 		
 	
