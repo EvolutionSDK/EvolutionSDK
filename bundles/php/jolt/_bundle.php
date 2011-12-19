@@ -3,6 +3,7 @@
 namespace Bundles\Jolt;
 use stdClass as Object;
 use Exception;
+use stack;
 use e;
 
 /**
@@ -21,7 +22,7 @@ class Bundle {
 	}
 	
 	public function _on_router_route($path) {
-		$this->route(implode('/', $path), e::$site);
+		$this->route(implode('/', $path), stack::$site);
 	}
 	
 	public function route($path, $dir) {
@@ -48,7 +49,7 @@ class Bundle {
 			return $__resources[$map];
 	
 		$__file = str_replace('.', '/', $map);
-		$__file = e::$site . "/--resources/$__file.php";
+		$__file = stack::$site . "/--resources/$__file.php";
 	
 		if(!is_file($__file))
 			throw new Exception("Resource `$map` file `$__file` does not exist");

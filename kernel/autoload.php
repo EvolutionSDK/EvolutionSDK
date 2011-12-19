@@ -2,6 +2,7 @@
 
 namespace e;
 use Exception;
+use stack;
 use e;
 
 class AutoLoadException extends Exception {}
@@ -30,7 +31,7 @@ function load($class) {
 	
 	$files = array("$a/*/$b/$c.php", "$a/*/$b/library/$c.php");
 	
-	$dirs = array(root, e::$site);
+	$dirs = array(root, stack::$site);
 	
 	foreach($dirs as $dir) {
 		foreach($files as $pattern) {

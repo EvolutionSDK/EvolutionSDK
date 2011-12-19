@@ -2,6 +2,7 @@
 
 namespace Bundles\Portal;
 use Exception;
+use stack;
 use e;
 
 class NotFoundException extends Exception {}
@@ -18,7 +19,7 @@ class Bundle {
 		/**
 		 * Add the site dir to portal locations
 		 */
-		e::configure('portal')->activeAdd('locations', e::$site);
+		e::configure('portal')->activeAdd('locations', stack::$site);
 		
 		/**
 		 * Check for null first segment

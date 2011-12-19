@@ -1,8 +1,9 @@
 <?php
 
 namespace e;
-use e;
 use Exception;
+use stack;
+use e;
 
 /**
  * Ensure the user can't stop the script
@@ -73,7 +74,7 @@ function handle($exception) {
 	/**
 	 * If Evolution framework is loaded, send out an exception event
 	 */
-	if(e::$loaded) {
+	if(stack::$loaded) {
 		try {
 			e::events()->exception($exception);
 		} catch(Exception $exception) {}
@@ -117,7 +118,7 @@ chdir(root.'/cache');
 /**
  * Check for site folder and load bundles
  */
-e::__load(root, sites, bundles, $_SERVER['HTTP_HOST']);
+stack::__load(root, sites, bundles, $_SERVER['HTTP_HOST']);
 
 /**
  * Route the request

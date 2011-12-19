@@ -2,6 +2,7 @@
 
 namespace Bundles\Configure;
 use Exception;
+use stack;
 use e;
 
 /**
@@ -19,7 +20,7 @@ class Bundle {
 	
 	public function _on_configuration_load($path) {
 		$path = str_replace('.', '/', $path);
-		$file = e::$site . '/configure/' . $path . '.yaml';
+		$file = stack::$site . '/configure/' . $path . '.yaml';
 		return array(
 			$file => e::yaml()->file($file)
 		);
@@ -27,7 +28,7 @@ class Bundle {
 	
 	public function _on_configuration_save($path, $value) {
 		$path = str_replace('.', '/', $path);
-		$file = e::$site . '/configure/' . $path . '.yaml';
+		$file = stack::$site . '/configure/' . $path . '.yaml';
 		return e::yaml()->save($file, $value);
 	}
 	

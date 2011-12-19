@@ -2,6 +2,7 @@
 
 namespace bundles\controller;
 use Exception;
+use stack;
 use e;
 
 class Bundle {
@@ -22,7 +23,7 @@ class Bundle {
 		 * Add defaults
 		 */
 		e::configure('controller')->activeAdd('class_formats', '\\Controller\\%');
-		e::configure('controller')->activeAdd('locations', e::$site);
+		e::configure('controller')->activeAdd('locations', stack::$site);
 		
 		/**
 		 * Make sure path contains valid controller name

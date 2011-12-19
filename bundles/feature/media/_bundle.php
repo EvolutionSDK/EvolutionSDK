@@ -3,6 +3,7 @@
 namespace Bundles\Media;
 use ReflectionClass;
 use Exception;
+use stack;
 use e;
 
 class Bundle extends \Bundles\SQL\SQLBundle {
@@ -57,7 +58,7 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 		/**
 		 * Find the media dir
 		 */
-		self::$file_dir = e::$site.'/media';
+		self::$file_dir = stack::$site.'/media';
 		
 		/**
 		 * Make sure the directory exists and is writable

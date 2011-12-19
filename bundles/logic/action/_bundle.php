@@ -2,6 +2,7 @@
 
 namespace Bundles\Action;
 use Exception;
+use stack;
 use e;
 
 class Bundle {
@@ -28,14 +29,14 @@ class Bundle {
 	
 	public function load($action, $data) {
 		if(is_array($action)) {
-			$dirs = array(e::$site.'/portals/'.array_shift($action));
+			$dirs = array(stack::$site.'/portals/'.array_shift($action));
 			$name = str_replace('\\', '/', strtolower(array_shift($action)));
 		}
 		else $name = str_replace('\\', '/', strtolower($action));
 		
 		// Add defaults
 		e::configure('action')->activeAdd('class_format', '\\Action\\%');
-		e::configure('action')->activeAdd('locations', e::$site);
+		e::configure('action')->activeAdd('locations', stack::$site);
 		
 		// If dirs are not specified, use defaults
 		if(!isset($dirs))
@@ -96,7 +97,7 @@ class Bundle {
 		
 		// Add defaults
 		e::configure('action')->activeAdd('class_format', '\\Action\\%');
-		e::configure('action')->activeAdd('locations', e::$site);
+		e::configure('action')->activeAdd('locations', stack::$site);
 		
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))

@@ -2,6 +2,7 @@
 
 namespace bundles\events;
 use Exception;
+use stack;
 use e;
 
 class Bundle {
@@ -9,7 +10,7 @@ class Bundle {
 	public function __call($event, $args) {
 		
 		$method = '_on_' . $event;
-		$objects = e::__method_objects($method);
+		$objects = stack::__method_objects($method);
 		
 		/**
 		 * Allow configurable event handling
@@ -21,7 +22,7 @@ class Bundle {
 			array_pop($args);
 		} else {
 			$master = true;
-			$file = e::$site . "/configure/master-events.yaml";
+			$file = stack::$site . "/configure/master-events.yaml";
 		}
 		
 		if(empty($file))

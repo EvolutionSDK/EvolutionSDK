@@ -2,6 +2,7 @@
 
 namespace bundles\LHTML;
 use Exception;
+use stack;
 use e;
 
 class Bundle {
@@ -28,7 +29,7 @@ class Bundle {
 	}
 	
 	public function _on_router_route($path) {
-		$this->route($path, array(e::$site));
+		$this->route($path, array(stack::$site));
 	}
 	
 	public function route($path, $dirs = null) {

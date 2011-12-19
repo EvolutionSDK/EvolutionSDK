@@ -2,6 +2,7 @@
 
 namespace bundles\router;
 use Exception;
+use stack;
 use e;
 
 class Bundle {
@@ -42,8 +43,8 @@ class Bundle {
 	 */
 	public function humans() {
 		header('Content-Type: text/plain');
-		if(file_exists(e::$site.'/humans.txt')) {
-			readfile(e::$site.'/humans.txt');
+		if(file_exists(stack::$site.'/humans.txt')) {
+			readfile(stack::$site.'/humans.txt');
 			echo "\n\n";
 		}
 		if(is_file(e\root.'/humans.txt'))

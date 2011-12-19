@@ -1,6 +1,7 @@
 <?php
 
 namespace e;
+use stack;
 use e;
 
 /**
@@ -209,10 +210,10 @@ function complete($exception = false) {
 	/**
 	 * If Evolution framework is loaded, send out an complete event
 	 */
-	if(e::$loaded && !$exception)
+	if(stack::$loaded && !$exception)
 		e::events()->complete();
 	
-	if(!e::$loaded)
+	if(!stack::$loaded)
 		$dev = 'yes';
 	else if(e::environment()->active) {
 		$dev = 'yes';
@@ -230,7 +231,7 @@ function complete($exception = false) {
 	/**
 	 * Can only save hits if the framework is operational
 	 */
-	if(e::$loaded) {
+	if(stack::$loaded) {
 		/**
 		 * Save total time required to exec to hit
 		 */
@@ -244,7 +245,7 @@ function complete($exception = false) {
 }
 
 function redirect($url) {
-	if(e::$loaded) {
+	if(stack::$loaded) {
 		if(e::environment()->active)
 			$dev = 'yes';
 		else
@@ -263,7 +264,7 @@ function redirect($url) {
 			header("Location: $url");
 		echo "<meta http-equiv=\"refresh\" content=\"0;url=$url\">";
 	}
-	if(e::$loaded)
+	if(stack::$loaded)
 		complete();
 	exit;
 }

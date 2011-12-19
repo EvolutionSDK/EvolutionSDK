@@ -1,7 +1,7 @@
 <?php
 
-class e {
-	
+class stack {
+		
 	/**
 	 * Whether or not the system has been loaded
 	 */
@@ -18,6 +18,12 @@ class e {
 	private static $dirs = array();
 	
 	/**
+	 * Store the bundles and if they have been used
+	 */
+	private static $bundles = array();
+	private static $used = array();
+	private static $methods = array();
+		/**
 	 * Load the system core and look for matching site
 	 */
 	public static function __load($root, $sites, $bundles, $host) {
@@ -135,16 +141,9 @@ class e {
 	}
 	
 	/**
-	 * Store the bundles and if they have been used
-	 */
-	private static $bundles = array();
-	private static $used = array();
-	private static $methods = array();
-	
-	/**
 	 * Return a bundle
 	 */
-	public static function __callStatic($bundle, $args) {
+	public static function __callBundle($bundle, $args) {
 		/**
 		 * Case insensitise the bundle name
 		 */
@@ -176,13 +175,15 @@ class e {
 		 * If bundle has a response, return it
 		 */
 		if(method_exists(self::$bundles[$bundle], '__bundle_response'))
-			return self::$bundles[$bundle]->__bundle_response();
+			return call_user_func_array(
+				array(self::$bundles[$bundle], '__bundle_response'), $args);
 			
 		/**
 		 * If bundle has a response, return it - Allow use of the New Camel Case Method
 		 */
 		if(method_exists(self::$bundles[$bundle], '__bundleResponse'))
-			return self::$bundles[$bundle]->__bundle_response();
+			return call_user_func_array(
+				array(self::$bundles[$bundle], '__bundleResponse'), $args);
 		
 		/**
 		 * If bundle has an invoke method, call that
@@ -202,6 +203,22 @@ class e {
 		 * Return instance
 		 */
 		return self::$bundles[$bundle];
+	}
+}
+
+/**
+ * HACK: e_var_access
+ * Allow bundle access by static variable before PHP6
+ */
+require_once(__DIR__ . '/hacks/e_var_access.php');
+require_once(__DIR__ . '/hacks/e_var_access_generated.php');
+class e extends e_var_access {
+	
+	/**
+	 * Load a bundle
+	 */
+	public static function __callStatic($bundle, $args) {
+		return stack::__callBundle($bundle, $args);
 	}
 	
 	/**

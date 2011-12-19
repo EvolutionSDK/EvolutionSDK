@@ -1,3 +1,4 @@
 cache/*
 .DS_Store*
+kernel/hacks/e_var_access_generated.php
 

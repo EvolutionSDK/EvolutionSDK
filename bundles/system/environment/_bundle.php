@@ -3,6 +3,7 @@
 namespace bundles\environment;
 use Exception;
 use bundles\SQL\SQLBundle;
+use stack;
 use e;
 
 /**
@@ -21,7 +22,7 @@ class Bundle {
 		/**
 		 * Load from EvolutionSDK sites folder
 		 */
-		self::$file = e::$site . '.environment.yaml';
+		self::$file = stack::$site . '.environment.yaml';
 	}
 	
 	public function _on_first_use() {
