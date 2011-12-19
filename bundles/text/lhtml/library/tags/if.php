@@ -122,8 +122,9 @@ class Node_if extends Node {
 				$v = $this->_data()->$var;
 			}
 			
-			if($v instanceof \Traversable || is_array($v)) $v = count($v);
+			if($v instanceof \Traversable || is_array($v) || empty($v)) $v = count($v);
 			else $v = 1;
+			
 			if(isset($this->attributes['gt']) && is_numeric($this->attributes['gt'])) {
 				if($v > $this->attributes['gt'])$retval = true;
 				else $retval = false;

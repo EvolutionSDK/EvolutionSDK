@@ -19,7 +19,6 @@ class Bundle {
 		Scope::addHook(':urlVars', function() { return e::lhtml()->_get_special_vars(':urlVars'); } );
 	}
 	
-	
 	public function _on_lhtml_add_hook($hook, $item) {
 		
 	}
@@ -89,7 +88,7 @@ class Bundle {
 			echo e::lhtml()->file($file)->parse()->build();
 			            
             // Complete the current binding queue
-            e\complete();
+            e\Complete();
 		}
 	}
 }
