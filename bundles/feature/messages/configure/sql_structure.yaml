@@ -1,0 +1,13 @@
+message:
+	singular: message
+	plural: messages
+	fields:
+		event: string
+		message: string
+		type: string
+		field: string
+		value: string
+		status: "enum('active','cleared')"
+		viewed: "enum('no','yes')"
+	hasOne:
+		- members.account

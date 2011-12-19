@@ -81,6 +81,12 @@ class Collection {
 		return $this->messages;
 	}
 	
+	public function broadcastMessages() {
+		foreach($this->messages as $message)
+			e::events()->message($message);
+		$this->messages = array();
+	}
+	
 	public function printMessages() {
 		if(!defined('BUNDLE_field_MESSAGE_PRINTED_STYLE')) {
 			echo <<<_
