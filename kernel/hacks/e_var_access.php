@@ -62,7 +62,7 @@ $bundleList = array();
 
 foreach(glob(e\sites . '/*/bundles/*/*/_bundle.php') as $name) {
 	$name = strtolower(basename(dirname($name)));
-	if(in_array($bundleList, "'$name'"))
+	if(in_array("'$name'", $bundleList))
 		continue;
 	$bundleList[] = "'$name'";
 	$bundles .= "\n\tpublic static $$name;";
