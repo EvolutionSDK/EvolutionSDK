@@ -145,7 +145,7 @@ class Parser {
 	public static function parseString($string) {
 		
 		// Load lexer
-		$lexer = e::lexer();
+		$lexer = e::$lexer;
 		$lexer->grammar(self::$grammar)->sourceString($string);
 		
 		// Parse lexer
@@ -154,7 +154,7 @@ class Parser {
 
 	public static function parseFile($file) {
 		// Load lexer
-		$lexer = e::lexer();
+		$lexer = e::$lexer;
 		$lexer->grammar(self::$grammar)->sourceFile($file);
 		
 		// Parse lexer

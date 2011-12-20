@@ -33,7 +33,7 @@ class Bundle {
 		 * Build Architecture
 		 */
 		if($enabled === true || $enabled === 'yes')
-			if(self::$changed == true || e::sql()->query("SHOW TABLES")->count() == 0 || isset($_GET['_build_sql'])) $this->build_architecture();
+			if(self::$changed == true || e::$sql->query("SHOW TABLES")->count() == 0 || isset($_GET['_build_sql'])) $this->build_architecture();
 	}
 	
 	public function __getBundle($method = false) {
@@ -81,7 +81,7 @@ class Bundle {
 		// Check that slug is a string
 		if(!is_string($slug))
 			throw new Exception("Database connection slug must be a string when
-				calling `e::sql(<i>slug</i>)` or `e::sql()->useConnection(<i>slug</i>)`");
+				calling `e::sql(<i>slug</i>)` or `e::$sql->useConnection(<i>slug</i>)`");
 		
 		// Load up the database connection from environment
 		$default = e::$environment->requireVar("sql.connection.$slug", 
@@ -152,11 +152,11 @@ class Bundle {
 				
 		$tables = array();
 		foreach(self::$db_structure as $table=>$struct) {
-			e::sql()->architect($table, $struct);
+			e::$sql->architect($table, $struct);
 			$tables[] = $table;
 		}
 		
-		$exists = e::sql()->query("SHOW TABLES")->all();
+		$exists = e::$sql->query("SHOW TABLES")->all();
 		foreach($exists as $table) {
 			$table = end($table);
 			
@@ -164,7 +164,7 @@ class Bundle {
 			if(in_array($table, $tables)) continue;
 			if(strpos($table, '.') === false) continue;
 			
-			e::sql()->query("DROP TABLE `$table`");
+			e::$sql->query("DROP TABLE `$table`");
 		}
 	}
 

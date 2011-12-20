@@ -44,7 +44,7 @@ class Bundle extends SQLBundle {
 			}
 			
 			else if($job->command_type == 'call_url') {
-				try { $log->return = json_encode(e::curl()->get($job->command, true)); }
+				try { $log->return = json_encode(e::$curl->get($job->command, true)); }
 				catch(Exception $e) { $log->message = $e->getMessage(); $log->message_type = 'error'; }
 			}
 			

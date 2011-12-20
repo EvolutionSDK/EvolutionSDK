@@ -35,7 +35,7 @@ class Bundle {
 	}
 	
 	public function __bundle_first_use() {
-		$site = e::site()->getSite();
+		$site = e::$site->getSite();
 		$this->_cache_path = dirname($this->_cache_path).'/'.$site;
 		if(!is_dir($this->_cache_path)) mkdir($this->_cache_path);
 		if(!is_writable($this->_cache_path)) chmod($this->_cache_path, 0777);

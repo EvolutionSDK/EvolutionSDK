@@ -60,7 +60,7 @@ class File extends \Bundles\SQL\Model {
 	 */
 	public function photo($dim) {
 		$file = _\Bundle::$file_dir.'/'.$this->filename;
-		return e::media()->photo($file, $dim);
+		return e::$media->photo($file, $dim);
 	}
 	
 }

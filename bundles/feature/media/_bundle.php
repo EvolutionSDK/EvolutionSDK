@@ -105,7 +105,7 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 		 * Grab the file from the database based on filename
 		 */
 		$conds = array('filename' => $name);
-		$array = e::sql()->select('media.file', $conds)->row();
+		$array = e::$sql->select('media.file', $conds)->row();
 		$file = $this->getFile($array);
 		
 		/**

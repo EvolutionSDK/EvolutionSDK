@@ -14,9 +14,9 @@ class Bundle {
 	
 	public function __initBundle() {
 		Scope::addHook(':e', new e_handle);
-		Scope::addHook(':slug', function() { return e::lhtml()->_get_special_vars(':slug'); });
-		Scope::addHook(':id', function() { return e::lhtml()->_get_special_vars(':id'); });
-		Scope::addHook(':urlVars', function() { return e::lhtml()->_get_special_vars(':urlVars'); } );
+		Scope::addHook(':slug', function() { return e::$lhtml->_get_special_vars(':slug'); });
+		Scope::addHook(':id', function() { return e::$lhtml->_get_special_vars(':id'); });
+		Scope::addHook(':urlVars', function() { return e::$lhtml->_get_special_vars(':urlVars'); } );
 	}
 	
 	public function _on_lhtml_add_hook($hook, $item) {
@@ -85,7 +85,7 @@ class Bundle {
 			self::$url_vars = $vars;
 			
 			// Parse the lhtml file and build the stack
-			echo e::lhtml()->file($file)->parse()->build();
+			echo e::$lhtml->file($file)->parse()->build();
 			            
             // Complete the current binding queue
             e\Complete();

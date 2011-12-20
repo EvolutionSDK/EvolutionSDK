@@ -35,7 +35,7 @@ class Bundle {
 		if(!is_string($name))
 			throw new Exception("No string passed as first argument when running event `deferred_register`");
 			
-		e::sql()->insert('deferred.pending', array(
+		e::$sql->insert('deferred.pending', array(
 			'service' => $name,
 			'key' => md5($name . microtime() . rand(0, 100000000)),
 			'args' => serialize($args)
@@ -48,7 +48,7 @@ class Bundle {
 		if(!is_object($this->sql))
 			return;
 		e\trace('Processing Deferred Events', '', null, 8);
-		$pending = e::sql()->select('deferred.pending')->all();
+		$pending = e::$sql->select('deferred.pending')->all();
 		
 		foreach($pending as $item) {
 			
@@ -64,7 +64,7 @@ class Bundle {
 			call_user_func_array(array(e::$events, $service), $args);
 			
 			// If no errors, we can remove this from the table
-			e::sql()->query("DELETE FROM `deferred.pending` WHERE `key` = '$key'");
+			e::$sql->query("DELETE FROM `deferred.pending` WHERE `key` = '$key'");
 		}
 	}
 }

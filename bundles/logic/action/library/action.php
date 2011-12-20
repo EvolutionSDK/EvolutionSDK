@@ -40,7 +40,7 @@ class Action {
 	protected $messages = array();
 	
 	public function __construct($data = false) {
-		$this->_inject_data(e::session()->data('get','_actions', get_class($this)));
+		$this->_inject_data(e::$session->data('get','_actions', get_class($this)));
 		
 		if(isset($_REQUEST['_method'])) {
 			/**
@@ -133,11 +133,11 @@ class Action {
 		 * last page was and set it to the respective variables
 		 */
 		if(isset($this->data['_success_url']) && $this->data['_success_url'] == '@last_page') {
-			if(e::session()->data('get','_last_page')) $this->_redirect_success_url = e::session()->data('get','_last_page');
+			if(e::$session->data('get','_last_page')) $this->_redirect_success_url = e::$session->data('get','_last_page');
 			else if(isset($_SERVER['HTTP_REFERER'])) $this->_redirect_success_url = $_SERVER['HTTP_REFERER'];
 		}
 		if(isset($this->data['_failure_url']) && $this->data['_failure_url'] == '@last_page') {
-			if(e::session()->data('get','_last_page')) $this->_redirect_failure_url = e::session()->data('get','_last_page');
+			if(e::$session->data('get','_last_page')) $this->_redirect_failure_url = e::$session->data('get','_last_page');
 			else if(isset($_SERVER['HTTP_REFERER'])) $this->_redirect_failure_url = $_SERVER['HTTP_REFERER'];
 		}
 		
@@ -180,7 +180,7 @@ class Action {
 		/**
 		 * Save Messages
 		 */
-		e::session()->flashdata('result_data', $this->results());
+		e::$session->flashdata('result_data', $this->results());
 		
 		/**
 		 * Lets destruct our action
@@ -210,7 +210,7 @@ class Action {
 		$data = $this->data;
 		
 		if($this->save_data) 
-			e::session()->data('set', '_actions', get_class($this), $data)->save();
+			e::$session->data('set', '_actions', get_class($this), $data)->save();
 		
 		/**
 		 * If the output is raw stop
@@ -370,8 +370,8 @@ class Action {
 	
 	public function reset() {
 		//$this->data = array();
-		//e::session()->data('unset', '_actions', get_class($this));
-		e::session()->save();
+		//e::$session->data('unset', '_actions', get_class($this));
+		e::$session->save();
 	}
 	
 	/**

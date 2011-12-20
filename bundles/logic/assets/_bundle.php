@@ -18,7 +18,7 @@ class Bundle {
 		/**
 		 * Load media to instantiate the mimes
 		 */
-		e::media();
+		e::$media;
 		
 		// Make sure path contains valid action name
 		if(!isset($path[0]) || 	$path[0] !== 'assets')
@@ -28,7 +28,7 @@ class Bundle {
 		 * Disable Trace and Hit Count
 		 */
 		e\disable_trace();
-		e::session()->disable_hit('child');
+		e::$session->disable_hit('child');
 		
 		/**
 		 * Get Filename and Extension
@@ -75,7 +75,7 @@ class Bundle {
 	}
 	
 	public function get_icon($file, $color='#000', $x=100, $y=100) {
-		$src = e::media()->gd($file);
+		$src = e::$media->gd($file);
 		$src->resize(array('x'=>$x, 'y'=>$y));
 		
 		$dest = imagecreatetruecolor($x, $y);

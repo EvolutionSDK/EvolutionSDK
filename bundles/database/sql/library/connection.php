@@ -20,7 +20,7 @@ class Connection {
 	private $connection;
 	
 	/**
-	 * e::sql() slug
+	 * e::$sql slug
 	 */
 	public $slug;
 	
@@ -145,6 +145,13 @@ class Connection {
 		 * Return the database result object
 		 */
 		return new Result($this, $result);
+	}
+	
+	/**
+	 * Do nothing
+	 */
+	public function void() {
+		
 	}
 	
 	/**

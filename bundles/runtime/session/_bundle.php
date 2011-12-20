@@ -233,7 +233,7 @@ class Bundle {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	private function _get() {
-		$session = e::sql()->select('session.list', array('key' => $this->_cookie))->row();
+		$session = e::$sql->select('session.list', array('key' => $this->_cookie))->row();
 		if(!$session) return $this->_create();
 		return $this->db_bundle->getSession($session);
 	}
@@ -425,7 +425,7 @@ class Bundle {
 				return $this;
 			break;
 			default:
-				throw new Exception("You cannot call `e::session()->data()` with out providing `get` or `set` as the first arguement");
+				throw new Exception("You cannot call `e::$session->data()` with out providing `get` or `set` as the first arguement");
 			break;
 		}
 		
@@ -520,7 +520,7 @@ class Bundle {
 }
 
 /**
- * Use this for data access e::session()->data->varname= whatever;
+ * Use this for data access e::$session->data->varname= whatever;
  *
  * @package default
  * @author David Boskovic
@@ -547,7 +547,7 @@ class DataAccess {
 class flash {
 	
 	public function __call($function, $args) {
-		return e::session()->flashdata($function);
+		return e::$session->flashdata($function);
 	}
 	
 }

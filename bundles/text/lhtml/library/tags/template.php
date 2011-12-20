@@ -33,7 +33,7 @@ class Node_Template extends Node {
 		
 		$tmp = Scope::getHook(':vars');
 		Scope::addHook(':vars', $hook);
-		$return = e::lhtml()->file($v)->build();
+		$return = e::$lhtml->file($v)->build();
 		if(!$tmp) Scope::rmvHook(':vars');
 		else Scope::addHook(':vars', $tmp);
 		return $return;

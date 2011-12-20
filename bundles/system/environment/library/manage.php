@@ -13,7 +13,7 @@ class Manage {
 	
 	public function page($path) {
 		$out = '';
-		$env = Bundle::getAll();
+		$env = Bundle::$getAll;
 		$categories = array();
 		
 		foreach($env as $key => $value) {

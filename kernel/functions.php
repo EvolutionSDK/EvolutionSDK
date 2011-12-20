@@ -126,7 +126,7 @@ function encode64_file($file, $arr) {
 function disable_hit() {
 	throw new Exception('Not the right way to call a framework feature, use `e::$session->disable_hit()`');
 	$args = func_get_args();
-	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
+	return call_user_func_array(array(e::$session, 'disable_hit'), $args);
 }
 
 /**
@@ -135,7 +135,7 @@ function disable_hit() {
 function add_hit() {
 	throw new Exception('Not the right way to call a framework feature, use `e::$session->add_hit()`');
 	$args = func_get_args();
-	return call_user_func_array(array(e::session(), 'add_hit'), $args);
+	return call_user_func_array(array(e::$session, 'add_hit'), $args);
 }
 
 /**

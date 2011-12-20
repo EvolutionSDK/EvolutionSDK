@@ -484,7 +484,7 @@ class OldList {
         $query = $this->_custom_query ? ($count ? $this->_custom_count_query : $this->_custom_query): "SELECT $fs FROM $this->_tables_select $cond";
         if(isset($debug) && $debug)
             return $query;
-		$results = e::db()->query($query);
+		$results = e::$db->query($query);
 		if($count && $count != 'sum') {
 			$cr = $results->row();
 			$this->_count = $cr['ct'];
