@@ -39,7 +39,7 @@ class Bundle {
 		/**
 		 * Check all dirs for a matching controller
 		 */
-		foreach($dirs as $dir) {
+		if(is_array($dirs) || $dirs instanceof \Traversable) foreach($dirs as $dir) {
 			
 			/**
 			 * Look in controllers folder

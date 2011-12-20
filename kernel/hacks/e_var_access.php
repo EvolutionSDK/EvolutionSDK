@@ -57,7 +57,7 @@ class e_bundle_accessor {
  */
 $file = __DIR__ . '/e_var_access_generated.php';
 
-if($_GET['_setup'] || !file_exists($file) || filesize($file) < 1) {
+if(isset($_GET['_setup']) || !file_exists($file) || filesize($file) < 1) {
 	$bundles = '';
 	$bundleList = array();
 

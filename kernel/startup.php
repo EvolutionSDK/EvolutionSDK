@@ -37,10 +37,10 @@ define(__NAMESPACE__.'\\bundles', '/bundles');
 /**
  * Handle Fatal Errors as Exceptions
  */
-set_error_handler(function($no, $msg, $file, $line) {
+/*set_error_handler(function($no, $msg, $file, $line) {
 	/**
 	* Ignore warnings and notices unless in strict mode 
-	*/
+	*
 	if(!isset($_GET['--strict'])) {
 		switch ($no) {
 			case E_WARNING:
@@ -54,7 +54,7 @@ set_error_handler(function($no, $msg, $file, $line) {
 		}
 	}
 	throw new \ErrorException($msg, 0, $no, $file, $line);
-});
+});*/
 
 /**
  * Report All Errors
