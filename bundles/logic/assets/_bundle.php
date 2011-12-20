@@ -14,12 +14,6 @@ use e;
 class Bundle {
 	
 	public function _on_portal_route($path, $dirs) {
-		
-		/**
-		 * Load media to instantiate the mimes
-		 */
-		e::$media;
-		
 		// Make sure path contains valid action name
 		if(!isset($path[0]) || 	$path[0] !== 'assets')
 			return;
@@ -53,7 +47,7 @@ class Bundle {
 		/**
 		 * If The Mime Could Not Be Found Let Us Know
 		 */
-		if(!isset(\Bundles\Media\Bundle::$mimes[$ext])) throw new Exception("No mime-type could be found for `$filename`");
+		if(!isset(e::$media->mimes[$ext])) throw new Exception("No mime-type could be found for `$filename`");
 		
 		/**
 		 * Compile Less
@@ -68,10 +62,10 @@ class Bundle {
 		/**
 		 * Read File 
 		 */
-		header("Content-Type: ".\Bundles\Media\Bundle::$mimes[$ext]);
+		header('Content-Type: '.e::$media->mimes[$ext]);
 		readfile($file);
 		
-		e\complete();
+		e\Complete();
 	}
 	
 	public function get_icon($file, $color='#000', $x=100, $y=100) {

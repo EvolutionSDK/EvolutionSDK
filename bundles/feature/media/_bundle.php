@@ -11,7 +11,7 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 	 * Array of stored files and commonly used mim types
 	 */
 	public static $files;
-	public static $mimes;
+	public $mimes;
 	
 	/**
 	 * Directory in which to store files locally
@@ -70,7 +70,7 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 		 * Grab the Mime, and popular the Files array
 		 */
 		self::$files = glob(self::$file_dir.'/*');
-		self::$mimes = e\decode_file(__DIR__.'/configure/mime_types.json');
+		$this->mimes = e\decode_file(__DIR__.'/configure/mime_types.json');
 	}
 	
 	/**
