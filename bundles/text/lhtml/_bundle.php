@@ -137,8 +137,12 @@ class Instance {
 class e_handle {
 	
 	public function __call($method, $args) {
-		$method = "e::$method";
-		return call_user_func_array($method, $args);
+		if(!empty($args)) {
+			$method = "e::$method";
+			return call_user_func_array($method, $args);
+		}
+		
+		return e::$$method;
 	}
 	
 }
