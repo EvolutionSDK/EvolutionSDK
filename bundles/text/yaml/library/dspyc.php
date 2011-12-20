@@ -46,6 +46,7 @@ class DSpyc {
 	
 	public function file($file) {
 		$key = md5($file);
+		$result = false;
 		# load the environments
 		if(e::$cache->check('yaml-cache', $key)) {
 			$result = e::$cache->get('yaml-cache', $key);
