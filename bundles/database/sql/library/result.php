@@ -86,7 +86,7 @@ class Result {
 		var_dump($tables);
 		list($bundle, $model) = explode('.', $tables[1]);
 		$list = $model.'_list';
-		return e::$bundle->$list();
+		return e::$$bundle->$list();
 	}
 	
 	public function model() {
@@ -94,7 +94,7 @@ class Result {
 		$query = $this->result->queryString;
 		preg_match('/FROM `?([\w.]+)`?/', $query, $tables);
 		list($bundle, $model) = explode('.', $tables[1]);
-		return e::$bundle->$model($row['id']);
+		return e::$$bundle->$model($row['id']);
 	}
 	
 	/**

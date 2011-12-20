@@ -154,7 +154,7 @@ class stack {
 		 * Enforce system load before bundle use
 		 */
 		if(!self::$loaded)
-			throw new Exception("Cannot use `e::$bundle` before system has completed loading all
+			throw new Exception("Cannot use `e::$$bundle` before system has completed loading all
 			bundles. Put your functionality in the `__initBundle` method instead of `__construct`");
 		
 		/**
@@ -217,7 +217,7 @@ class e extends e_var_access {
 			list($bundle, $model) = explode('.', $map);
 			$model = ucwords($model);
 			$model = "get$model";
-			return e::$bundle->$model($access);
+			return e::$$bundle->$model($access);
 		}
 		else {
 			throw new Exception("Trying to load a module with an invalid map format `$map`");
