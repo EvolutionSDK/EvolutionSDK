@@ -95,7 +95,7 @@ class Bundle {
 			$class = "Bundles\\$bundle\\api\\$version";
 			$result = new $class($path);
 			
-			e\trace(__CLASS__, "Processing API access with `".get_class($api)."`");
+			e\trace(__CLASS__, "Processing API access with `".get_class($result)."`");
 			foreach($path as $segment) {
 				/**
 				 * Null
