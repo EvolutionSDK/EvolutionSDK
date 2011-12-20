@@ -71,7 +71,6 @@ if($_GET['_setup'] || !file_exists($file) || filesize($file) < 1) {
 	$bundleList = implode(', ', $bundleList);
 
 	$content = <<<_
-
 <?php
 
 e_bundle_accessor::\$bundleList = array($bundleList);
