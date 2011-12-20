@@ -482,7 +482,7 @@ class Model {
 					if(empty($row)) throw new NoMatchException("No results were returned when calling `$func(...)` on the `$this->_table` model.");
 					
 					list($bundle, $model) = explode('.', $matched);
-					return e::$bundle()->{"get".ucfirst($search)}($row);
+					return e::$bundle->{"get".ucfirst($search)}($row);
 				}
 			break;
 			case 'link':

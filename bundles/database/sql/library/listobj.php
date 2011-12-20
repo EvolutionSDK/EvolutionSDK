@@ -563,7 +563,7 @@ class ListObj implements \Iterator, \Countable {
 		$pp = array();
 		list($bundle, $model) = explode('.', $this->_table);
 		$model = "get".ucwords($this->_tb_singular);
-		while($row = $results->row()) $pp[] = $this->_custom_query ? $row : e::$bundle()->$model($row['id']);
+		while($row = $results->row()) $pp[] = $this->_custom_query ? $row : e::$bundle->$model($row['id']);
 		$this->_results = $pp;
 		if($count === false)
 			$this->_has_query = true;

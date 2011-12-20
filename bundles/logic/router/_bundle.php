@@ -62,7 +62,7 @@ class Bundle {
 				$this->route_bundle_api($bundle, $path);
 			break;
 			default:
-				try { e::$bundle()->route(); }
+				try { e::$bundle->route(); }
 				catch(Exception $e) {}
 			break;
 		}

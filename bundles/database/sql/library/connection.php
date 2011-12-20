@@ -324,7 +324,7 @@ class Connection {
 	 */
 	public function model($table, $id = false, $set_id = false) {
 		list($bundle, $table) = explode('.', $table);
-		return e::$bundle()->$table($id);
+		return e::$bundle->$table($id);
 	}
 	
 	/**
