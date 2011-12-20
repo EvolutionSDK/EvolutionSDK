@@ -240,6 +240,12 @@ class e extends e_var_access {
 }
 
 /**
+ * HACK
+ */
+if(function_exists('e_static_bundle_access_init'))
+	e_static_bundle_access_init();
+
+/**
  * Dump a single variable
  */
 function dump($dump) {

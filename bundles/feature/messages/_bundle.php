@@ -13,7 +13,10 @@ class Bundle extends SQLBundle {
 	public function _on_message($data) {
 		$message = $this->newMessage();
 		$message->save($data);
-		dump($message);
+	}
+	
+	public function activeMessages() {
+		
 	}
 	
 }
