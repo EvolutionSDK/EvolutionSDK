@@ -57,19 +57,20 @@ class e_bundle_accessor {
  */
 $file = __DIR__ . '/e_var_access_generated.php';
 
-$bundles = '';
-$bundleList = array();
+if($_GET['_setup'] || !file_exists($file) || filesize($file) < 1) {
+	$bundles = '';
+	$bundleList = array();
 
-foreach(glob(e\sites . '/*/bundles/*/*/_bundle.php') as $name) {
-	$name = strtolower(basename(dirname($name)));
-	if(in_array("'$name'", $bundleList))
-		continue;
-	$bundleList[] = "'$name'";
-	$bundles .= "\n\tpublic static $$name;";
-}
-$bundleList = implode(', ', $bundleList);
+	foreach(glob(e\sites . '/*/bundles/*/*/_bundle.php') as $name) {
+		$name = strtolower(basename(dirname($name)));
+		if(in_array("'$name'", $bundleList))
+			continue;
+		$bundleList[] = "'$name'";
+		$bundles .= "\n\tpublic static $$name;";
+	}
+	$bundleList = implode(', ', $bundleList);
 
-$content = <<<_
+	$content = <<<_
 
 <?php
 
@@ -81,10 +82,11 @@ $bundles
 }
 _;
 
-$bytes = file_put_contents($file, $content);
+	$bytes = file_put_contents($file, $content);
 
-if(!$bytes) {
-	die("<h1>Evolution</h1>Could not write bundle variable access hack, execute command: <pre>file=$file;touch \$file;chmod 777 \$file;</pre>");
+	if(!$bytes) {
+		die("<h1>Evolution</h1>Could not write bundle variable access hack, execute command: <pre>file=$file;touch \$file;chmod 777 \$file;</pre>");
+	}
 }
 
 require_once($file);
