@@ -98,7 +98,7 @@ class Bundle {
 				/**
 				 * Route inside of the portal
 				 */
-				e::events()->portal_route($path, $matched, "allow:$matched/portal.yaml");
+				e::$events->portal_route($path, $matched, "allow:$matched/portal.yaml");
 				
 				/**
 				 * If nothing found, throw exception
@@ -114,7 +114,7 @@ class Bundle {
 				/**
 				 * Try to resolve with error pages
 				 */
-				e::events()->portal_exception($path, $matched, $exception);
+				e::$events->portal_exception($path, $matched, $exception);
 				
 				/**
 				 * Throw if not completed

@@ -54,7 +54,7 @@ class Bundle extends \Bundles\SQL\SQLBundle {
 		);
 	}
 	
-	public function _on_first_use() {
+	public function __initBundle() {
 		/**
 		 * Find the media dir
 		 */

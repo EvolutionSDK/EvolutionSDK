@@ -32,7 +32,7 @@ class File extends \Bundles\SQL\Model {
 			$this->filename = $filename;
 			$this->filemime = ($type ? $type : _\Bundle::$mimes[$ext]);
 			
-			dump(e::events()->put_file($file, $filename, 'allow:'.stack::$site.'/configure/upload.yaml'));
+			dump(e::$events->put_file($file, $filename, 'allow:'.stack::$site.'/configure/upload.yaml'));
 			
 			return $this->save();
 		}
@@ -47,7 +47,7 @@ class File extends \Bundles\SQL\Model {
 	 * @author Kelly Lauren Summer Becker
 	 */
 	public function get() {
-		$return = e::events()->get_file($this->filename, 'allow:'.stack::$site.'/configure/upload.yaml');
+		$return = e::$events->get_file($this->filename, 'allow:'.stack::$site.'/configure/upload.yaml');
 		foreach($return as $key=>$retval) if(isset($retval) && $retval != NULL && $retval != false) return $retval;
 	}
 	

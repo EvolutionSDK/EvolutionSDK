@@ -25,7 +25,7 @@ class Bundle {
 		self::$file = stack::$site . '.environment.yaml';
 	}
 	
-	public function _on_first_use() {
+	public function __initBundle() {
 		self::load();
 	}
 	
@@ -42,7 +42,7 @@ class Bundle {
 		/**
 		 * Check dev mode to avoid issues later
 		 */
-		e::environment()->requireVar('DevelopmentMode', 'yes | no');
+		e::$environment->requireVar('DevelopmentMode', 'yes | no');
 	}
 	
 	/**
@@ -107,7 +107,7 @@ class Bundle {
 			throw new Exception();
 		
 		// Load environment file
-		$tmp = e::yaml()->file(self::$file);
+		$tmp = e::$yaml->file(self::$file);
 		foreach($tmp as $key => $value)
 			self::$environment[strtolower($key)] = $value;
 	}

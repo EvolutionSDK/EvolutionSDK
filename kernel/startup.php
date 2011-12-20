@@ -76,7 +76,7 @@ function handle($exception) {
 	 */
 	if(stack::$loaded) {
 		try {
-			e::events()->exception($exception);
+			e::$events->exception($exception);
 		} catch(Exception $exception) {}
 	}
 	require_once(root.bundles.'/system/debug/message.php');
@@ -123,7 +123,7 @@ stack::__load(root, sites, bundles, $_SERVER['HTTP_HOST']);
 /**
  * Route the request
  */
-e::events()->route($_SERVER['REDIRECT_URL']);
+e::$events->route($_SERVER['REDIRECT_URL']);
 
 /**
  * Complete the page if not completed

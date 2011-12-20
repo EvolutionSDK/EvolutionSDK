@@ -20,7 +20,7 @@ class SQLBundle {
 	}
 	
 	public function _on_framework_loaded() {
-		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		$enabled = e::$environment->requireVar('SQL.Enabled', "yes | no");
 		if($enabled === true || $enabled === 'yes')
 			$this->_sql_initialize();
 	}
@@ -32,10 +32,10 @@ class SQLBundle {
 		/**
 		 * If File Has Changed
 		 */
-		if(e::yaml()->is_changed($file)) Bundle::$changed = true;
+		if(e::$yaml->is_changed($file)) Bundle::$changed = true;
 		
 		try {
-			$sql = e::yaml()->load($file, true);
+			$sql = e::$yaml->load($file, true);
 		}
 		catch(Exception $e) {
 			throw new Exception("Error loading SQL configuration for bundle `$this->bundle` from file `$file`", 0, $e);

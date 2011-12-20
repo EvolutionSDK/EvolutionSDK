@@ -35,7 +35,7 @@ class Bundle {
 		if(substr($url, 0, 2) == '/@')
 			$this->route_bundle();
 		
-		e::events()->router_route($this->path);
+		e::$events->router_route($this->path);
 	}
 
 	/**

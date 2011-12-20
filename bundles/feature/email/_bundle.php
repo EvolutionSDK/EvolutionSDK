@@ -9,7 +9,7 @@ use e;
  */
 class Bundle {
 
-	public function __bundle_response() {
+	public function __getBundle() {
 		return new Email();
 	}
 	
@@ -71,7 +71,7 @@ class Email {
 	public function send() {
 		$this->validate('send');
 		
-		e::events()->email_send($this);
+		e::$events->email_send($this);
 	}
 	
 	public function preview() {

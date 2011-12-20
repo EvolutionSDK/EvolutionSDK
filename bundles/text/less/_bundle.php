@@ -10,9 +10,9 @@ use lessc;
  */
 
 class Bundle {
-	public function __invoke_bundle($file) {
+	public function __callBundle($file) {
 		require_once(__DIR__ . '/library/lessc.inc.php');
-		$cfile = e::cache()->path() . '/less/' . md5($file) . '.css';
+		$cfile = e::$cache->path() . '/less/' . md5($file) . '.css';
 		lessc::ccompile($file, $cfile);
 		return $cfile;
 	}

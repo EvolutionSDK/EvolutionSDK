@@ -124,7 +124,7 @@ function encode64_file($file, $arr) {
  * Disable Hit for this page load
  */
 function disable_hit() {
-	throw new Exception('Not the right way to call a framework feature, use `e::session()->disable_hit()`');
+	throw new Exception('Not the right way to call a framework feature, use `e::$session->disable_hit()`');
 	$args = func_get_args();
 	return call_user_func_array(array(e::session(), 'disable_hit'), $args);
 }
@@ -133,7 +133,7 @@ function disable_hit() {
  * Add Hit
  */
 function add_hit() {
-	throw new Exception('Not the right way to call a framework feature, use `e::session()->add_hit()`');
+	throw new Exception('Not the right way to call a framework feature, use `e::$session->add_hit()`');
 	$args = func_get_args();
 	return call_user_func_array(array(e::session(), 'add_hit'), $args);
 }
@@ -211,14 +211,14 @@ function complete($exception = false) {
 	 * If Evolution framework is loaded, send out an complete event
 	 */
 	if(stack::$loaded && !$exception)
-		e::events()->complete();
+		e::$events->complete();
 	
 	if(!stack::$loaded)
 		$dev = 'yes';
-	else if(e::environment()->active) {
+	else if(e::$environment->active) {
 		$dev = 'yes';
 	} else
-		$dev = e::environment()->requireVar('developmentMode', 'yes | no');
+		$dev = e::$environment->requireVar('developmentMode', 'yes | no');
 	
 	if($dev == 'yes' || $dev == true) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
@@ -235,7 +235,7 @@ function complete($exception = false) {
 		/**
 		 * Save total time required to exec to hit
 		 */
-		e::session()->complete_hit(timer(true));
+		e::$session->complete_hit(timer(true));
 	}
 	
 	/**
@@ -246,10 +246,10 @@ function complete($exception = false) {
 
 function redirect($url) {
 	if(stack::$loaded) {
-		if(e::environment()->active)
+		if(e::$environment->active)
 			$dev = 'yes';
 		else
-			$dev = e::environment()->requireVar('developmentMode', 'yes | no');
+			$dev = e::$environment->requireVar('developmentMode', 'yes | no');
 	}
 	else
 		$dev = 'no';

@@ -20,10 +20,11 @@ class stack {
 	/**
 	 * Store the bundles and if they have been used
 	 */
-	private static $bundles = array();
-	private static $used = array();
+	public static $bundles = array();
+	public static $_bundle_initialized = array();
 	private static $methods = array();
-		/**
+	
+	/**
 	 * Load the system core and look for matching site
 	 */
 	public static function __load($root, $sites, $bundles, $host) {
@@ -79,8 +80,8 @@ class stack {
 		 * Send out an event if events bundle is present
 		 */
 		if(isset(self::$bundles['events'])) {
-			e::events()->framework_loaded();
-			e::events()->after_framework_loaded();
+			e::$events->framework_loaded();
+			e::$events->after_framework_loaded();
 		}
 		
 		e\trace_exit();
@@ -102,7 +103,7 @@ class stack {
 		if(!class_exists($class, false))
 			throw new Exception("Bundle class `$class` not found in file `$file`");
 		self::$bundles[$bundle] = new $class($dir);
-		self::$used[$bundle] = false;
+		self::$_bundle_initialized[$bundle] = false;
 		self::__add_listener(self::$bundles[$bundle]);
 		
 		e\trace_exit();
@@ -154,7 +155,7 @@ class stack {
 		 */
 		if(!self::$loaded)
 			throw new Exception("Cannot use `e::$bundle()` before system has completed loading all
-			bundles. Put your functionality in the `_on_first_use` method instead of `__construct`");
+			bundles. Put your functionality in the `__initBundle` method instead of `__construct`");
 		
 		/**
 		 * Check that bundle exists
@@ -165,39 +166,24 @@ class stack {
 		/**
 		 * First use
 		 */
-		if(!self::$used[$bundle]) {
-			self::$used[$bundle] = true;
-			if(method_exists(self::$bundles[$bundle], '_on_first_use'))
-				self::$bundles[$bundle]->_on_first_use();
+		if(!self::$_bundle_initialized[$bundle]) {
+			self::$_bundle_initialized[$bundle] = true;
+			if(method_exists(self::$bundles[$bundle], '__initBundle'))
+				self::$bundles[$bundle]->__initBundle();
 		}
 		
 		/**
 		 * If bundle has a response, return it
 		 */
-		if(method_exists(self::$bundles[$bundle], '__bundle_response'))
+		if(method_exists(self::$bundles[$bundle], '__callBundle'))
 			return call_user_func_array(
-				array(self::$bundles[$bundle], '__bundle_response'), $args);
-			
-		/**
-		 * If bundle has a response, return it - Allow use of the New Camel Case Method
-		 */
-		if(method_exists(self::$bundles[$bundle], '__bundleResponse'))
-			return call_user_func_array(
-				array(self::$bundles[$bundle], '__bundleResponse'), $args);
+				array(self::$bundles[$bundle], '__callBundle'), $args);
 		
 		/**
-		 * If bundle has an invoke method, call that
+		 * Use static access
 		 */
-		if(count($args) > 0 && method_exists(self::$bundles[$bundle], '__invoke_bundle'))
-			return call_user_func_array(
-				array(self::$bundles[$bundle], '__invoke_bundle'), $args);
-				
-		/**
-		 * If bundle has an invoke method, call that - Allow use of the New Camel Case Method
-		 */
-		if(count($args) > 0 && method_exists(self::$bundles[$bundle], '__invokeBundle'))
-			return call_user_func_array(
-				array(self::$bundles[$bundle], '__invokeBundle'), $args);
+		throw new Exception("The bundle `$bundle` cannot be accessed as a function,
+			you must use `e::$$bundle` static var access instead.");
 		
 		/**
 		 * Return instance

@@ -152,12 +152,12 @@ class Bundle {
 	 * Initialize SQL
 	 */
 	public function _on_framework_loaded() {
-		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		$enabled = e::$environment->requireVar('SQL.Enabled', "yes | no");
 		
 		if($enabled !== true && $enabled !== 'yes')
 			return false;
 		
-		$enabled = e::environment()->requireVar('Session.Enabled', "yes | no");
+		$enabled = e::$environment->requireVar('Session.Enabled', "yes | no");
 
 		if($enabled === true || $enabled === 'yes')
 			$this->db_bundle = new SQLBundle($this->dir);
@@ -178,14 +178,14 @@ class Bundle {
 		/**
 		 * Grab the cookie name
 		 */
-		$this->_cookie_name = e::environment()->requireVar('Session.Cookie.Name', "Cookie Name Must be Alphanumeric + Underscores");
+		$this->_cookie_name = e::$environment->requireVar('Session.Cookie.Name', "Cookie Name Must be Alphanumeric + Underscores");
 		if(!preg_match('/^[_a-zA-Z0-9]+$/', $this->_cookie_name))
-			e::environment()->invalidVar('Session.Cookie.Name');
+			e::$environment->invalidVar('Session.Cookie.Name');
 
 		/**
 		 * Grab the cookie url
 		 */
-		$cookie_url = e::environment()->requireVar('Session.Cookie.URL');
+		$cookie_url = e::$environment->requireVar('Session.Cookie.URL');
 		$this->_cookie_url = $cookie_url ? $cookie_url : false;
 		
 		/**

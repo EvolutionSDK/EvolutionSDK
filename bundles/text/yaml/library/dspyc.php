@@ -15,12 +15,12 @@ class DSpyc {
 	public function string($string) {
 		$key = md5($string);
 		# load the environments
-		if(e::cache()->check('yaml-cache', $key)) {
-			$result = e::cache()->get('yaml-cache', $key);
+		if(e::$cache->check('yaml-cache', $key)) {
+			$result = e::$cache->get('yaml-cache', $key);
 		}
 		else {		
 			$result = Spyc::YAMLLoadString($string);
-			e::cache()->store('yaml-cache', $key, $result, 'base64');
+			e::$cache->store('yaml-cache', $key, $result, 'base64');
 		}
 		return $result;	
 	}
@@ -47,15 +47,15 @@ class DSpyc {
 	public function file($file) {
 		$key = md5($file);
 		# load the environments
-		if(e::cache()->check('yaml-cache', $key)) {
-			$result = e::cache()->get('yaml-cache', $key);
+		if(e::$cache->check('yaml-cache', $key)) {
+			$result = e::$cache->get('yaml-cache', $key);
 		}
 		$fileTime = $this->_get_configuration_time($file);
-		$cacheTime = e::cache()->timestamp('yaml-cache', $key);
+		$cacheTime = e::$cache->timestamp('yaml-cache', $key);
 		
 		if($fileTime > $cacheTime) {
 			$result = $this->_get_configuration($file);
-			e::cache()->store('yaml-cache', $key, $result, 'base64');
+			e::$cache->store('yaml-cache', $key, $result, 'base64');
 		}
 		return $result;
 		
@@ -65,11 +65,11 @@ class DSpyc {
 		$key = md5($file);
 		# load the environments
 		$fileTime = $this->_get_configuration_time($file);
-		$cacheTime = e::cache()->timestamp('yaml-cache', $key);
+		$cacheTime = e::$cache->timestamp('yaml-cache', $key);
 		
 		if($fileTime > $cacheTime || $cacheTime === false) {
 			$result = $this->_get_configuration($file);
-			e::cache()->store('yaml-cache', $key, $result, 'base64');
+			e::$cache->store('yaml-cache', $key, $result, 'base64');
 			
 			return true;
 		}
@@ -80,7 +80,7 @@ class DSpyc {
 	public function last_modified($file) {
 		return array(
 			'yaml' => $this->_get_configuration_time($file),
-			'cache' => e::cache()->timestamp('yaml-cache', md5($file))
+			'cache' => e::$cache->timestamp('yaml-cache', md5($file))
 		);
 	}
 	

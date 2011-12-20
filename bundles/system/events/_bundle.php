@@ -40,7 +40,7 @@ class Bundle {
 					$current = e\decode_file($file);
 				break;
 				case 'yaml':
-					$current = e::yaml()->load($file, true);
+					$current = e::$yaml->load($file, true);
 				break;
 				default:
 					throw new Exception("Error with file `$filename` the extension `$ext` is not supported.");
@@ -96,7 +96,7 @@ class Bundle {
 					e\encode_file($file, $current);
 				break;
 				case 'yaml':
-					e::yaml()->save($file, $current);
+					e::$yaml->save($file, $current);
 				break;
 				default:
 					throw new Exception("Error with file `$filename` the extension `$ext` is not supported.");

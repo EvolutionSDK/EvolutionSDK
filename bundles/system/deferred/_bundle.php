@@ -18,7 +18,7 @@ class Bundle {
 	}
 	
 	public function _on_framework_loaded() {
-		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+		$enabled = e::$environment->requireVar('SQL.Enabled', "yes | no");
 		
 		if($enabled !== true && $enabled !== 'yes')
 			return false;
@@ -61,7 +61,7 @@ class Bundle {
 				throw new Exception("Unserialize failed on deferred service `$service`");
 			
 			// Run the service
-			call_user_func_array(array(e::events(), $service), $args);
+			call_user_func_array(array(e::$events, $service), $args);
 			
 			// If no errors, we can remove this from the table
 			e::sql()->query("DELETE FROM `deferred.pending` WHERE `key` = '$key'");

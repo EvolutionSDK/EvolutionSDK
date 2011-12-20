@@ -333,7 +333,7 @@ class Model {
 		/**
 		 * Let everything know afterward
 		 */
-		e::events()->deferred_register('sql_model_event', 'saved', $this->__map());
+		e::$events->deferred_register('sql_model_event', 'saved', $this->__map());
 	}
 
 	/**
@@ -354,7 +354,7 @@ class Model {
 			/**
 			 * Let everything know
 			 */
-			e::events()->deferred_register('sql_model_event', 'deleted', $m);
+			e::$events->deferred_register('sql_model_event', 'deleted', $m);
 		}
 	}
 	
@@ -492,7 +492,7 @@ class Model {
 				/**
 				 * Let everything know
 				 */
-				e::events()->deferred_register('sql_model_event', 'linked', $this->__map(), $matched.':'.$args[0]);
+				e::$events->deferred_register('sql_model_event', 'linked', $this->__map(), $matched.':'.$args[0]);
 				
 				if(isset($relation_tables['y']) && in_array($matched, $relation_tables['y'])) {
 					if($plural) foreach($args[0] as $id) {
@@ -569,7 +569,7 @@ class Model {
 				/**
 				 * Let everything know
 				 */
-				e::events()->deferred_register('sql_model_event', 'unlinked', $this->__map(), $matched.':'.$args[0]);
+				e::$events->deferred_register('sql_model_event', 'unlinked', $this->__map(), $matched.':'.$args[0]);
 			
 				if(isset($relation_tables['y']) && in_array($matched, $relation_tables['y'])) {
 					if($plural) foreach($args[0] as $id) {

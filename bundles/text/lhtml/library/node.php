@@ -317,7 +317,7 @@ class Node {
 			}
 			if(substr($attr,0,1) == ':') continue;
 			
-			$response = e::events()->{"attribute_$attr"}($value);
+			$response = e::$events->{"attribute_$attr"}($value);
 			
 			if(count($response) > 0)
 				$value = array_pop($response);

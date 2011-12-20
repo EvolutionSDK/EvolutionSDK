@@ -21,8 +21,8 @@ class Bundle {
 	
 	private $connections = array();
 	
-	public function _on_first_use() {
-		$enabled = e::environment()->requireVar('SQL.Enabled', "yes | no");
+	public function __initBundle() {
+		$enabled = e::$environment->requireVar('SQL.Enabled', "yes | no");
 		
 		/**
 		 * Build Relationships
@@ -36,7 +36,7 @@ class Bundle {
 			if(self::$changed == true || e::sql()->query("SHOW TABLES")->count() == 0 || isset($_GET['_build_sql'])) $this->build_architecture();
 	}
 	
-	public function __bundle_response($method = false) {
+	public function __getBundle($method = false) {
 		//if(!isset($this->connections['default']))
 			// if it doesnt have a connection add the default connection
 		// return useConnection on the default bundle
@@ -50,7 +50,7 @@ class Bundle {
 	 * @return void
 	 * @author David Boskovic
 	 */
-	public function __invoke_bundle($connection = 'default') {
+	public function __callBundle($connection = 'default') {
 		
 		return $this->useConnection($connection);
 		
@@ -84,14 +84,14 @@ class Bundle {
 				calling `e::sql(<i>slug</i>)` or `e::sql()->useConnection(<i>slug</i>)`");
 		
 		// Load up the database connection from environment
-		$default = e::environment()->requireVar("sql.connection.$slug", 
+		$default = e::$environment->requireVar("sql.connection.$slug", 
 			'service://username[:password]@hostname[:port]/database');
 		
 		// Try to make the connection
 		try {
 			$conn = $this->addConnection($default, $slug);
 		} catch(Exception $e) {
-			e::environment()->invalidVar("sql.connection.$slug", $e);
+			e::$environment->invalidVar("sql.connection.$slug", $e);
 		}
 		
 		$conn->checkTimeSync();

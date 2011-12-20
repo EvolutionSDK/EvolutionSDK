@@ -12,7 +12,7 @@ class Bundle {
 	
 	private $configs = array();
 	
-	public function __invoke_bundle($path) {
+	public function __callBundle($path) {
 		if(!isset($this->configs[$path]))
 			$this->configs[$path] = new Configuration($path);
 		return $this->configs[$path];
@@ -22,14 +22,14 @@ class Bundle {
 		$path = str_replace('.', '/', $path);
 		$file = stack::$site . '/configure/' . $path . '.yaml';
 		return array(
-			$file => e::yaml()->file($file)
+			$file => e::$yaml->file($file)
 		);
 	}
 	
 	public function _on_configuration_save($path, $value) {
 		$path = str_replace('.', '/', $path);
 		$file = stack::$site . '/configure/' . $path . '.yaml';
-		return e::yaml()->save($file, $value);
+		return e::$yaml->save($file, $value);
 	}
 	
 }
@@ -39,7 +39,7 @@ class Configuration {
 	private $active = array();
 	
 	public function __construct($path) {
-		$all = e::events()->configuration_load($path);
+		$all = e::$events->configuration_load($path);
 		foreach($all as $config) {
 			foreach($config as $location => $item) {
 				$this->data = $item;

@@ -10,7 +10,7 @@ use LogicException;
  */
 
 class Bundle {
-	public function __bundle_response() {
+	public function __getBundle() {
 		return new Lexer;
 	}
 }

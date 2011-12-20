@@ -58,7 +58,7 @@ class Bundle {
 		/**
 		 * Compile Less
 		 */
-		//if($ext === 'less' && e::environment()->getVar('assets.compile.less')) $file = e::less($file);
+		//if($ext === 'less' && e::$environment->getVar('assets.compile.less')) $file = e::less($file);
 		
 		/**
 		 * If Icon Process

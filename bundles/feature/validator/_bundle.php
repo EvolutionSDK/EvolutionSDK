@@ -9,7 +9,7 @@ use e;
  */
 class Bundle {
 
-	public function __bundle_response() {
+	public function __callBundle() {
 		return new Collection(func_get_args());
 	}
 	
@@ -83,7 +83,7 @@ class Collection {
 	
 	public function broadcastMessages() {
 		foreach($this->messages as $message)
-			e::events()->message($message);
+			e::$events->message($message);
 		$this->messages = array();
 	}
 	
@@ -220,7 +220,7 @@ class Field {
 		 */
 		array_unshift($arguments, $this->value);
 		array_unshift($arguments, $this);
-		call_user_func_array(array(e::events(), 'validate_' . $method), $arguments);
+		call_user_func_array(array(e::$events, 'validate_' . $method), $arguments);
 		
 		return $this;
 	}

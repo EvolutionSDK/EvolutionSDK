@@ -8,11 +8,11 @@ use e;
 class Bundle {
 	public static $url_vars = array();
 	
-	public function __bundle_response() {
+	public function __getBundle() {
 		return new Instance;
 	}
 	
-	public function _on_first_use() {
+	public function __initBundle() {
 		Scope::addHook(':e', new e_handle);
 		Scope::addHook(':slug', function() { return e::lhtml()->_get_special_vars(':slug'); });
 		Scope::addHook(':id', function() { return e::lhtml()->_get_special_vars(':id'); });

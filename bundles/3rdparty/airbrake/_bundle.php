@@ -16,15 +16,15 @@ class Bundle {
 			
 		self::$_in_airbrake = true;
 		
-		$enabled = e::environment()->requireVar('Airbrake.Enabled', 'yes | no');
+		$enabled = e::$environment->requireVar('Airbrake.Enabled', 'yes | no');
 		if($enabled !== true || $enabled === 'yes')
 			return;
 
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Client.php';
 		require_once __DIR__ . '/php-airbrake/src/Airbrake/Configuration.php';
 		
-		e::environment()->_reset_exception_status();
-		$apiKey  = e::environment()->requireVar('Airbrake.APIKey'); // This is required
+		e::$environment->_reset_exception_status();
+		$apiKey  = e::$environment->requireVar('Airbrake.APIKey'); // This is required
 
 		$options = array(); // This is optional
 

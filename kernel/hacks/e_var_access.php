@@ -25,26 +25,18 @@ class e_bundle_accessor {
 	
 	private function __init() {
 		if(!isset($this->bundleCache)) {
+			$bundle = $this->bundleName;
+			if(!stack::$_bundle_initialized[$bundle]) {
+				stack::$_bundle_initialized[$bundle] = true;
+				if(method_exists(stack::$bundles[$bundle], '__initBundle'))
+					stack::$bundles[$bundle]->__initBundle();
+			}
 			
-			/*
-			$class = "Bundles\\$this->bundleName\\bundle";
-			$tmp = new $class;
-			
-			/**
-			 * Initialize bundle if needed
-			 *//*
-			if(method_exists($tmp, '__getBundle'))
-				$this->bundleCache = $tmp->__getBundle();
-			
-			/**
-			 * Set the effective object returned
-			 *//*
-			if(method_exists($tmp, '__getBundle'))
-				$this->bundleCache = $tmp->__getBundle();
+			$bundle = $this->bundleName;
+			if(method_exists(stack::$bundles[$bundle], '__getBundle'))
+				$this->bundleCache = stack::$bundles[$bundle]->__getBundle();
 			else
-				$this->bundleCache = $tmp;*/
-			$name = $this->bundleName;
-			$this->bundleCache = e::$name();
+				$this->bundleCache = stack::$bundles[$bundle];
 		}
 	}
 	
@@ -69,7 +61,9 @@ $bundles = '';
 $bundleList = array();
 
 foreach(glob(e\sites . '/*/bundles/*/*/_bundle.php') as $name) {
-	$name = basename(dirname($name));
+	$name = strtolower(basename(dirname($name)));
+	if(in_array($bundleList, "'$name'"))
+		continue;
 	$bundleList[] = "'$name'";
 	$bundles .= "\n\tpublic static $$name;";
 }
