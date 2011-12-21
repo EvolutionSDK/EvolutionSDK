@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\controller;
+namespace Bundles\Controller;
 use Exception;
 use stack;
 use e;
@@ -18,24 +18,17 @@ class Bundle {
 	}
 	
 	public function route($path, $dirs) {
-		
-		/**
-		 * Add defaults
-		 */
-		e::configure('controller')->activeAdd('class_formats', '\\Controller\\%');
+		// Add defaults
+		e::configure('controller')->activeAdd('class_format', '\\Controller\\%');
 		e::configure('controller')->activeAdd('locations', stack::$site);
 		
-		/**
-		 * Make sure path contains valid controller name
-		 */
-		if(!isset($path[0]) || $path[0] == '')
-			return;
-
-		/**
-		 * Get the controller name
-		 */
-		$name = strtolower($path[0]);
-
+		// If dirs are not specified, use defaults
+		if(is_null($dirs))
+			$dirs = e::configure('controller')->locations;
+		
+		// Get the action name
+		$name = strtolower(implode('/',$path));
+		
 		/**
 		 * Check all dirs for a matching controller
 		 */
@@ -54,10 +47,18 @@ class Bundle {
 				continue;
 
 			/**
-			 * File to check
+			 * Find File
 			 */
-			$file = "$dir/$name.php";
-
+			$args = array();
+			$filea = explode('/', $name);
+			while(count($filea) > $i) {
+				if(is_file($file = $dir.'/'.($name = implode('/', $filea)).'.php'))
+					break;
+					
+				$args[] = array_pop($filea);
+				$i++;
+			}
+			
 			/**
 			 * Skip if incorrect file
 			 */
@@ -77,7 +78,7 @@ class Bundle {
 				/**
 				 * Controller class
 				 */
-				$classFormats = e::configure('controller')->class_formats;
+				$classFormats = e::configure('controller')->class_format;
 
 				/**
 				 * Check each class format
@@ -88,7 +89,7 @@ class Bundle {
 					/**
 					 * Format class with controller name
 					 */
-					$class = str_replace("%", $name, $format);
+					$class = str_replace(array('%', '/'), array($name, '\\'), $format);
 
 					/**
 					 * Check if this is a valid class
@@ -113,30 +114,11 @@ class Bundle {
 				 */
 				self::$controllers[$file] = new $class;
 			}
-
-			/**
-			 * Strip the controller name from the path
-			 */
-			array_shift($path);
-
+			
 			/**
 			 * Get the method name
 			 */
-			$method = array_shift($path);
-
-			/**
-			 * Make sure path contains valid method name
-			 */
-			if(strlen($method) === 0) {
-
-				/**
-				 * Check for index method
-				 */
-				if(method_exists(self::$controllers[$file], 'index'))
-					$method = 'index';
-				else
-					throw new Exception("No controller method specified when loading controller `$name` defined in `$file`");
-			}
+			$method = !empty($args) ? array_pop($args) : 'index';
 
 			/**
 			 * make sure that our controller method exists before attempting to call it
