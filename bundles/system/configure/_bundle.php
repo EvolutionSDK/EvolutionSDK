@@ -74,4 +74,8 @@ class Configuration {
 			$this->active[$var] = array();
 		$this->active[$var][] = $value;
 	}
+	
+	public function activeGet($var) {
+		return isset($this->active[$var]) || !empty($this->active[$var]) ? $this->active[$var] : null;
+	}
 }

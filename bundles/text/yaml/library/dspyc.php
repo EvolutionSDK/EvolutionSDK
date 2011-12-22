@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\yaml;
+namespace Bundles\Yaml;
 use e;
 
 /**
@@ -24,6 +24,7 @@ class DSpyc {
 		}
 		return $result;	
 	}
+	
 	protected function _get_configuration($file) {
 		return Spyc::YAMLLoad($file);
 	}

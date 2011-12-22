@@ -10,7 +10,7 @@ class AutoLoadException extends Exception {}
 function load($class) {
 	
 	if(stack::$loaded) {
-		$raw = e::configure('autoload')->special;
+		$raw = e::configure('autoload')->activeGet('special');
 		if(!is_null($raw)) {
 			$special = array();
 			foreach($raw as $key => $value) {
@@ -33,7 +33,6 @@ function load($class) {
 	$c = implode('/', $path);
 	
 	if(empty($c)) {
-		
 		return false;
 		
 		/**

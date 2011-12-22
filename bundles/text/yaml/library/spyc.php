@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\yaml;
+namespace Bundles\Yaml;
 use e;
 
 /**
