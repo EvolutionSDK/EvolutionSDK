@@ -12,9 +12,9 @@ class Bundle {
 	
 	private $configs = array();
 	
-	public function __callBundle($path) {
+	public function __callBundle($path, $load = true) {
 		if(!isset($this->configs[$path]))
-			$this->configs[$path] = new Configuration($path);
+			$this->configs[$path] = new Configuration($path, $load);
 		return $this->configs[$path];
 	}
 	
@@ -38,7 +38,9 @@ class Configuration {
 	private $data = array();
 	private $active = array();
 	
-	public function __construct($path) {
+	public function __construct($path, $load = true) {
+		if(!$load) return;
+		
 		$all = e::$events->configuration_load($path);
 		foreach($all as $config) {
 			foreach($config as $location => $item) {
