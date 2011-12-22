@@ -62,9 +62,9 @@ _;
 		
 		$member = e::$members->currentMember();
 		if($member)
-			$messages = $member->getMessages();
+			$messages = $member->getMessages()->condition('status', 'active')->condition('viewed', 'no');
 		else
-			$messages = e::$session->getMessages();
+			$messages = e::$session->getMessages()->condition('status', 'active')->condition('viewed', 'no');
 		
 		foreach($messages->manual_condition('`namespace` IN ("global", "'.$namespace.'")') as $message) {
 			$message->status = 'cleared';
