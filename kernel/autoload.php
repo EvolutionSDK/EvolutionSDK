@@ -8,6 +8,22 @@ use e;
 class AutoLoadException extends Exception {}
 
 function load($class) {
+	
+	if(stack::$loaded) {
+		$raw = e::configure('autoload')->special;
+		if(!is_null($raw)) {
+			$special = array();
+			foreach($raw as $key => $value) {
+				$special[strtolower($key)] = $value;
+			}
+			$class = strtolower($class);
+			if(isset($special[$class])) {
+				require_once($special[$class]);
+				return true;
+			}
+		}
+	}
+	
 	$path = explode('\\', strtolower($class));
 	if($path[0] == '')
 		array_shift($path);

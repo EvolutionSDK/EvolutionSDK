@@ -207,6 +207,8 @@ class Bundle {
 		
 		$this->_session =& $session;
 		
+		e\trace('Session Data', null, $this->_data, 0, 3);
+		
 		/**
 		 * Bind Flashdata to a LHTML Var
 		 */
@@ -340,6 +342,13 @@ class Bundle {
 		$session->save();
 	}
 	
+	/**
+	 * Get session Model
+	 */
+	public function _session() {
+		return $this->_session;
+	}
+	
 	public function _on_complete() {
 		if(!is_object($this->db_bundle))
 			return;
@@ -362,7 +371,7 @@ class Bundle {
 			$this->_session->hits++;
 			$this->save();
 		}
-		e\trace('flashdata', null, $this->_data['flashdata']['result_data']);
+		e\trace('Flash Data', null, $this->_data['flashdata']['result_data']);
 	}
 	
 	/**

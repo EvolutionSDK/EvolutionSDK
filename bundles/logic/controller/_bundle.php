@@ -21,6 +21,7 @@ class Bundle {
 		// Add defaults
 		e::configure('controller')->activeAdd('class_format', '\\Controller\\%');
 		e::configure('controller')->activeAdd('locations', stack::$site);
+		e::configure('autoload')->activeAddKey('special', 'Controller\\FormController', __DIR__ . '/library/form-controller.php');
 		
 		// If dirs are not specified, use defaults
 		if(is_null($dirs))
@@ -51,7 +52,9 @@ class Bundle {
 			 */
 			$args = array();
 			$filea = explode('/', $name);
-			while(count($filea) > $i) {
+			$total = count($filea);
+			$i = 0;
+			while($i <= $total) {
 				if(is_file($file = $dir.'/'.($name = implode('/', $filea)).'.php'))
 					break;
 					
@@ -64,6 +67,13 @@ class Bundle {
 			 */
 			if(!is_file($file))
 				continue;
+				
+			$fname = basename($file);
+				
+			/**
+			 * Trace
+			 */
+			e\trace(__CLASS__, "Matched controller `$fname`");
 
 			/**
 			 * Load controller if not already loaded
@@ -133,11 +143,17 @@ class Bundle {
 				array(self::$controllers[$file], $method),
 				$path
 			);
-
-            /**
-		 	 * Complete the page load
+			
+			/**
+			 * If the controller has a complete method
 			 */
-            e\complete($result);
+			if(method_exists(self::$controllers[$file],'_complete'))
+				self::$controllers[$file]->_complete();
+			
+			/**
+			 * Complete the page load
+			 */
+			e\complete($result);
 		}
 	}
 }

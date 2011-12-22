@@ -175,8 +175,8 @@ function display_trace() {
 /**
  * Trace execution
  */
-function trace($title, $message = '', $args = array(), $priority = 0) {
-	TraceVars::$arr[] = array('title' => $title, 'message' => $message, 'args' => $args, 
+function trace($title, $message = '', $args = array(), $priority = 0, $argdepth = 1) {
+	TraceVars::$arr[] = array('title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
 		'priority' => $priority, 'depth' => count(TraceVars::$stack), 'time' => microtime(1));
 }
 
@@ -253,7 +253,7 @@ function redirect($url) {
 	}
 	else
 		$dev = 'no';
-	if($dev == 'yes') {
+	if($dev == 'yes' && false) {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
 			<h1><a href='$url' id='redirect'>Continue...</a></h1><p>Redirecting to <code>$url</code></p></div>";
@@ -289,22 +289,22 @@ function stylize_array($array, $depth = 0) {
 	foreach($array as $key => $value) {
 		if(is_array($value)) {
 			if($depth > 0)
-				$array[$key] = "[".implode(', ', stylize_array($value, $depth - 1))."]";
+				$array[$key] = "<span class='key'>$key</span>[".implode(', ', stylize_array($value, $depth - 1))."]";
 			else
-				$array[$key] = "<span class='array'>Array [".count($value)."]</span>";
+				$array[$key] = "<span class='key'>$key</span><span class='array'>Array [".count($value)."]</span>";
 		} else if(is_string($value)) {
 			stylize_string($value);
-			$array[$key] = "<span class='string'>&apos;$value&apos;</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='string'>&apos;$value&apos;</span>";
 		} else if($value === null) {
-			$array[$key] = "<span class='boolean'>null</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='boolean'>null</span>";
 		} else if($value === false) {
-			$array[$key] = "<span class='boolean'>false</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='boolean'>false</span>";
 		} else if($value === true) {
-			$array[$key] = "<span class='boolean'>true</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='boolean'>true</span>";
 		} else if(is_numeric($value)) {
-			$array[$key] = "<span class='number'>$value</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='number'>$value</span>";
 		} else if(is_object($value)) {
-			$array[$key] = "<span class='object'>Object ".get_class($value)."</span>";
+			$array[$key] = "<span class='key'>$key</span><span class='object'>Object ".get_class($value)."</span>";
 		}
 	}
 	return $array;

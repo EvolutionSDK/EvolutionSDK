@@ -61,7 +61,7 @@ class Bundle {
 	public function _on_validate_maxValue($field, $value, $ref) {
 		if($value > $ref) {
 			$field->error('%field must not be greater than ' . $ref);
-			$field->cleanValue($ref);
+			$field->setCleanValue($ref);
 		}
 	}
 }
@@ -81,48 +81,31 @@ class Collection {
 		return $this->messages;
 	}
 	
-	public function broadcastMessages() {
+	public function hasMessages() {
+		return count($this->messages) > 0;
+	}
+	
+	public function broadcastMessages($namespace = 'global') {
 		foreach($this->messages as $message)
-			e::$events->message($message);
+			e::$events->message($message, $namespace);
 		$this->messages = array();
 	}
 	
-	public function printMessages() {
-		if(!defined('BUNDLE_field_MESSAGE_PRINTED_STYLE')) {
-			echo <<<_
-<style>
-ul.validator-messages {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-}
-ul.validator-messages li {
-	margin: 0 0 1em 0;
-	padding: 0.5em;
-	
-	border: 1px solid #888;
-	background: #eee;
-	color: #666;
-}
-ul.validator-messages li.message-error {
-	border: 1px solid #600;
-	background: #fcc;
-	color: #600;
-}
-ul.validator-messages li span.field {
-	font-weight: bold;
-}
-</style>
-_;
-			define('BUNDLE_VALIDATOR_MESSAGE_PRINTED_STYLE', 1);
+	public function mergeExistingData($data) {
+		if($data instanceof Collection) {
+			$data = $data->raw();
 		}
-		echo '<ul class="validator-messages">';
-		foreach($this->messages as $message) {
-			echo '<li class="message-' . $message['type'] . '">' . $message['message'] . '</li>';
+		if(is_array($data)) {
+			foreach($data as $key => $value) {
+				if(!isset($this->data[$key]))
+					$this->data[$key] = $value;
+			}
 		}
-		echo '</ul>';
 	}
 	
+	/**
+	 * Load data sources
+	 */
 	public function __construct($sources) {
 		foreach($sources as $data) {
 			
@@ -135,6 +118,14 @@ _;
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Set a default value if not set
+	 */
+	public function setDefault($var, $value) {
+		if(!isset($this->data[$var]))
+			$this->data[$var] = $value;
 	}
 	
 	/**
@@ -156,7 +147,7 @@ _;
 	public function clean() {
 		$clean = $this->data;
 		foreach($this->fields as $field)
-			$clean[$field->getField()] = $field->getCleanValue();
+			$clean[$field->getField()] = $field->clean();
 		return $clean;
 	}
 	
@@ -196,11 +187,11 @@ class Field {
 		return $this->field;
 	}
 	
-	public function getCleanValue() {
+	public function clean() {
 		return $this->clean;
 	}
 	
-	public function cleanValue($value) {
+	public function setCleanValue($value) {
 		$this->clean = $value;
 	}
 	

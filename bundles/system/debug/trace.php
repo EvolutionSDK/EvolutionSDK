@@ -62,7 +62,7 @@
 		-o-transition: all 125ms ease;
 		transition: all 125ms ease;
 	}
-	#-e-debug-panel {
+	#-e-debug-panel, #-e-debug-panel .step .reveal {
 		-webkit-transition: all 250ms ease;
 		-moz-transition: all 250ms ease;
 		-o-transition: all 250ms ease;
@@ -227,6 +227,18 @@
 		overflow: hidden;
 		position: relative;
 	}
+	
+	#-e-debug-panel .step .reveal {
+		height: 1em;
+		overflow: hidden;
+	}
+	
+	#-e-debug-panel .step:hover .reveal {
+		height: auto;
+		overflow: auto;
+		
+	}
+	
 	#-e-debug-panel .step .time {
 		border-right: 1px solid #888;
 		position: absolute;
@@ -265,6 +277,8 @@
 	#-e-debug-panel .object 	{color: darkred;	}
 	#-e-debug-panel .class 		{color: darkred;	}
 	#-e-debug-panel .exception 	{color: #b00;		}
+	#-e-debug-panel .key	 	{color: #000; background: #e0e0e0;
+		border-radius: 3px; font-size: 9.5px; padding: 0px 4px 1px; margin: 0 4px 0 0;}
 	
 	#-e-debug-panel code {
 		display: inline;
@@ -374,7 +388,7 @@ foreach(trace::$arr as $id => $trace) {
 	if(strlen(trim($trace['message'])) > 0)
 		$step .= '<div class="message">'.preg_replace('/`([^`]*)`/x', '<code>$1</code>', trim($trace['message'])).'</div>';
 	if(count($trace['args']) > 0) {
-		$step .= '<div class="args">'.implode(', ', e\stylize_array($trace['args'], 1)).'</div>';
+		$step .= '<div class="args">'.implode(', ', e\stylize_array($trace['args'], $trace['argdepth'])).'</div>';
 	}
 	$sc = $i++ % 2 ? '' : ' hilite';
 	echo "<div class=\"step$sc $priority\">$step</div>";
