@@ -11,3 +11,4 @@ message:
 		viewed: "enum('no','yes')"
 	hasOne:
 		- session.list
+		- members.account

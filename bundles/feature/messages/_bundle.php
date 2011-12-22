@@ -15,7 +15,12 @@ class Bundle extends SQLBundle {
 		if(!isset($data['namespace']))
 			$data['namespace'] = $namespace;
 		$message->save($data);
-		$message->linkSession(e::$session->_session());
+		
+		$member = e::$members->currentMember();
+		if($member)
+			$message->linkMember($member);
+		
+		$message->linkSession(e::$session->_id);
 	}
 	
 	public function currentMessages($namespace = 'none') {
@@ -53,7 +58,17 @@ _;
 			define('BUNDLE_MESSAGES_PRINTED_STYLE', 1);
 		}
 		echo '<ul class="validator-messages">';
-		foreach($this->getMessages()->manual_condition('`namespace` IN ("global", "'.$namespace.'")') as $message) {
+		
+		
+		$member = e::$members->currentMember();
+		if($member)
+			$messages = $member->getMessages();
+		else
+			$messages = e::$session->getMessages();
+		
+		foreach($messages->manual_condition('`namespace` IN ("global", "'.$namespace.'")') as $message) {
+			$message->status = 'cleared';
+			$message->viewed = 'yes';
 			echo '<li class="message-' . $message->type . '">' . $message->message . '</li>';
 		}
 		echo '</ul>';
