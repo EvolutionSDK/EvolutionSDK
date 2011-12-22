@@ -77,6 +77,12 @@ class Collection {
 	
 	private $fields = array();
 	
+	private $success = true;
+	
+	public function isSuccess() {
+		return $this->success;
+	}
+	
 	public function getMessages() {
 		return $this->messages;
 	}
@@ -152,6 +158,7 @@ class Collection {
 	}
 	
 	public function addMessage($type, $message, $field = null) {
+		if($type == 'error') $this->success = false;
 		$this->messages[] = array('type' => $type, 'message' => $message, 'field' => $field);
 	}
 }
