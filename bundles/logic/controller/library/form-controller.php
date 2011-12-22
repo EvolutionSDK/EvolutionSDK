@@ -25,22 +25,30 @@ abstract class FormController {
 	}
 	
 	final public function _complete() {
-		
 		$class = get_class($this);
+		
+		/**
+		 * Save the data to the session
+		 */
 		e::$session->data->$class = $this->data->clean();
 		
+		/**
+		 * If we are not completing then return
+		 */
 		if(!$this->_complete)
 			return;
 		
-		if($this->data->hasMessages()) {
-			$this->data->broadcastMessages(get_class($this));
-			$which = '_failure_url';
-		} else {
-			/**
-			 * No errors
-			 */
-			$which = '_success_url';
-		}
+		/**
+		 * Check if the validation returned any errors
+		 * @author: Kelly Lauren Summer Becker
+		 */
+		$which = $this->data->isSuccess() ? '_success_url' : '_failure_url';
+		
+		/**
+		 * Broadcast all messages both Success, and Errors
+		 * @author: Kelly Lauren Summer Becker
+		 */
+		$this->data->broadcastMessages(get_class($this));
 		
 		$to = $this->data->$which->clean();
 		if(!$to)
