@@ -183,6 +183,10 @@ class Collection {
 			$this->data[$var] = $value;
 	}
 	
+	public function set($var, $value) {
+		$this->data[$var] = $value;
+	}
+	
 	/**
 	 * Validate a particular field
 	 */
@@ -307,7 +311,7 @@ class Field {
 		$field = $this->parent.'->'.$field;
 		
 		if(!isset($this->collection->fields[$field]))
-			$this->collection->fields[$field] = new Field($this, $field, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
+			$this->collection->fields[$field] = new Field($this->collection, $field, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
 		return $this->collection->fields[$field];
 	}
 	

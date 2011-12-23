@@ -9,6 +9,8 @@ use e;
  */
 abstract class FormController {
 	
+	private $clear = false;
+	
 	protected $data;
 	
 	protected $_complete = true;
@@ -48,7 +50,7 @@ abstract class FormController {
 		 * Broadcast all messages both Success, and Errors
 		 * @author: Kelly Lauren Summer Becker
 		 */
-		$this->data->broadcastMessages(get_class($this));
+		$this->data->broadcastMessages($class);
 		
 		$to = $this->data->$which->clean();
 		if(!$to)
@@ -64,15 +66,17 @@ abstract class FormController {
 		
 		switch($run) {
 			case 'quene':
-				static $clear = true;
+				$this->clear = true;
 			break;
 			case 'unquene':
-				if(isset($clear))
-					$clear = false;
+				$this->clear = false;
 			break;
 			case 'run':
-				if(isset($clear) && $clear == true)
+				if($this->clear) {
+					$class = get_class($this);
 					$this->data = e::validator(null);
+					e::$session->data->$class = $this->data->clean();
+				}
 			break;
 		}
 			
