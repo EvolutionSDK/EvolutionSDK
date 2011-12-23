@@ -212,7 +212,13 @@ class Field {
 	}
 	
 	public function raw() {
-		return $this->value;
+		if(!is_array($this->clean)) return $this->value;
+		
+		$return = array();
+		foreach($this->value as $key=>$val)
+			$return[$key] = $this->$key->raw();
+		
+		return $return;
 	}
 	
 	public function getField() {
@@ -220,7 +226,13 @@ class Field {
 	}
 	
 	public function clean() {
-		return $this->clean;
+		if(!is_array($this->clean)) return $this->clean;
+		
+		$return = array();
+		foreach($this->clean as $key=>$val)
+			$return[$key] = $this->$key->clean();
+		
+		return $return;
 	}
 	
 	public function setCleanValue($value) {
@@ -238,6 +250,7 @@ class Field {
 	
 	/**
 	 * Validate a sub field
+	 * @author: Kelly Lauren Summer Becker
 	 */
 	public function __get($field) {
 		$field = $this->parent.'->'.$field;
