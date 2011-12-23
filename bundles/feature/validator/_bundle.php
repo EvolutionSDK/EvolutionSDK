@@ -84,7 +84,34 @@ class Collection {
 	}
 	
 	public function getMessages() {
-		return $this->messages;
+		$fields = array();
+		$messages_array = array();
+		foreach($this->messages as $message) {
+			if(empty($message['field']))
+				$message['field'] = '--global';
+			if(!is_array($fields[$message['field']]))
+				$fields[$message['field']] = array();
+			if(!is_array($fields[$message['field']][$message['type']]))
+				$fields[$message['field']][$message['type']] = array();
+			
+			$fields[$message['field']][$message['type']][] = $message;
+		}
+		foreach($fields as $field => $types) {
+			
+			foreach($types as $type => $messages) {
+				
+				$output = '';
+				$first = true;
+				
+				foreach($messages as $message) {
+					$output .= str_replace('%field', ($first ? '<span class="field">' . $message['name'] . '</span>' : ' and'), $message['message']);
+					$first = false;
+				}
+			
+				$messages_array[] = array('type' => $type, 'field' => $field, 'message' => $output);
+			}
+		}
+		return $messages_array;
 	}
 	
 	public function hasMessages() {
@@ -92,7 +119,7 @@ class Collection {
 	}
 	
 	public function broadcastMessages($namespace = 'global') {
-		foreach($this->messages as $message)
+		foreach($this->getMessages() as $message)
 			e::$events->message($message, $namespace);
 		$this->messages = array();
 	}
@@ -179,9 +206,9 @@ class Collection {
 		return $clean;
 	}
 	
-	public function addMessage($type, $message, $field = null) {
+	public function addMessage($type, $message, $field = null, $name = null) {
 		if($type == 'error') $this->success = false;
-		$this->messages[] = array('type' => $type, 'message' => $message, 'field' => $field);
+		$this->messages[] = array('type' => $type, 'message' => $message, 'field' => $field, 'name' => $name);
 	}
 }
 
@@ -240,8 +267,7 @@ class Field {
 	}
 	
 	public function error($message) {
-		$message = str_replace('%field', '<span class="field">' . $this->humanReadableName . '</span>', $message);
-		$this->collection->addMessage('error', $message, $this->field);
+		$this->collection->addMessage('error', $message, $this->field, $this->humanReadableName);
 	}
 	
 	public function setHumanReadableName($name) {
