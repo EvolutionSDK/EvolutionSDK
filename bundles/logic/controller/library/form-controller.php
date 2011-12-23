@@ -53,11 +53,30 @@ abstract class FormController {
 		$to = $this->data->$which->clean();
 		if(!$to)
 			throw new Exception("No `$which` in form controller `$class` data");
+			
+		$this->_clear('run');
+		
 		e\redirect($to);
 	}
 	
-	final protected function _clear() {
-		$this->data = e::validator(null);
+	final protected function _clear($run = false) {
+		if(!$run) return false;
+		
+		switch($run) {
+			case 'quene':
+				static $clear = true;
+			break;
+			case 'unquene':
+				if(isset($clear))
+					$clear = false;
+			break;
+			case 'run':
+				if(isset($clear) && $clear == true)
+					$this->data = e::validator(null);
+			break;
+		}
+			
+		return true;
 	}
 	
 	protected function init() {}

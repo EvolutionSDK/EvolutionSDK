@@ -25,6 +25,28 @@ class Bundle extends SQLBundle {
 	
 	public function currentMessages($namespace = 'none') {
 		
+		$member = e::$members->currentMember();
+		
+		if($member) $messages = $member->getMessages();
+		else $messages = e::$session->getMessages();
+		
+		/**
+		 * Apply Conditions
+		 */
+		$messages = $messages->condition('status', 'active')->condition('viewed', 'no');
+		$messages = $namespace == 'all' ? $messages : $messages->manual_condition('`namespace` IN ("global", "'.$namespace.'")');
+		
+		/**
+		 * Mark the messages as viewed and clear them
+		 */
+		$return = array();
+		foreach($messages as $message) {
+			$message->status = 'cleared';
+			$message->viewed = 'yes';
+			$return[] = $message->get_array();
+		}
+		
+		return $return;
 	}
 	
 	public function printMessages($namespace = 'none') {
@@ -61,14 +83,14 @@ _;
 		
 		
 		$member = e::$members->currentMember();
-		if($member)
-			$messages = $member->getMessages();
-		else
-			$messages = e::$session->getMessages();
+		
+		if($member) $messages = $member->getMessages();
+		else $messages = e::$session->getMessages();
 			
 		$messages = $messages->condition('status', 'active')->condition('viewed', 'no');
+		$messages = $messages->manual_condition('`namespace` IN ("global", "'.$namespace.'")');
 		
-		foreach($messages->manual_condition('`namespace` IN ("global", "'.$namespace.'")') as $message) {
+		foreach($messages as $message) {
 			$message->status = 'cleared';
 			$message->viewed = 'yes';
 			echo '<li class="message-' . $message->type . '">' . $message->message . '</li>';

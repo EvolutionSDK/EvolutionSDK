@@ -239,11 +239,12 @@ class Field {
 	}
 	
 	public function raw() {
-		if(!is_array($this->clean)) return $this->value;
+		$children = $this->children();
+		if(empty($children)) return $this->value;
 		
 		$return = array();
-		foreach($this->value as $key=>$val)
-			$return[$key] = $this->$key->raw();
+		foreach($children as $key=>$val)
+			$return[$key] = $val->raw();
 		
 		return $return;
 	}
@@ -253,12 +254,36 @@ class Field {
 	}
 	
 	public function clean() {
-		if(!is_array($this->clean)) return $this->clean;
+		$children = $this->children();
+		if(empty($children)) return $this->clean;
 		
 		$return = array();
-		foreach($this->clean as $key=>$val)
-			$return[$key] = $this->$key->clean();
+		foreach($children as $key=>$val)
+			$return[$key] = $val->clean();
 		
+		return $return;
+	}
+	
+	/**
+	 * Finds all child variables of this particular object
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	public function children() {
+		$parent = $this->parent;
+		
+		$children = array_filter(array_flip($this->collection->data), function($key) use ($parent) {
+			if(substr($key, 0, strlen($parent) + 2) !== $parent.'->')
+				return false;
+			else
+				return true;
+		});
+		$return = array();
+		foreach($children as $key) {
+			$key = substr($key, strlen($parent) + 2);
+			$return[$key] = $this->$key; 
+		}
 		return $return;
 	}
 	

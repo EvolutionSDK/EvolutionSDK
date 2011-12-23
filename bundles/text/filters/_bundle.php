@@ -8,7 +8,7 @@ class Bundle {
 	
 	private $filters;
 	
-	public function __invokeBundle($filter, $source, $args = array()) {
+	public function __callBundle($filter, $source, $args = array()) {
 		if(!is_object($this->filters)) $this->filters = new Filters;
 		
 		return call_user_func_array(array($this->filters, $filter), array($source, $args));
