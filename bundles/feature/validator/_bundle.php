@@ -71,11 +71,11 @@ class Bundle {
  */
 class Collection {
 	
-	private $data = array();
+	public $data = array();
 	
 	private $messages = array();
 	
-	private $fields = array();
+	public $fields = array();
 	
 	private $success = true;
 	
@@ -119,11 +119,33 @@ class Collection {
 			 * Add source elements to data
 			 */
 			if(is_array($data)) {
-				foreach($data as $key => $value) {
+				foreach($this->_formatData($data) as $key => $value) {
 					$this->data[$key] = $value;
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Rearranges array to a non multidimensional array
+	 *
+	 * @param string $data 
+	 * @param string $stack 
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	private function _formatData($data = array(), $stack = false) {
+		$prefix = !$stack ? '' : $stack.'->';
+		
+		$return = array();
+		foreach($data as $key=>$val) {
+			if(is_array($val)) 
+				$return = array_merge($return, $this->_formatData($val, $prefix.$key));
+			else
+				$return = array_merge($return, array($prefix.$key => $val));
+		}
+		
+		return $return;
 	}
 	
 	/**
@@ -174,11 +196,14 @@ class Field {
 	
 	private $field;
 	
+	private $parent;
+	
 	private $collection;
 	
 	private $humanReadableName;
 	
-	public function __construct($collection, $field, $value) {
+	public function __construct($collection, $field, $value, $parent = false) {
+		$this->parent = !$parent ? $field : $parent;
 		$this->collection = $collection;
 		$this->field = $field;
 		$this->humanReadableName = ucwords(str_replace(array('-', '_', '.'), array(' ', ' ', ' '), $field));
@@ -209,6 +234,17 @@ class Field {
 	
 	public function setHumanReadableName($name) {
 		$this->humanReadableName = $name;
+	}
+	
+	/**
+	 * Validate a sub field
+	 */
+	public function __get($field) {
+		$field = $this->parent.'->'.$field;
+		
+		if(!isset($this->collection->fields[$field]))
+			$this->collection->fields[$field] = new Field($this, $field, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
+		return $this->collection->fields[$field];
 	}
 	
 	public function __call($method, $arguments) {
