@@ -17,7 +17,7 @@ class Bundle {
 		$this->route($path, e::configure('action')->locations);
 	}
 	
-	public function __invokeBundle($action) {
+	public function __callBundle($action) {
 		if($action) {
 			$action = str_replace('.','\\', $action);
 			$r = $this->load(array(\Bundles\Portal\Bundle::$currentPortalName, $action), true);

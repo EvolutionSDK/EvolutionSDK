@@ -307,11 +307,11 @@ class Field {
 	 * Validate a sub field
 	 * @author: Kelly Lauren Summer Becker
 	 */
-	public function __get($field) {
-		$field = $this->parent.'->'.$field;
+	public function __get($locfield) {
+		$field = $this->parent.'->'.$locfield;
 		
 		if(!isset($this->collection->fields[$field]))
-			$this->collection->fields[$field] = new Field($this->collection, $field, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
+			$this->collection->fields[$field] = new Field($this->collection, $locfield, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
 		return $this->collection->fields[$field];
 	}
 	
