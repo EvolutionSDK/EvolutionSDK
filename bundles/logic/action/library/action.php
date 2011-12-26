@@ -375,6 +375,7 @@ class Action {
 	}
 	
 	public function close() {
+		$this->data = array();
 		e::$session->data->_action->{get_class($this)} = array();
 		e::$session->save();
 	}
