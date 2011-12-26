@@ -76,7 +76,7 @@ class Action {
 		 */
 		if(!isset($this->_allow_reset) || $this->_allow_reset) {
 			if(isset($_REQUEST['_reset']) || isset($this->data['_reset']))
-				$this->reset();
+				$this->close();
 		}
 		
 		/**
@@ -168,7 +168,7 @@ class Action {
 		 * If things validated properly and we need to complete the action go ahead and compelte it
 		 */
 		if(isset($results['success']) && $results['success'] && isset($this->data['_complete']) && $this->data['_complete'] > 0 )
-			{ $this->complete(); $this->reset(); }
+			{ $this->complete(); $this->close(); }
 		
 		/**
 		 * Remove the completion from the action
@@ -371,6 +371,11 @@ class Action {
 	public function reset() {
 		//$this->data = array();
 		//e::$session->data('unset', '_actions', get_class($this));
+		e::$session->save();
+	}
+	
+	public function close() {
+		e::$session->data->_action->{get_class($this)} = array();
 		e::$session->save();
 	}
 	
