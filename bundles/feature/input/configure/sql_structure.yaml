@@ -1,0 +1,6 @@
+breaches:
+  fields:
+    type: "enum('virus','injection')"
+    description: string
+    ip: string
+    useragent: string
