@@ -9,16 +9,23 @@ use e;
  */
 abstract class FormController {
 	
-	private $clear = false;
+	private $class;
 	
-	protected $data;
+	protected $data = null;
 	
-	protected $_complete = true;
+	protected $input = null;
 	
+	/**
+	 * Load stored session data for this controller then checks
+	 * For an overriding init function
+	 *
+	 * @author Kelly Lauren Summer Becker
+	 */
 	final public function __construct() {
-		$this->data = e::validator($_POST);
-		$class = get_class($this);
-		$this->data->mergeExistingData(e::$session->data->$class);
+		$this->input =& $_REQUEST;
+		$this->class = get_class($this);
+		if(isset(e::$session->data->FormController[$this->class])) 
+			$this->data = e::$session->data->FormController[$this->class];
 		
 		/**
 		 * Run init every page load
@@ -26,61 +33,63 @@ abstract class FormController {
 		$this->init();
 	}
 	
-	final public function _complete() {
-		$class = get_class($this);
-		
-		/**
-		 * Save the data to the session
-		 */
-		e::$session->data->$class = $this->data->clean();
-		
-		/**
-		 * If we are not completing then return
-		 */
-		if(!$this->_complete)
-			return;
-		
-		/**
-		 * Check if the validation returned any errors
-		 * @author: Kelly Lauren Summer Becker
-		 */
-		$which = $this->data->isSuccess() ? '_success_url' : '_failure_url';
-		
-		/**
-		 * Broadcast all messages both Success, and Errors
-		 * @author: Kelly Lauren Summer Becker
-		 */
-		$this->data->broadcastMessages($class);
-		
-		$to = $this->data->$which->clean();
-		if(!$to)
-			throw new Exception("No `$which` in form controller `$class` data");
-			
-		$this->_clear('run');
-		
-		e\redirect($to);
+	/**
+	 * Saves $this->data to the session for later
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __saveData() {
+		e::$session->data->FormController[$this->class] = $this->data;
+		e::$session->save();
 	}
 	
-	final protected function _clear($run = false) {
-		if(!$run) return false;
+	/**
+	 * Set Success and Failure URLS
+	 *
+	 * @param string $data 
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __getUrls(&$data = null) {
+		if(!is_array($data)) return;
 		
-		switch($run) {
-			case 'quene':
-				$this->clear = true;
-			break;
-			case 'unquene':
-				$this->clear = false;
-			break;
-			case 'run':
-				if($this->clear) {
-					$class = get_class($this);
-					$this->data = e::validator(null);
-					e::$session->data->$class = $this->data->clean();
-				}
-			break;
-		}
-			
-		return true;
+		if(isset($this->input['_success_url']) && !isset($data['_success_url']))
+			$data['_success_url'] = $this->input['_success_url'];
+		if(isset($this->input['_failure_url']) && !isset($data['_failure_url']))
+			$data['_failure_url'] = $this->input['_failure_url'];
+	}
+	
+	/**
+	 * Gets $_REQUEST Data and merges is with existing data if passed
+	 *
+	 * @param string $key 
+	 * @param string $data 
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __getInput($key = null, $data = array()) {
+		if(is_null($key)||empty($key)||!isset($this->input[$key])) 
+			$data = e\array_merge_recursive_simple($this->input, $data);
+		else
+			$data = e\array_merge_recursive_simple($this->input[$key], $data);
+		
+		$this->__getUrls($data);
+		
+		return $data;
+	}
+	
+	/**
+	 * Clears $this->data for the entire controller
+	 *
+	 * @param string $run 
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __clearData() {
+		e::$session->data->FormController[$this->class] = null;
+		e::$session->save();
+		$this->data = null;
 	}
 	
 	protected function init() {}

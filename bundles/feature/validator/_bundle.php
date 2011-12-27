@@ -146,33 +146,11 @@ class Collection {
 			 * Add source elements to data
 			 */
 			if(is_array($data)) {
-				foreach($this->_formatData($data) as $key => $value) {
+				foreach($data as $key => $value) {
 					$this->data[$key] = $value;
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Rearranges array to a non multidimensional array
-	 *
-	 * @param string $data 
-	 * @param string $stack 
-	 * @return void
-	 * @author Kelly Lauren Summer Becker
-	 */
-	private function _formatData($data = array(), $stack = false) {
-		$prefix = !$stack ? '' : $stack.'->';
-		
-		$return = array();
-		foreach($data as $key=>$val) {
-			if(is_array($val)) 
-				$return = array_merge($return, $this->_formatData($val, $prefix.$key));
-			else
-				$return = array_merge($return, array($prefix.$key => $val));
-		}
-		
-		return $return;
 	}
 	
 	/**
@@ -233,8 +211,7 @@ class Field {
 	
 	private $humanReadableName;
 	
-	public function __construct($collection, $field, $value, $parent = false) {
-		$this->parent = !$parent ? $field : $parent;
+	public function __construct($collection, $field, $value) {
 		$this->collection = $collection;
 		$this->field = $field;
 		$this->humanReadableName = ucwords(str_replace(array('-', '_', '.'), array(' ', ' ', ' '), $field));
@@ -243,14 +220,7 @@ class Field {
 	}
 	
 	public function raw() {
-		$children = $this->children();
-		if(empty($children)) return $this->value;
-		
-		$return = array();
-		foreach($children as $key=>$val)
-			$return[$key] = $val->raw();
-		
-		return $return;
+		return $this->value;
 	}
 	
 	public function getField() {
@@ -258,37 +228,7 @@ class Field {
 	}
 	
 	public function clean() {
-		$children = $this->children();
-		if(empty($children)) return $this->clean;
-		
-		$return = array();
-		foreach($children as $key=>$val)
-			$return[$key] = $val->clean();
-		
-		return $return;
-	}
-	
-	/**
-	 * Finds all child variables of this particular object
-	 *
-	 * @return void
-	 * @author Kelly Lauren Summer Becker
-	 */
-	public function children() {
-		$parent = $this->parent;
-		
-		$children = array_filter(array_flip($this->collection->data), function($key) use ($parent) {
-			if(substr($key, 0, strlen($parent) + 2) !== $parent.'->')
-				return false;
-			else
-				return true;
-		});
-		$return = array();
-		foreach($children as $key) {
-			$key = substr($key, strlen($parent) + 2);
-			$return[$key] = $this->$key; 
-		}
-		return $return;
+		return $this->clean;
 	}
 	
 	public function setCleanValue($value) {
@@ -301,18 +241,6 @@ class Field {
 	
 	public function setHumanReadableName($name) {
 		$this->humanReadableName = $name;
-	}
-	
-	/**
-	 * Validate a sub field
-	 * @author: Kelly Lauren Summer Becker
-	 */
-	public function __get($locfield) {
-		$field = $this->parent.'->'.$locfield;
-		
-		if(!isset($this->collection->fields[$field]))
-			$this->collection->fields[$field] = new Field($this->collection, $locfield, isset($this->collection->data[$field]) ? $this->collection->data[$field] : null, $field);
-		return $this->collection->fields[$field];
 	}
 	
 	public function __call($method, $arguments) {
