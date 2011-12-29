@@ -36,7 +36,16 @@ abstract class FormController {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	final protected function __saveData() {
+	final protected function __saveData($data = null) {
+		if(!is_null($data)):
+			if(is_array($this->data))
+				$this->data = e\array_merge_recursive_simple($this->data, $data);
+			else if(is_null($this->data))
+				$this->data = $data;
+			else if(!is_array($this->data) && !is_null($this->data))
+				$this->data = array($this->data, $data);
+		endif;
+		
 		e::$session->data->FormController[$this->class] = $this->data;
 		e::$session->save();
 	}

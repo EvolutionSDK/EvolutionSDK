@@ -160,6 +160,22 @@ class Node_if extends Node {
 			
 		}
 		
+		if(isset($this->attributes['empty'])) {
+		
+			$v = $this->attributes['empty'];
+			
+			if(strpos($v, '{') === false) $v = '{'.$v.'}';
+
+			$vars = $this->extract_vars($v);
+			if($vars) foreach($vars as $var) {
+				$v = $this->_data()->$var;
+			}
+			
+			if(!isset($v) || empty($v)) $retval = true;
+			else $retval = false;
+			
+		}
+		
 		if(isset($retval) && !$retval) foreach($this->children as $child) {
 			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
 		}

@@ -7,11 +7,11 @@ use e;
 class SQLBundle {
 	
 	public $bundle;
-	private $dir;
+	protected $dir;
 	public $database = 'default';
-	private $initialized = false;
+	protected $initialized = false;
 	
-	private $local_structure = array();
+	protected $local_structure = array();
 	
 	public function __construct($dir) {
 		$this->dir = $dir;
