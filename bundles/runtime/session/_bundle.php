@@ -380,64 +380,25 @@ class Bundle {
 	 * @return void
 	 * @author Kelly Lauren Summer Becker
 	 */
-	public function data() {
-		$args = func_get_args();
-				
-		/**
-		 * Grab the method to perform
-		 */
-		$method = array_shift($args);
-		
+	public function data($method, $var, $val = false) {
 		switch($method) {
 			case 'get':
-				/**
-				 * Grab the data from the session
-				 */
-				$data = $this->_data;
-
-				/**
-				 * Move down the array based on the args passed
-				 */
-				foreach($args as $arg) if(isset($data[$arg])) $data = $data[$arg];
-
-				/**
-				 * Finally return the data
-				 */
-				return $data;
+				return isset($this->_data[$var]) ? $this->_data[$var] : null;
 			break;
 			case 'set':
-				/**
-				 * Grab the end of the arguments (Data)
-				 */
-				$data = array_pop($args);
-				
-				/**
-				 * Reverse the array so everything lines up right (IMPORTANT)
-				 */
-				$args = array_reverse($args);
-				
-				/**
-				 * Loop through the array making our subarrays
-				 */
-				foreach($args as $arg) $data = array($arg => $data);
-				
-				/**
-				 * Merge our array into the session
-				 */
-				$this->_data = array_replace_recursive((is_array($this->_data) ? $this->_data : array()), $data);
-				
-				return $this;
+				$this->_data[$var] = $val;
+				$this->save();
+				return true;
 			break;
-			case 'unset':	
-				unset($this->_data[$args[0]][$args[1]]);
-				
-				return $this;
+			case 'unset':
+				if(isset($this->_data[$var])) unset($this->_data[$var]);
+				$this->save();
+				return true;
 			break;
 			default:
-				throw new Exception("You cannot call `e::$session->data()` with out providing `get` or `set` as the first arguement");
+				return false;
 			break;
 		}
-		
 	}
 	
 	/**
@@ -535,22 +496,19 @@ class Bundle {
  * @author David Boskovic
  */
 class DataAccess {
-	private $session;
-	public function __construct($session) {
-		$this->session = $session;
-	}
+	
 	public function __set($var, $val) {
-		$this->session->_data[$var] = $val;
-		return true;
+		return e::$session->data('set', $var, $val);
 	}
+	
 	public function __get($var) {
-		return isset($this->session->_data[$var]) ? $this->session->_data[$var] : null;
+		return e::$session->data('get', $var);
 	}
 	
 	public function __unset($var) {
-		if(isset($this->session->_data[$var])) unset($this->session->_data[$var]);
-		return true;
+		return e::$session->data('unset', $var);
 	}
+	
 }
 
 class flash {

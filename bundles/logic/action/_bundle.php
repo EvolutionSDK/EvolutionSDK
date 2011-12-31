@@ -87,7 +87,7 @@ class Bundle {
 			}
 			
 			// Load action
-			return new $class($data);
+			return new $class($data, true);
 			
 		}
 		
