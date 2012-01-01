@@ -29,7 +29,7 @@ abstract class Action {
 		$this->_injectData($data, $session[$this->class], e::$input->all);
 		
 		if(isset($this->data['_reset'])) {
-			$this->_clearData();
+			$this->data = array();
 			$this->_injectData(e::$input->all);
 		}
 		
