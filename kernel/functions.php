@@ -224,7 +224,9 @@ function complete($exception = false) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
-			display_trace();
+			$production = e::$environment->requireVar('production', 'yes | no');
+			if($production != 'yes' || $production != true)
+				display_trace();
 		}
 	}
 	
