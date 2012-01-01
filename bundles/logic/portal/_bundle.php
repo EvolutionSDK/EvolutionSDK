@@ -116,7 +116,8 @@ class Bundle {
 				 *
 				 * @author Kelly Lauren Summer Becker
 				 */
-				$this->defaultPortal(array_unshift($path, $shifted));
+				array_unshift($path, $shifted);
+				$this->defaultPortal($path);
 			
 				/**
 				 * Try to resolve with error pages
