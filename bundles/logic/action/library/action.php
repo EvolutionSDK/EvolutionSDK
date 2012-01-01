@@ -24,8 +24,13 @@ abstract class Action {
 	
 	final public function __construct($data = array(), $juststop = false) {
 		$this->class = get_class($this);
-		$session = e::$session->data('get', 'Action');
-		$this->_injectData($data, $session[$this->class], e::$input->all);
+		
+		if(isset($this->data['_reset']))
+			$this->_injectData(e::$input->all);
+		else {
+			$session = e::$session->data('get', 'Action');
+			$this->_injectData($data, $session[$this->class], e::$input->all);
+		}
 		
 		if($juststop) return;
 		
@@ -37,8 +42,6 @@ abstract class Action {
 			$this->type = $this->data['_type'];
 		if(isset($this->data['_complete']))
 			$this->complete = true;
-		if(isset($this->data['_reset']))
-			$this->_clearData();
 		
 		$this->init();
 		
