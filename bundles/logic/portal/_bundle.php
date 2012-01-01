@@ -15,7 +15,6 @@ class Bundle {
 	 * Route the portal
 	 */
 	public function _on_router_route($path) {
-
 		/**
 		 * Add the site dir to portal locations
 		 */
@@ -116,8 +115,11 @@ class Bundle {
 				 *
 				 * @author Kelly Lauren Summer Becker
 				 */
-				array_unshift($path, $shifted);
-				$this->defaultPortal($path);
+				if($shifted !== 'site') {
+				 	array_unshift($path, 'site', $shifted);
+				 	try { $this->_on_router_route($path); }
+					catch(Exception $e) {}
+				}
 			
 				/**
 				 * Try to resolve with error pages
@@ -171,93 +173,5 @@ class Bundle {
 		}
 		$out .= '</div>';
 		return $out;
-	}
-	
-	/**
-	 * Try Default Portal
-	 *
-	 * @param string $path 
-	 * @return void
-	 * @author Kelly Lauren Summer Becker
-	 */
-	private function defaultPortal($path) {
-		/**
-		 * Paths where this portal exists
-		 */
-		$matched = null;
-
-		/**
-		 * Get portal paths
-		 */
-		$searchdirs = e::configure('portal')->locations;
-		
-		/**
-		 * Search the default portal
-		 */
-		foreach($searchdirs as $dir) {
-			$name = 'site';
-			
-			$dir .= '/portals/' . $name;
-			if(is_dir($dir)) {
-				$matched = $dir;
-				array_unshift($path, $name);
-				break;
-			}
-		}
-		
-		/**
-		 * If any paths matched
-		 */
-		if(!is_null($matched)) {
-
-			/**
-			 * Remove the first segment
-			 */
-			array_shift($path);
-			
-			/**
-			 * URL
-			 */
-			$url = implode('/', $path);
-			
-			/**
-			 * Save current portal location
-			 */
-			self::$currentPortalDir = $matched;
-
-			/**
-			 * Save current portal name
-			 */
-			self::$currentPortalName = $name;
-
-			try {
-				
-				/**
-				 * Route inside of the portal
-				 */
-				e::$events->portal_route($path, $matched, "allow:$matched/portal.yaml");
-				
-				/**
-				 * If nothing found, throw exception
-				 */
-				throw new NotFoundException("Resource `$url` not found in portal `$matched`");
-			}
-			
-			/**
-			 * Handle any exceptions
-			 */
-			catch(Exception $exception) {
-
-				/**
-				 * Try to resolve with error pages
-				 */
-				e::$events->portal_exception($path, $matched, $exception);
-				
-				/**
-				 * Throw if not completed
-				 */
-				//throw $exception;
-			}
-		}
 	}
 }
