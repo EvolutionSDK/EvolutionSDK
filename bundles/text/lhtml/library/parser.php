@@ -25,6 +25,7 @@ class Parser {
 		# <!_
 		'tag-special'		=> array(	'!' => '#error',
 										'd' => 'tag-doctype',
+										'D' => 'tag-doctype',
 										'-' => 'tag-comment',
 										'*' => '&tag-contents'			),
 										
