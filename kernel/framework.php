@@ -22,14 +22,13 @@ class stack {
 	 */
 	public static $bundles = array();
 	public static $_bundle_initialized = array();
+	private static $_bundle_locations = array();
 	private static $methods = array();
 	
 	/**
 	 * Load the system core and look for matching site
 	 */
 	public static function __load($root, $sites, $bundles, $host) {
-		
-
 		e\trace('EvolutionSDK Framework', "Looking for sites matching host `$host`");
 		
 		/**
@@ -94,8 +93,16 @@ class stack {
 		
 		$dir = dirname($file);
 		$bundle = strtolower(basename($dir));
+		$category = dirname($dir);
 		
 		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
+		
+		if(!isset(self::$_bundle_locations[$bundle]))
+			self::$_bundle_locations[$bundle] = $category;
+		else {
+			$old = self::$_bundle_locations[$bundle];
+			throw new Exception("The bundle `$bundle` is located in both the `$old` and `$category` folders, please remove it from one of them.");
+		}
 		
 		require_once($file);
 		self::$dirs[$bundle] = $dir;

@@ -181,7 +181,7 @@ class Node {
 		 * If it's a doctype element TODO clean this up / standardize
 		 */
 		if(isset($this->_code) && isset($this->_code->special) && $this->_code->special === 'doctype') {
-			$output .= "<!$this->element>\n";
+			return "<!$this->element>";
 		}
 		
 		/**
