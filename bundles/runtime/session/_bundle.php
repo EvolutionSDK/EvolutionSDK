@@ -257,8 +257,10 @@ class Bundle {
 		$session->data = base64_encode(serialize(array()));
 		$session->ip = $_SERVER['REMOTE_ADDR'];
 		$session->save();
+		$set = setcookie($this->_cookie_name, $key, 0, '/', ($this->_cookie_url ? $this->_cookie_url : false), false);
 		
-		setcookie($this->_cookie_name, $key, 0, '/', ($this->_cookie_url ? $this->_cookie_url : false), false);
+		if(!$set)
+			throw new Exception("Session cookie `$this->_cookie_name` could not be set due to prior output from PHP");
 		
 		return $session;
 	}
