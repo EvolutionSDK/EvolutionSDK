@@ -9,14 +9,20 @@ use e;
  */
 abstract class FormController {
 	
-	protected $data;
+	private $class;
 	
-	protected $_complete = true;
+	protected $data = null;
 	
+	/**
+	 * Load stored session data for this controller then checks
+	 * For an overriding init function
+	 *
+	 * @author Kelly Lauren Summer Becker
+	 */
 	final public function __construct() {
-		$this->data = e::validator($_POST);
-		$class = get_class($this);
-		$this->data->mergeExistingData(e::$session->data->$class);
+		$this->class = get_class($this);
+		if(isset(e::$session->data->FormController[$this->class])) 
+			$this->data = e::$session->data->FormController[$this->class];
 		
 		/**
 		 * Run init every page load
@@ -24,40 +30,37 @@ abstract class FormController {
 		$this->init();
 	}
 	
-	final public function _complete() {
-		$class = get_class($this);
+	/**
+	 * Saves $this->data to the session for later
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __saveData($data = null) {
+		if(!is_null($data)):
+			if(is_array($this->data))
+				$this->data = e\array_merge_recursive_simple($this->data, $data);
+			else if(is_null($this->data))
+				$this->data = $data;
+			else if(!is_array($this->data) && !is_null($this->data))
+				$this->data = array($this->data, $data);
+		endif;
 		
-		/**
-		 * Save the data to the session
-		 */
-		e::$session->data->$class = $this->data->clean();
-		
-		/**
-		 * If we are not completing then return
-		 */
-		if(!$this->_complete)
-			return;
-		
-		/**
-		 * Check if the validation returned any errors
-		 * @author: Kelly Lauren Summer Becker
-		 */
-		$which = $this->data->isSuccess() ? '_success_url' : '_failure_url';
-		
-		/**
-		 * Broadcast all messages both Success, and Errors
-		 * @author: Kelly Lauren Summer Becker
-		 */
-		$this->data->broadcastMessages(get_class($this));
-		
-		$to = $this->data->$which->clean();
-		if(!$to)
-			throw new Exception("No `$which` in form controller `$class` data");
-		e\redirect($to);
+		e::$session->data->FormController[$this->class] = $this->data;
+		e::$session->save();
 	}
 	
-	final protected function _clear() {
-		$this->data = e::validator(null);
+	/**
+	 * Clears $this->data for the entire controller
+	 *
+	 * @param string $run 
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	final protected function __clearData() {
+		e::$session->data->FormController[$this->class] = null;
+		e::$session->save();
+		$this->data = null;
 	}
 	
 	protected function init() {}
