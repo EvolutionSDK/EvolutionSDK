@@ -220,7 +220,7 @@ function complete($exception = false) {
 	} else
 		$dev = e::$environment->requireVar('developmentMode', 'yes | no');
 	
-	if($dev == 'yes' || $dev == true) {
+	if($dev === 'yes' || $dev === true) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
