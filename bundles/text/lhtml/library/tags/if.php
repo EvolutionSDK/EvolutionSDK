@@ -192,6 +192,15 @@ class Node_if extends Node {
 			
 		}
 		
+		if(isset($this->attributes['browser'])) {
+		
+			$v = $this->attributes['browser'];
+			
+			if($v == 'IE' && isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false) $retval = true;
+			else $retval = false;
+			
+		}
+		
 		if(isset($retval) && !$retval) foreach($this->children as $child) {
 			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
 		}
