@@ -110,16 +110,22 @@ class Bundle {
 			 * Handle any exceptions
 			 */
 			catch(Exception $exception) {
-
-				/**
-				 * Try to resolve with error pages
-				 */
-				e::$events->portal_exception($path, $matched, $exception);
 				
 				/**
-				 * Throw if not completed
+				 * Try Default Site Portal
 				 */
-				throw $exception;
+				try { $this->_on_router_route(array_unshift($path, 'site')); }
+				catch(Exception $e) {
+					/**
+					 * Try to resolve with error pages
+					 */
+					e::$events->portal_exception($path, $matched, $exception);
+
+					/**
+					 * Throw if not completed
+					 */
+					throw $exception;
+				}
 			}
 		}
 	}
