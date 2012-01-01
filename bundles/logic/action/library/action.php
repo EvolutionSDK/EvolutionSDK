@@ -31,6 +31,7 @@ abstract class Action {
 		if(isset($this->data['_reset'])) {
 			$this->data = array();
 			$this->_injectData(e::$input->all);
+			unset($this->data['_reset']);
 		}
 		
 		if($juststop) return;
