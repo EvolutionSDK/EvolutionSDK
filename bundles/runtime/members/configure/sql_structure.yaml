@@ -1,0 +1,29 @@
+account:
+  singular: member
+  plural: members
+  fields:
+    first_name: string
+    last_name: string
+    address: string
+    address2: string
+    city: string
+    state: string
+    country: string
+    zip_code: string
+    phone: string
+    email: string
+    password: string
+    permission: 
+      Type: int
+      Default: 1
+    gender: "enum('Opt-Out','Male','Female')"
+    age: number
+    location: string
+    work: string
+    school: string
+    church: string
+  manyToMany:
+    - account
+  hasMany:
+    - session.list
+    - media.file
