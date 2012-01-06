@@ -35,7 +35,7 @@ class stack {
 		
 		foreach(array($root.$bundles, $site.$bundles) as $dir) {
 			foreach(glob($dir.'/*/*/_bundle.php') as $file)
-				self::__load_bundle($file);
+				self::loadBundle($file);
 		}
 		
 		/**
@@ -57,7 +57,7 @@ class stack {
 	/**
 	 * Load and cache a bundle
 	 */
-	public static function __load_bundle($file) {
+	public static function loadBundle($file) {
 		
 		$dir = dirname($file);
 		$bundle = strtolower(basename($dir));
@@ -79,7 +79,7 @@ class stack {
 	/**
 	 * Get the bundle directory
 	 */
-	public static function __bundle_directory($bundle) {
+	public static function getBundleDirectory($bundle) {
 		$bundle = strtolower($bundle);
 		if(!isset(self::$dirs[$bundle]))
 			throw new Exception("Bundle `$bundle` not installed");
@@ -111,7 +111,7 @@ class stack {
 	/**
 	 * Return a bundle
 	 */
-	public static function __callBundle($bundle, $args) {
+	public static function callBundle($bundle, $args) {
 		/**
 		 * Case insensitise the bundle name
 		 */
@@ -151,11 +151,6 @@ class stack {
 		 */
 		throw new Exception("The bundle `$bundle` cannot be accessed as a function,
 			you must use `e::$$bundle` static var access instead.");
-		
-		/**
-		 * Return instance
-		 */
-		return self::$bundles[$bundle];
 	}
 }
 
@@ -171,7 +166,7 @@ class e extends e_var_access {
 	 * Load a bundle
 	 */
 	public static function __callStatic($bundle, $args) {
-		return stack::__callBundle($bundle, $args);
+		return stack::callBundle($bundle, $args);
 	}
 	
 	/**

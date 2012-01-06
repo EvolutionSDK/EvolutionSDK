@@ -12,6 +12,35 @@ class Dump {
 e\trace('Debug Dump', 'Look over to the right for the results of this dump.');
 
 /**
+ * Plural count function
+ */
+function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
+	if(is_array($num))
+		$num = count($num);
+	$word = explode('/', $word);
+	return ($num === 0 ? $empty : $num) . ' ' . $word[0] . 
+		(count($word) >= 3 ? 
+			($num === 1 ? $word[1] : $word[2]) : 
+			($num === 1 ? '' : $word[1])
+		);
+}
+
+/**
+ * Get global object ID
+ * From: http://stackoverflow.com/questions/2872366/get-instance-id-of-an-object-in-php
+ * By: Alix Axel, non-greedy regex fix & xdebug compat by Nate Ferrero
+ */
+function get_object_id(&$obj) {
+    if(!is_object($obj))
+	    return false;
+    ob_start();
+    var_dump($obj);// object(foo)#INSTANCE_ID (0) { }
+	$dump = substr(ob_get_clean(), 0, 250);
+    preg_match('~^.+?(\#|\>)(\d+)~s', $dump, $oid);
+    return isset($oid[2]) ? $oid[2] : 'unknown';	
+}
+
+/**
  * Helper functions
  */
 function dumpVars(&$out) {

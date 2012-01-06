@@ -6,87 +6,11 @@ use e;
 
 /**
  * Support eval(d)
+ * @todo Improve on this idea. eval(d) is such a hackish command.
  */
 define('d', 'preg_match("/^(.*)\\((\\d+)\\)\\s\\:\\seval\\(\\)\\\'d code/", __FILE__, $___DUMP);
 	if(defined("e\dump"))throw new Exception("Evolution dump already loaded");
 	require_once("'.root.bundles.'/system/debug/dump.php");');
-
-/**
- * Get global object ID
- * From: http://stackoverflow.com/questions/2872366/get-instance-id-of-an-object-in-php
- * By: Alix Axel, non-greedy regex fix & xdebug compat by Nate Ferrero
- */
-function get_object_id(&$obj) {
-    if(!is_object($obj))
-	    return false;
-    ob_start();
-    var_dump($obj);// object(foo)#INSTANCE_ID (0) { }
-	$dump = substr(ob_get_clean(), 0, 250);
-    preg_match('~^.+?(\#|\>)(\d+)~s', $dump, $oid);
-    return isset($oid[2]) ? $oid[2] : 'unknown';	
-}
-
-/**
- * Plural count function
- */
-function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
-	if(is_array($num))
-		$num = count($num);
-	$word = explode('/', $word);
-	return ($num === 0 ? $empty : $num) . ' ' . $word[0] . 
-		(count($word) >= 3 ? 
-			($num === 1 ? $word[1] : $word[2]) : 
-			($num === 1 ? '' : $word[1])
-		);
-}
-
-/**
- * Time since filter
- */
-function time_since($source) {
-    // array of time period chunks
-    $chunks = array(
-        array(60 * 60 * 24 * 365 , 'year'),
-        array(60 * 60 * 24 * 30 , 'month'),
-        array(60 * 60 * 24 * 7, 'week'),
-        array(60 * 60 * 24 , 'day'),
-        array(60 * 60 , 'hour'),
-        array(60 , 'minute'),
-    );
-
-    $today = time(); /* Current unix time  */
-
-	$original = $source ? (is_numeric($source) ? $source :  strtotime($source)) : time();
-    $since = $today - $original;
-
-	if($since > 604800) {
-		$print = date("M jS", $original);
-
-		if($since > 31536000) {
-			$print .= ", " . date("Y", $original);
-		}
-		return $print;
-
-	}
-
-    // $j saves performing the count function each time around the loop
-    for ($i = 0, $j = count($chunks); $i < $j; $i++) {
-
-        $seconds = $chunks[$i][0];
-        $name = $chunks[$i][1];
-
-        // finding the biggest chunk (if the chunk fits, break)
-        if (($count = floor($since / $seconds)) != 0) {
-            // DEBUG print "<!-- It's $name -->\n";
-            break;
-        }
-    }
-
-    $print = ($count == 1) ? '1 '.$name : "$count {$name}s";
-	$print = $count == 0 ? 'less than a minute' : $print;
-	return $original > $today ? "just now" : $print . " ago";
-
-}
 
 /**
 * Decode a JSON file
@@ -99,47 +23,15 @@ function decode_file($file) {
 
 /**
  * Encode a JSON file
+ * @todo convert this to a function in a bundle
  */
 function encode_file($file, $arr) {
 	return file_put_contents($file, json_encode($arr));
 }
 
 /**
-* Decode a base64-encoded JSON file
-*/
-function decode64_file($file) {
-	if(!is_file($file))
-		return null;
-	return json_decode(base64_decode(file_get_contents($file)), true);
-}
-
-/**
- * Encode a JSON file with base64
- */
-function encode64_file($file, $arr) {
-	return file_put_contents($file, base64_encode(json_encode($arr)));
-}
-
-/**
- * Disable Hit for this page load
- */
-function disable_hit() {
-	throw new Exception('Not the right way to call a framework feature, use `e::$session->disable_hit()`');
-	$args = func_get_args();
-	return call_user_func_array(array(e::$session, 'disable_hit'), $args);
-}
-
-/**
- * Add Hit
- */
-function add_hit() {
-	throw new Exception('Not the right way to call a framework feature, use `e::$session->add_hit()`');
-	$args = func_get_args();
-	return call_user_func_array(array(e::$session, 'add_hit'), $args);
-}
-
-/**
  * Trace class to store variables
+ * @todo put all of the trace functionality into a seperate file and add the method to the trace class instead of the global namespace, wtf are these doing as functions anyways?
  */
 class TraceVars {
 	public static $arr = array();
@@ -333,6 +225,7 @@ function stylize_stack_trace($trace) {
 
 /**
  * Output global button CSS3
+ * @todo this is awful, let's clean this up ASAP
  */
 function button_style($sel, $size = 11) {
 	return <<<EOF
@@ -432,4 +325,49 @@ function array_merge_recursive_simple() {
                 $merged[] = $value;
     }
     return $merged;
+}
+
+
+/**
+ * Fix backslashes in paths on Windows
+ */
+function convert_backslashes($str) { return str_replace('\n', '/n', str_replace('\r', '/r', str_replace('\t', '/t', str_replace('\\', '/', $str)))); }
+
+function error_handler($no, $msg, $file, $line) {
+	
+	// Ignore warnings and notices unless in strict mode 
+	if(!isset($_GET['--strict'])) {
+		switch ($no) {
+			case E_WARNING:
+			case E_NOTICE:
+			case E_USER_WARNING:
+			case E_USER_NOTICE:
+			case E_STRICT:
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+			return true;
+		}
+	}
+	throw new \ErrorException($msg, 0, $no, $file, $line);
+}
+
+/**
+ * Show exceptions
+ */
+function handle($exception) {
+	
+	/**
+	 * Trace the exception
+	 */
+	trace_exception($exception);
+	
+	/**
+	 * If Evolution framework is loaded, send out an exception event
+	 */
+	if(stack::$loaded) {
+		try {
+			e::$events->exception($exception);
+		} catch(Exception $exception) {}
+	}
+	require_once(root.bundles.'/system/debug/message.php');
 }

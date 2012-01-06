@@ -1,5 +1,5 @@
 <?php
-
+// @todo clean this entire file up. It's dirty
 /**
  * Hack to associate $bundle static vars with bundles
  */
