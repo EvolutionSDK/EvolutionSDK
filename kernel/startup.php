@@ -6,7 +6,8 @@ use stack;
 use e;
 
 /**
- * Ensure the user can't stop the script
+ * Ensure the user can't stop the script.
+ * @todo what is this about? Why is this here?
  */
 ignore_user_abort(true);
 
@@ -29,6 +30,7 @@ function convert_backslashes($str) {
 /**
  * Define common directories and use cache as working directory
  */
+define(__NAMESPACE__.'\\site', convert_backslashes(\EVOLUTION_SITE_STARTUP_ROOT));
 define(__NAMESPACE__.'\\sites', convert_backslashes(dirname(dirname(__DIR__))));
 define(__NAMESPACE__.'\\root', convert_backslashes(dirname(__DIR__)));
 define(__NAMESPACE__.'\\kernel', convert_backslashes(__DIR__));
@@ -118,7 +120,7 @@ chdir(root.'/cache');
 /**
  * Check for site folder and load bundles
  */
-stack::__load(root, sites, bundles, $_SERVER['HTTP_HOST']);
+Stack::loadSite(root, site, bundles);
 
 /**
  * Route the request

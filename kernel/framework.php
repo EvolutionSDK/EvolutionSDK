@@ -8,7 +8,7 @@ class stack {
 	public static $loaded = false;
 	
 	/**
-	 * Contains the matched site
+	 * Contains the root path to the matched site
 	 */
 	public static $site;
 	
@@ -25,42 +25,9 @@ class stack {
 	private static $methods = array();
 	
 	/**
-	 * Load the system core and look for matching site
-	 */
-	public static function __load($root, $sites, $bundles, $host) {
-		
-
-		e\trace('EvolutionSDK Framework', "Looking for sites matching host `$host`");
-		
-		/**
-		 * Look for domains
-		 */
-		$domainFiles = "$sites/*/configure/domains.txt";
-		
-		/**
-		 * Discover which site to use
-		 */
-		foreach(glob($domainFiles) as $file) {
-			$domains = file($file);
-			array_walk($domains, function(&$v){ $v = trim($v); });
-			foreach($domains as $domain) {
-				if(preg_match('/^'.str_replace('*', '.+', str_replace('.', '\\.', $domain)).'$/', $host)) {
-					self::__load_site($root, dirname(dirname($file)), $bundles);
-					return;
-				}
-			}
-		}
-		
-		/**
-		 * No site found
-		 */
-		throw new Exception("No site matching host `$host` defined in `$sites/<i>site-dir</i>/configure/domains.txt`");
-	}
-	
-	/**
 	 * Load all bundles in the core and site
 	 */
-	public static function __load_site($root, $site, $bundles) {
+	public static function loadSite($root, $site, $bundles) {
 		
 		self::$site = $site;
 		
