@@ -167,10 +167,38 @@ class Lexer {
 								break 2;
 							}
 							$seq = $condtoken['match-sequence'];
-							$index = count($tokens) - count($seq);
+							$index = count($tokens);
+							
+							
+							/* DEBUG * /
+								echo "<h2>Checking <code>$token</code> conditional token</h2>";
+							/* END DEBUG */
+							
+							$first = true;
+							$scan = false;
+							$startIndex = 0;
 							foreach($condtoken['match-sequence'] as $match_token => $match_value) {
+								
+								if($first || $scan) {
+									while($tokens[$index]->name != $match_token) {
+										$index--;
+										if($first)
+											$startIndex = $index;
+										if($index < $startIndex)
+											break 2;
+									}
+									$first = false;
+									$scan = false;
+								}
+								
 								$actual_token = $tokens[$index]->name;
 								$actual_value = $tokens[$index]->value;
+								
+								if($match_token == '*') {
+									$scan = true;
+									$index = count($tokens);
+									continue;
+								}
 								
 								/* DEBUG * /
 									echo "<p>Comparing match token <strong>$match_token</strong> with actual <strong>$actual_token</strong>

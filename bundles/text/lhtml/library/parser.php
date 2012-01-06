@@ -106,6 +106,7 @@ class Parser {
 			array(	'match-sequence' 	=> array(
 						'tag-start' 		=> '<',
 						'tag-open-name' 	=> 'script',
+						'*' 				=> '*', // Allow attributes
 						'tag-end-inside'	=> '>',
 					),
 					
@@ -117,6 +118,7 @@ class Parser {
 			array(	'match-sequence' 	=> array(
 						'tag-start' 		=> '<',
 						'tag-open-name' 	=> 'style',
+						'*' 				=> '*', // Allow attributes
 						'tag-end-inside'	=> '>',
 					),
 					
