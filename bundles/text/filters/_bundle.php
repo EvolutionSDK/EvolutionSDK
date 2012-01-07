@@ -49,4 +49,8 @@ class Filters {
 		return '';
 	}
 	
+	private function _date($source, $vars = array()) {
+		return date($vars[0], strtotime($source));
+	}
+	
 }
