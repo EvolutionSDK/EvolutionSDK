@@ -18,8 +18,7 @@ class Bundle extends SQLBundle {
 	public function login($email, $password) {
 		$return = e::$sql->query("SELECT * FROM `members.account` WHERE `email` = '$email' AND `password` = md5('$password');")->row();
 		if($return) return $this->getMember($return)->linkSession(e::$session->_id);
-		else e::$session->message('error', 'Email or Password was incorrect.');
-		return false;
+		else return array('error', 'Email or Password was incorrect.');
 	}
 	
 	public function getByEmail($email) {
