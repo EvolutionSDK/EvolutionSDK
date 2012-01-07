@@ -2,7 +2,7 @@
 
 namespace Bundles\Cron;
 use Bundles\SQL\SQLBundle;
-use Exception
+use Exception;
 use e;
 
 class Bundle extends SQLBundle {
