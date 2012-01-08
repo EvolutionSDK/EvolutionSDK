@@ -53,4 +53,25 @@ class Filters {
 		return date($vars[0], strtotime($source));
 	}
 	
+	private function _money($source, $vars = array()) {
+		$round = isset($vars[1]) ? $vars[1] : 0;
+		switch($vars[0]) {
+			case 'separate':
+				$source = '<b>$</b>'.number_format((float)$source, (float)$round,'.',',');
+				break;
+			case 'USD':
+			case 'US':
+			default:
+				if(is_numeric($source))
+					$source = '$'.number_format($source, $round,'.',',');
+				else if(is_object($source))
+					$source = '[Object ' . get_class($source) . ']';
+				else
+					$source = '$' . $source;
+			break;
+		}
+		if($source == '$0.00') $source = '-.-';
+		return $source;
+	}
+	
 }
