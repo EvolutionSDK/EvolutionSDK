@@ -74,4 +74,21 @@ class Filters {
 		return $source;
 	}
 	
+	private function _count($source, $vars = array()) {
+		return count($source);
+	}
+	
+	private function _toDollars($source, $vars = array()) {
+		return $source / 100;
+	}
+	
+	private function _toCents($source, $vars = array()) {
+		return $source * 100;
+	}
+	
+	private function _TF($source, $vars = array()) {
+		if($source) return 'True';
+		else return 'False';
+	}
+	
 }
