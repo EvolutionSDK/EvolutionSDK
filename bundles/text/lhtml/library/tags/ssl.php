@@ -13,6 +13,8 @@ class Node_SSL extends Node {
 		else
 			$domain = $_SERVER['HTTP_HOST'];
 		
+		if(array_pop(explode('.', $domain)) == 'dev') return;
+		
 		if ($_SERVER['HTTPS'] != "on") { 
 		    $url = "https://". $domain . $_SERVER['REQUEST_URI']; 
 			header("Location: $url");
