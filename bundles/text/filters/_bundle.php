@@ -49,4 +49,61 @@ class Filters {
 		return '';
 	}
 	
+	private function _date($source, $vars = array()) {
+		if(!is_numeric($source))
+			$source = strtotime($source);
+		
+		return date($vars[0], $source);
+	}
+	
+	private function _money($source, $vars = array()) {
+		$round = isset($vars[1]) ? $vars[1] : 0;
+		switch($vars[0]) {
+			case 'separate':
+				$source = '<b>$</b>'.number_format((float)$source, (float)$round,'.',',');
+				break;
+			case 'USD':
+			case 'US':
+			default:
+				if(is_numeric($source))
+					$source = '$'.number_format($source, $round,'.',',');
+				else if(is_object($source))
+					$source = '[Object ' . get_class($source) . ']';
+				else
+					$source = '$' . $source;
+			break;
+		}
+		if($source == '$0.00') $source = '-.-';
+		return $source;
+	}
+	
+	private function _ucwords($source, $vars = array()) {
+		return ucwords($source);
+	}
+	
+	private function _abs($source, $vars = array()) {
+		return abs($source);
+	}
+	
+	private function _plus($source, $vars = array()) {
+		return $source + $vars[0];
+	}
+	
+	private function _count($source, $vars = array()) {
+		return count($source);
+	}
+	
+	private function _toDollars($source, $vars = array()) {
+		return $source / 100;
+	}
+	
+	private function _toCents($source, $vars = array()) {
+		return $source * 100;
+	}
+	
+	private function _TF($source, $vars = array()) {
+		if($source) return 'True';
+		else return 'False';
+	}
+	
 }

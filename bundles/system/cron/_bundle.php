@@ -1,7 +1,8 @@
 <?php
 
-namespace bundles\Cron;
-use bundles\sql\SQLBundle;
+namespace Bundles\Cron;
+use Bundles\SQL\SQLBundle;
+use Exception;
 use e;
 
 class Bundle extends SQLBundle {
@@ -32,7 +33,7 @@ class Bundle extends SQLBundle {
 			
 			if($job->command_type == 'function') {
 				try { eval("\$log->return = json_encode($job->command);"); }
-				catch(\Exception $e) { $log->message = $e->getMessage(); $log->message_type = 'error'; }
+				catch(Exception $e) { $log->message = $e->getMessage(); $log->message_type = 'error'; }
 			}
 			
 			else if($job->command_type == 'system') {

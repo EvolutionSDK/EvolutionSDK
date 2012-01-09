@@ -408,11 +408,35 @@ class ListObj implements \Iterator, \Countable {
 	public function paging() {
 		$pages = ceil($this->count('all') / $this->_page_length);
 		return (object) array(
-			'pages' => $page,
+			'pages' => $pages,
 			'page' => $this->_on_page,
 			'length' => $this->_page_length,
 			'items' => $this->count('all')
 		);
+	}
+	
+	/**
+	 * Return Paging Navigation
+	 *
+	 * @return void
+	 * @author Kelly Lauren Summer Becker
+	 */
+	public function paging_html($class = '') {
+		$paging = $this->paging(); $output = ''; $i=1;
+		if($paging->page > 1) 
+			$output .= "<a class=\"$class\" href=\"?page=".($paging->page - 1)."\">&laquo;</a>";
+		while($i<=$paging->pages) {
+			$tmp = $class.($paging->page == $i ? ' selected' : '');
+			$output .= "<a class=\"$tmp\" href=\"?page=$i\">$i</a>";
+			if($i == 5 && $paging->pages > 10 && !isset($inc)) {
+				$output .= '...';
+				$i = $paging->pages - 4;
+				$inc = true;
+			} else $i++;
+		}
+		if($paging->page < $paging->pages) 
+			$output .= "<a class=\"$class\" href=\"?page=".($paging->page + 1)."\">&raquo;</a>"; $i=1;
+		return $output;
 	}
 	
 	/**
