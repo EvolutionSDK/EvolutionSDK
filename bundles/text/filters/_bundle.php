@@ -50,7 +50,10 @@ class Filters {
 	}
 	
 	private function _date($source, $vars = array()) {
-		return date($vars[0], strtotime($source));
+		if(!is_numeric($source))
+			$source = strtotime($source);
+		
+		return date($vars[0], $source);
 	}
 	
 	private function _money($source, $vars = array()) {
@@ -72,6 +75,18 @@ class Filters {
 		}
 		if($source == '$0.00') $source = '-.-';
 		return $source;
+	}
+	
+	private function _ucwords($source, $vars = array()) {
+		return ucwords($source);
+	}
+	
+	private function _abs($source, $vars = array()) {
+		return abs($source);
+	}
+	
+	private function _plus($source, $vars = array()) {
+		return $source + $vars[0];
 	}
 	
 	private function _count($source, $vars = array()) {
