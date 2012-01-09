@@ -174,4 +174,13 @@ class Bundle {
 		$out .= '</div>';
 		return $out;
 	}
+	
+	public function currentPortalDir() {
+		return self::$currentPortalDir;
+	}
+	
+	public function currentPortalName() {
+		return self::$currentPortalName;
+	}
+	
 }

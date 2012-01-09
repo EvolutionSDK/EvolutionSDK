@@ -88,8 +88,24 @@ class Node {
 		 * If is a lhtml tag create it in the stack
 		 * @todo allow namespaced tags
 		 */
-		$class_name = str_replace(':','',__NAMESPACE__."\\Node_$name");
-		if(strpos($name, ':') === 0) $nchild = new $class_name($name, $this);
+		if(strpos($name, ':') === 0)
+			$class_name = __NAMESPACE__."\\Node_".substr($name, 1);
+		else
+			$class_name = __NAMESPACE__."\\Node_$name";
+		
+		if(strpos($name, ':') === 0) {
+			try { $nchild = new $class_name($name, $this); }
+			catch(Exception $e) { 
+				if(strpos($class_name, ':') !== false) {
+					$name_pos = strpos($class_name, ':');
+					$str_len = strlen($class_name);
+					$class_name = substr($class_name, 0, $name_pos - $str_len);
+					try { $nchild = new $class_name($name, $this); }
+					catch(Exception $n) { throw new Exception($e->getMessage()); }
+				}
+				else throw new Exception($e->getMessage());
+			}
+		}
 		
 		/**
 		 * If is a normal element create it in the stack

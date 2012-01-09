@@ -96,6 +96,7 @@ class Bundle {
 class Instance {
 	
 	private $file;
+	private $string;
 	private $stack;
 	
 	public function _get_special_vars($matcher) {
@@ -112,6 +113,7 @@ class Instance {
 		}
 		return null;
 	}
+	
 	public function file($file) {
 		$this->file = $file;
 		if($this->stack)
@@ -119,10 +121,26 @@ class Instance {
 		return $this;
 	}
 	
+	public function string($string) {
+		$this->string = $string;
+		if($this->stack)
+			unset($this->stack);
+		return $this;
+	}
+	
 	public function parse() {
-		if(!isset($this->file))
-			throw new Exception("LHTML: No file specified to parse");
-		$this->stack = Parser::parseFile($this->file);
+		if(!isset($this->file) && !isset($this->string))
+			throw new Exception("LHTML: No file or string specified to parse");
+		
+		if(isset($this->file)) {
+			$this->stack = Parser::parseFile($this->file);
+			unset($this->file);
+		}
+		else if(isset($this->string)) {
+			$this->stack = Parser::parseString($this->string);
+			unset($this->string);
+		}
+		
 		return $this;
 	}
 	
