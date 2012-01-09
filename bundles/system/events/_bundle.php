@@ -7,6 +7,8 @@ use e;
 
 class Bundle {
 	
+	private static $masterEvents = null;
+	
 	public function __call($event, $args) {
 		
 		$method = '_on_' . $event;
@@ -40,7 +42,13 @@ class Bundle {
 					$current = e\decode_file($file);
 				break;
 				case 'yaml':
-					$current = e::$yaml->load($file, true);
+					if($master) {
+						if(self::$masterEvents === null)
+							self::$masterEvents = e::$yaml->load($file, true);
+						$current = self::$masterEvents;
+					} else {
+						$current = e::$yaml->load($file, true);
+					}
 				break;
 				default:
 					throw new Exception("Error with file `$filename` the extension `$ext` is not supported.");
@@ -75,6 +83,10 @@ class Bundle {
 					$current['handlers'][$class] = 'enabled';
 					$save = true;
 				}
+			}
+			
+			if($save = true) {
+				self::$masterEvents = $current;
 			}
 		} else {
 			
