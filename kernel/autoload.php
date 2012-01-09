@@ -8,6 +8,10 @@ use e;
 class AutoLoadException extends Exception {}
 
 function load($class) {
+
+	/* DEBUG * /
+	echo "<p>Autoload $class</p>";
+	/* END DEBUG */
 	
 	if(stack::$loaded) {
 		$raw = e::configure('autoload', false)->activeGet('special');
@@ -45,17 +49,24 @@ function load($class) {
 		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition");
 	
 	$files = array("$a/*/$b/$c.php", "$a/*/$b/library/$c.php");
+	$site = stack::$site;
+	$dirs = array(root, $site);
 	
-	$dirs = array(root, stack::$site);
+	if(strtolower($a) == 'bundles' && isset(stack::$bundlePreferences[$b])) {
+		if(stack::$bundlePreferences[$b] == 'off')
+			throw new Exception("Trying to rely on a bundle that has been turned off in `$site/configure/bundles.txt`");
+		else if(stack::$bundlePreferences[$b] == 'core')
+			$dirs = array(root);
+		else if(stack::$bundlePreferences[$b] == 'site')
+			$dirs = array($site);
+	}
 	
 	foreach($dirs as $dir) {
 		foreach($files as $pattern) {
 			$pattern = "$dir/".strtolower($pattern);
 			foreach(glob($pattern) as $file) {
 				require_once($file);
-				/**
-				 * TODO Why can't we return here if we just included a file?
-				 */
+				return;
 			}
 		}
 	}
