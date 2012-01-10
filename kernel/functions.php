@@ -218,14 +218,14 @@ function complete($exception = false) {
 	else if(e::$environment->active) {
 		$dev = 'yes';
 	} else
-		$dev = e::$environment->requireVar('developmentMode', 'yes | no');
+		$dev = e::$environment->requireVar('Development.Master', 'yes | no');
 	
 	if($dev === 'yes' || $dev === true) {
 		trace('Completed with <code class="alt2">e\\complete()</code>');
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
-			$production = e::$environment->requireVar('production', 'yes | no');
-			if($production != 'yes' || $production != true)
+			$trace = e::$environment->requireVar('Development.Trace', 'yes | no');
+			if($trace != 'no' && $trace != false)
 				display_trace();
 		}
 	}
@@ -251,7 +251,7 @@ function redirect($url) {
 		if(e::$environment->active)
 			$dev = 'yes';
 		else
-			$dev = e::$environment->requireVar('developmentMode', 'yes | no');
+			$dev = e::$environment->requireVar('Development.Master', 'yes | no');
 	}
 	else
 		$dev = 'no';

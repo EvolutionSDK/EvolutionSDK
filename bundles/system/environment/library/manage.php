@@ -13,17 +13,15 @@ class Manage {
 	
 	public function page($path) {
 		$out = '';
-		$env = Bundle::$getAll;
+		$env = Bundle::getAll();
 		$categories = array();
 		
 		foreach($env as $key => $value) {
 			if(substr($key, -9) === '---format')
 				continue;
 			$tmp = explode('.', $key);
-			if(isset($tmp[3])) {
-				$category = "$tmp[0].$tmp[1].$tmp[2]";
-				array_shift($tmp);
-				array_shift($tmp);
+			if(isset($tmp[1])) {
+				$category = $tmp[0];
 				array_shift($tmp);
 				$name = implode('.', $tmp);
 			} else {
@@ -41,11 +39,15 @@ class Manage {
 			/**
 			 * Save the HTML
 			 */
-			$categories[$category][$name] = "<div class='var'><h3>$name</h3>$edit &bull; $delete &bull; <code>$value</code></div>";
+			if($value === true)
+				$value = 'true';
+			else if($value === false)
+				$value = 'false';
+			$categories[$category][$name] = "<div class='var'><h3>$name <span style='font-size: 80%; font-weight: normal'>$edit &bull; $delete</span></h3><code>$value</code></div>";
 		}
 		
 		foreach($categories as $category => $items) {
-			$out .= '<div class="section"><h1>'.$category.'</h1>';
+			$out .= '<div class="section" style="clear:both; padding-top: 1px; margin-top: -1px;"><h1>'.$category.'</h1>';
 			$out .= implode('', $items);
 			$out .= '</div>';
 		}

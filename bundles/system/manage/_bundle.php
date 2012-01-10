@@ -11,7 +11,7 @@ class Bundle {
 		
 		// Add manager
 		e::configure('manage')->activeAddKey('bundle', __NAMESPACE__, 'manage');
-	}	
+	}
 
 	public function route($path) {
 		

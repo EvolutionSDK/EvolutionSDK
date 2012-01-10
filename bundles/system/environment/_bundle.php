@@ -1,8 +1,8 @@
 <?php
 
-namespace bundles\environment;
+namespace Bundles\Environment;
 use Exception;
-use bundles\SQL\SQLBundle;
+use Bundles\SQL\SQLBundle;
 use stack;
 use e;
 
@@ -42,7 +42,7 @@ class Bundle {
 		/**
 		 * Check dev mode to avoid issues later
 		 */
-		e::$environment->requireVar('DevelopmentMode', 'yes | no');
+		e::$environment->requireVar('Development.Master', 'yes | no');
 	}
 	
 	/**
@@ -91,10 +91,34 @@ class Bundle {
 		}
 		
 		$file = self::$file;
-		self::$in_exception = true;
-		if($throw) throw new Exception("<strong>Environment Variable $why:</strong> `$orig` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
 		
-		else return null;
+		// Testing form again
+		// self::$in_exception = true;
+		// if($throw) throw new Exception("<strong>Environment Variable $why:</strong> `$orig` in `$file` &rarr; <strong>Required Format:</strong> `$format`", 0, $ex);
+		
+		// Get exception display
+		if($ex instanceof Exception)
+			$ex = e\render_exception($ex);
+		else
+			$ex = '';
+
+		// If not found show the form
+		$title = "EvolutionSDK&trade; Edit Environment Variable";
+		$header = '<span>EvolutionSDK</span> &rarr; <a href="/@manage">Manage System</a> &rarr; <a href="/@manage/environment">Environment</a> &rarr; <span>Edit Variable</span>';
+		$css = file_get_contents(e\root.e\bundles.'/system/debug/theme.css');
+		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><h1>$header</h1>";
+		echo $this->requireForm($var, $value, $format, $why).$ex;
+		echo "</body></html>";
+		e\complete();
+	}
+	
+	public function route($path) {
+		$form = array_shift($path);
+		$var = array_shift($path);
+		if(!in_array($form, array('edit', 'delete', 'update')))
+			throw new Exception("Invalid environment variable action `$form`");
+		$this->$form($var);
+		e\complete();
 	}
 	
 	public static function getAll() {
@@ -104,11 +128,83 @@ class Bundle {
 	public static function load() {
 		// Check for file
 		if(!is_file(self::$file))
-			throw new Exception();
+			throw new Exception("No environment file at `".self::$file."`");
 		
 		// Load environment file
 		$tmp = e::$yaml->file(self::$file);
 		foreach($tmp as $key => $value)
 			self::$environment[strtolower($key)] = $value;
+	}
+	
+	public function save() {
+		// Save environment file
+		ksort(self::$environment);
+		e::$yaml->save(self::$file, self::$environment);
+	}
+	
+	/**
+	 * Editing functions
+	 */
+	private function requireForm($var, $value, $format, $why) {
+		
+		if(is_null(self::$url))
+			self::$url = e::$router->url;
+		
+		$out = '<div class="section"><h1>Required Variable <code>'.htmlspecialchars($var).'</code> '.$why.'</h1>';
+		$out.= '<p>Environment variables are saved separately on each server and are particular to the current system configuration.</p>';
+		$out.= '<form action="/@environment/update" method="post"><h4>Set Variable</h4><div class="trace">';
+		if(strlen($format) > 0)
+			$out.= '<p>Required Format: <code>'.htmlspecialchars($format).'</code></p>';
+		$out.= '<input type="hidden" name="'.base64_encode('_return').'" value="'.htmlspecialchars(self::$url).'"/>';
+		$out.= '<div class="pad-sides">';
+		
+		if(preg_match('/([\w\s]+\|[\w\s]+)+/', $format)) {
+			$out .= '<select name="'.base64_encode($var).'">';
+			foreach(explode('|', $format) as $sval) {
+				$sval = trim($sval);
+				$selected = $value == $sval ? ' selected="selected"' : '';
+				$out .= '<option value="'.$sval.'"'.$selected.'>'.$sval.'</option>';
+			}
+			$out .= '</select>';
+		} else {
+			if($value === true)
+				$value = 'true';
+			else if($value === false)
+				$value = 'false';
+			$out .= '<textarea name="'.base64_encode($var).'">'.htmlspecialchars($value).'</textarea>';
+		}
+		
+		$out.= '</div>';
+		$out.= '<input type="submit" value="Save Environment Variable" /></div></form>';
+		
+		return $out;
+	}
+	
+	public function edit($var) {
+		$key = base64_decode($var);
+		self::$url = '/@manage/environment';
+		self::_require($key, self::$environment[$key.'---format'], 'can be edited!', true, null, false);
+	}
+	
+	public function delete($var) {
+		$key = base64_decode($var);
+		self::$url = '/@manage/environment';
+		unset(self::$environment[$key]);
+		unset(self::$environment[$key.'---format']);
+		$this->save();
+		e\redirect(self::$url);
+	}
+	
+	public function update() {
+		$return = '/';
+		foreach($_POST as $var => $value) {
+			$var = base64_decode($var);
+			if($var == '_return')
+				$return = $value;
+			else if(strlen($var) > 1)
+				self::$environment[$var] = $value;
+		}
+		$this->save();
+		e\redirect($return);
 	}
 }

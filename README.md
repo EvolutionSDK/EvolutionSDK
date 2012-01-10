@@ -41,7 +41,7 @@ Contents:
 
     ---
         Airbrake.Enabled: no
-        DevelopmentMode: yes
+        Development.Master: yes
         Session.Enabled: no
         SQL.Enabled: no
 

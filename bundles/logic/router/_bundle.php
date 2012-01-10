@@ -56,18 +56,24 @@ class Bundle {
 		$path = $this->path;
 		$bundle = substr(array_shift($path), 1);
 		$realm = array_shift($path);
-	
+		
+		if(preg_match('/[^a-zA-Z]/', $bundle))
+			throw new Exception("Bundle name `@$bundle` contains invalid characters");
+			
+		if(!isset(e::$$bundle))
+			throw new Exception("Bundle `@$bundle` does not exist");
+		
 		switch($realm) {
 			case 'api':
 				$this->route_bundle_api($bundle, $path);
-			break;
+				break;
 			default:
-				try { e::$$bundle->route(); }
-				catch(Exception $e) {}
-			break;
+				array_unshift($path, $realm);
+				e::$$bundle->route($path);
+				break;
 		}
 		
-		throw new Exception("Bundle routing realm `$bundle.$realm` does not exist");
+		throw new Exception("Bundle `@$bundle` routing did not complete");
 	}
 		
 	

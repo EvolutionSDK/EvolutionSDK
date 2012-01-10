@@ -140,6 +140,8 @@ h4 {
 	color: gray; padding: 0 2px;
 }
 
+h1 {clear: both;}
+
 .selected {
 	padding: 2px 4px;
 	border-radius: 4px;
@@ -155,10 +157,12 @@ h4 {
 }
 
 /* Environment Var style */
-.var {padding: 1em; margin: 0 30px -1px 0; border: 1px solid #ddd; background: #f8f8f8; width: 45%; float: left;}
+.var {padding: 1em; margin: 0 -1px -1px 0; border: 1px solid #ddd; background: #f8f8f8; width: 25%; float: left;}
 .var label {width: 100px; float: left; padding: 8px 6px; color: #444; background: #ddd; border: 1px solid #bbb; font-size: 14px; font-weight: bold; text-align: right;}
 .var input, .var select {border: 1px solid #bbb; background: white; padding: 8px 6px; margin: 0 0 0 -1px; font-size: 14px;}
 .var h3 {margin-top: 0}
+.var a {text-decoration: none; cursor: pointer;}
+.var a:hover {text-decoration: underline; cursor: pointer;}
 .clear {clear:both; height: 1px; margin-top: -1px}
 
 /* List Styles */
