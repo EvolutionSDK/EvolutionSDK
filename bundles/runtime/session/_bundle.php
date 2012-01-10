@@ -362,8 +362,10 @@ class Bundle {
 			$this->_hit->linkSession($this->_session);
 			
 			if($this->_log_hit) {
-				$this->_session->last_hit = $this->_hit->id;
-				$this->_session->save();
+				if($this->_session instanceof \Bundles\SQL\Model) {
+					$this->_session->last_hit = $this->_hit->id;
+					$this->_session->save();
+				}
 			} else if($this->_child_hit) {
 				$this->_hit->parent = $this->_session->last_hit;
 				$this->_hit->save();
