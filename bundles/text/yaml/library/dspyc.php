@@ -59,8 +59,8 @@ class DSpyc {
 			$result = $this->_get_configuration($file);
 			e::$cache->store('yaml-cache', $key, $result, 'base64');
 		}
-		return $result;
 		
+		return $result;		
 	}
 	
 	public function is_changed($file) {
