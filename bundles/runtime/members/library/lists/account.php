@@ -1,8 +1,8 @@
 <?php
 
-namespace Evolution\Members\Lists;
+namespace Bundles\Members\Lists;
 
-class Account extends \Evolution\SQL\ListObj {
+class Account extends \Bundles\SQL\ListObj {
 	
 	public function has_permission($level) {
 		return $this->condition('`permission` <=', $level);
