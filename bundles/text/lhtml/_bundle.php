@@ -97,7 +97,7 @@ class Instance {
 	
 	private $file;
 	private $string;
-	private $stack;
+	public $stack;
 	
 	public function _get_special_vars($matcher) {
 		switch($matcher) {
