@@ -73,6 +73,8 @@ class Bundle {
 	
 	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $throw = true) {
 		
+		if($_SERVER['REQUEST_URI'] == '/@environment/update') return;
+		
 		// Make active to prevent exceptions
 		$this->active = true;
 		
