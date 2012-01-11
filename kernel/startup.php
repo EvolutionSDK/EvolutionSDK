@@ -64,22 +64,34 @@ error_reporting(E_ALL | E_STRICT);
 /**
  * Show exceptions
  */
-function handle($exception) {
+function handle($exception) {	
+	try {
+		/**
+		 * Trace the exception
+		 */
+		trace_exception($exception);
 	
-	/**
-	 * Trace the exception
-	 */
-	trace_exception($exception);
-	
-	/**
-	 * If Evolution framework is loaded, send out an exception event
-	 */
-	if(stack::$loaded) {
-		try {
-			e::$events->exception($exception);
-		} catch(Exception $exception) {}
+		/**
+		 * If Evolution framework is loaded, send out an exception event
+		 */
+		if(stack::$loaded) {
+			try {
+				e::$events->exception($exception);
+			} catch(Exception $exception) {}
+		}
+		require_once(root.bundles.'/system/debug/message.php');
 	}
-	require_once(root.bundles.'/system/debug/message.php');
+	catch(Exception $e) {
+		echo "<div class='section'><h1>".get_class($e)." in Exception Handler</h1>";
+		echo $e->getMessage()." <br />";
+		echo "<p>Error happened on <span class='line'>line " . $e->getLine() .
+			'</span> of <code class="file">' . $e->getFile() . '</code></p><br />';
+		echo "<br />";
+		echo "<div class='section'><h1>Original ".get_class($exception)."</h1>";
+		echo $exception->getMessage()." <br />";
+		echo "<p>Error happened on <span class='line'>line " . $exception->getLine() .
+			'</span> of <code class="file">' . $exception->getFile() . '</code></p></div></div>';
+	}
 }
 
 /**
