@@ -24,7 +24,12 @@ class Manage {
 		echo '<style>' . file_get_contents(__DIR__ . '/unit-style.css') . '</style>';
 		echo '<script type="text/javascript">' . file_get_contents(__DIR__ . '/jquery-1.7.min.js') . '</script>';
 		echo '<script type="text/javascript">' . file_get_contents(__DIR__ . '/unit-script.js') . '</script>';
-		echo '<div class="controls">Controls: <a onclick="unit.start()">Start</a>|<a onclick="unit.pause()">Pause</a>|<a onclick="unit.reset()">Reset</a></div>';
+		echo '<div class="controls">
+				<span class="state-init"><em>Ready</em> | <a onclick="unit.start()">Start</a></span>
+				<span class="state-paused"><em>Paused</em> | <a onclick="unit.resume()">Resume</a>|<a onclick="unit.reset()">Reset</a></span>
+				<span class="state-running"><em>Running tests...</em> | <a onclick="unit.pause()">Pause</a>|<a onclick="unit.reset()">Reset</a></span>
+				<span class="state-complete"><em>Tests Complete!</em> |<a onclick="unit.reset()">Reset</a></span>
+			</div>';
 		
 		foreach(stack::__bundle_locations() as $bundle => $location) {
 			$location = explode(DIRECTORY_SEPARATOR, $location);
@@ -47,12 +52,12 @@ class Manage {
 			$width = 140;
 			$spread = 280;
 			$width += $spread * $total / $max;
-			echo "<li class='category'><h1>$category <span class='tests bar-off' style='width: ${width}px'><span class='bar-green'></span><span class='text'><span class='passed'>0</span> of <span class='total'>$total</span> tests passed</span></span></h1>";
+			echo "<li class='category'><h1>$category <span class='tests tests-bar bar-off' style='width: ${width}px'><span class='bar-green'></span><span class='text'><span class='passed'>0</span> of <span class='total'>$total</span> tests passed</span></span></h1>";
 			echo '<ul class="bundles">';
 			foreach($bundles as $bundle => $tests) {
 				echo "<li class='bundle'><div class='name'>$bundle</div><ul class='tests'>";
 				foreach($tests as $test) {
-					echo '<li class="test"><div class="led led-off"></div><span class="description">'.($test->description ? $test->description : '<em>No description</em>').'</span></li>';
+					echo '<li class="test"><div class="led led-off" title="'.$bundle.'/'.$test->_method().'"></div><span class="description">'.($test->description ? $test->description : '<em>No description</em>').'</span></li>';
 				}
 				echo '</ul></li>';
 			}

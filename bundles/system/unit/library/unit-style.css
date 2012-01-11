@@ -12,27 +12,36 @@
 	right: 1.5em;
 	color: #888;
 	background: #333;
-	padding: 0.5em 0.2em 0.5em 1.0em;
+	padding: 0.5em 0.5em 0.5em;
 	border-radius: 4px;
 	box-shadow: 0 0 10px #333;
 	z-index: 1;
 }
 
-
-
 .controls a {
-	text-decoration: none;
 	color: white;
-	padding: 0.5em 0.8em;
-	cursor: pointer;
+}
+
+.controls a, .controls em {
+	text-decoration: none;
+	padding: 0.5em 0.5em;
+}
+
+.controls em {
+	font-style: normal;
 }
 
 .controls a:hover {
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 .controls a:active {
 	color: #ddd;
+}
+
+.controls .state-paused, .controls .state-running, .controls .state-complete {
+	display: none;
 }
 
 .manage-page {
@@ -92,7 +101,7 @@ h1 .tests {
 h1 .tests .bar-green {
 	width: 0%;
 	position: absolute;
-	right: 0;
+	left: 0;
 	top: 0;
 	bottom: 0;
 	border-radius: 4px;
@@ -111,6 +120,7 @@ h1 .tests .text {
 	position: absolute;
 	top: 7px;
 	left: 7px;
+	cursor: pointer;
 }
 .led-off {
 	background-color:#ebebeb;

@@ -73,7 +73,67 @@ class Test {
 		return $this;
 	}
 	
-	public function run() {
-		;
+	public function _method() {
+		return $this->method;
 	}
+	
+	public function _run() {
+		$success = true;
+		$exception = null;
+		$test = null;
+		$flaw = null;
+		
+		if(!method_exists($this->instance, $this->method))
+			throw new Exception("Unit test method `$method` is not defined in class `".get_class($this->instance)."`");
+		
+		try {
+			$call = $this->method;
+			$test = $this->instance->$call();
+		} catch(Exception $exception) {}
+		
+		foreach($this->conditions as $condition) {
+			foreach($condition as $method => $args) {
+				$value = array_shift($args);
+				
+				$func = "\\Bundles\\Unit\\test_$method";
+				
+				if(!function_exists($func))
+					throw new Exception("The unit test method `$func` is not defined");
+				
+				$check = $func($test, $value, $args, $exception);
+				
+				if(!$check) {
+					$flaw = $method;
+					$success = false;
+					break 2;
+				}
+			}
+		}
+		
+		return array('method' => $this->method, 'result' => ($success ? 'pass' : 'fail'), 'value' => $test, 'exception' => $exception, 'flaw' => $flaw, 'comparison' => $value);
+	}
+}
+
+/**
+ * Unit test validation functions
+ * @author Nate Ferrero
+ */
+function test_equals($a, $b) {
+	return $a == $b;
+}
+function test_strictEquals($a, $b) {
+	return $a === $b;
+}
+function test_greaterThan($a, $b) {
+	return $a > $b;
+}
+function test_lessThan($a, $b) {
+	return $a < $b;
+}
+function test_between($a, $b, $args) {
+	$c = array_shift($args);
+	return $a > $b && $a < $c;
+}
+function test_throws($a, $b, $args, $ex) {
+	return is_a($ex, $b);
 }
