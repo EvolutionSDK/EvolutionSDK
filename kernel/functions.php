@@ -6,6 +6,8 @@ use e;
 
 /**
  * Support eval(d)
+ * Dumps all variables referenced in the last few lines of code
+ * @author Nate Ferrero
  */
 define('d', 'preg_match("/^(.*)\\((\\d+)\\)\\s\\:\\seval\\(\\)\\\'d code/", __FILE__, $___DUMP);
 	if(defined("e\dump"))throw new Exception("Evolution dump already loaded");
@@ -15,6 +17,7 @@ define('d', 'preg_match("/^(.*)\\((\\d+)\\)\\s\\:\\seval\\(\\)\\\'d code/", __FI
  * Get global object ID
  * From: http://stackoverflow.com/questions/2872366/get-instance-id-of-an-object-in-php
  * By: Alix Axel, non-greedy regex fix & xdebug compat by Nate Ferrero
+ * @author Nate Ferrero
  */
 function get_object_id(&$obj) {
     if(!is_object($obj))
@@ -28,6 +31,7 @@ function get_object_id(&$obj) {
 
 /**
  * Plural count function
+ * @author Nate Ferrero
  */
 function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
 	if(is_array($num))
@@ -42,6 +46,7 @@ function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
 
 /**
  * Time since filter
+ * @author David Boskovic
  */
 function time_since($source) {
     // array of time period chunks
@@ -89,8 +94,25 @@ function time_since($source) {
 }
 
 /**
-* Decode a JSON file
-*/
+ * Deep count an array
+ * @author Nate Ferrero
+ */
+function deep_count(&$arr) {
+	$count = 0;
+	foreach($arr as $key => $value) {
+		if(is_array($value)) {
+			$count += deep_count($value);
+		} else {
+			$count++;
+		}
+	}
+	return $count;
+}
+
+/**
+ * Decode a JSON file
+ * @author Nate Ferrero
+ */
 function decode_file($file) {
 	if(!is_file($file))
 		return null;
@@ -99,6 +121,7 @@ function decode_file($file) {
 
 /**
  * Encode a JSON file
+ * @author Nate Ferrero
  */
 function encode_file($file, $arr) {
 	return file_put_contents($file, json_encode($arr));
@@ -106,6 +129,7 @@ function encode_file($file, $arr) {
 
 /**
 * Decode a base64-encoded JSON file
+ * @author Nate Ferrero
 */
 function decode64_file($file) {
 	if(!is_file($file))
@@ -115,6 +139,7 @@ function decode64_file($file) {
 
 /**
  * Encode a JSON file with base64
+ * @author Nate Ferrero
  */
 function encode64_file($file, $arr) {
 	return file_put_contents($file, base64_encode(json_encode($arr)));
@@ -140,6 +165,7 @@ function add_hit() {
 
 /**
  * Trace class to store variables
+ * @author Nate Ferrero
  */
 class TraceVars {
 	public static $arr = array();
@@ -150,6 +176,7 @@ class TraceVars {
 
 /**
  * Trace disable
+ * @author Nate Ferrero
  */
 function disable_trace() {
 	TraceVars::$disabled_at = debug_backtrace();
@@ -158,6 +185,7 @@ function disable_trace() {
 
 /**
  * Trace display
+ * @author Nate Ferrero
  */
 function display_trace() {
 	if(TraceVars::$enabled)
@@ -174,6 +202,7 @@ function display_trace() {
 
 /**
  * Trace execution
+ * @author Nate Ferrero
  */
 function trace($title, $message = '', $args = array(), $priority = 0, $argdepth = 1) {
 	TraceVars::$arr[] = array('title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
@@ -182,6 +211,7 @@ function trace($title, $message = '', $args = array(), $priority = 0, $argdepth 
 
 /**
  * Trace exception
+ * @author Nate Ferrero
  */
 function trace_exception($ex) {
 	trace('<span class="exception">' . get_class($ex) . '</span>', $ex->getMessage());
@@ -189,6 +219,7 @@ function trace_exception($ex) {
 
 /**
 * Enter an execution block
+ * @author Nate Ferrero
 */
 function trace_enter($title, $message = '', $args = array(), $priority = 0) {
 	trace($title, $message, $args, $priority);
@@ -197,6 +228,7 @@ function trace_enter($title, $message = '', $args = array(), $priority = 0) {
 
 /**
  * Exit an execution block
+ * @author Nate Ferrero
  */
 function trace_exit() {
 	array_pop(TraceVars::$stack);
@@ -204,6 +236,7 @@ function trace_exit() {
 
 /**
  * Complete page output
+ * @author Nate Ferrero
  */
 function complete($exception = false) {
 	
@@ -246,6 +279,10 @@ function complete($exception = false) {
 	exit;
 }
 
+/**
+ * Full-featured redirection
+ * @author Nate Ferrero
+ */
 function redirect($url) {
 	if(stack::$loaded) {
 		if(e::$environment->active)
@@ -273,6 +310,7 @@ function redirect($url) {
 
 /**
  * Stylize newlines in variables for HTML output
+ * @author Nate Ferrero
  */
 function stylize_string(&$value) {
 	$value = htmlspecialchars($value);
@@ -286,6 +324,7 @@ function stylize_string(&$value) {
 
 /**
  * Color PHP values in an array
+ * @author Nate Ferrero
  */
 function stylize_array($array, $depth = 0) {
 	foreach($array as $key => $value) {
@@ -314,6 +353,7 @@ function stylize_array($array, $depth = 0) {
 
 /**
  * Stylize a stack trace array
+ * @author Nate Ferrero
  */
 function stylize_stack_trace($trace) {
 	$out .= '<h4>Stack Trace</h4><div class="trace">';
@@ -335,6 +375,7 @@ function stylize_stack_trace($trace) {
 
 /**
  * Output global button CSS3
+ * @author Nate Ferrero
  */
 function button_style($sel, $size = 11) {
 	return <<<EOF
@@ -400,6 +441,10 @@ $sel.disabled {
 EOF;
 }
 
+/**
+ * Simple timer
+ * @author Kelly Becker
+ */
 function timer($return = false) {
 	static $start = 0;
 	
@@ -409,6 +454,10 @@ function timer($return = false) {
 	else return microtime() - $start;
 }
 
+/**
+ * Merge arrays recursively
+ * @author Kelly Becker
+ */
 function array_merge_recursive_simple() {
     if (func_num_args() < 2) {
         trigger_error(__FUNCTION__ .' needs two or more array arguments', E_USER_WARNING);

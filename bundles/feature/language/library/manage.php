@@ -6,6 +6,7 @@ use e;
 
 /**
  * Evolution Language Manage
+ * @author Nate Ferrero
  */
 class Manage {
 	

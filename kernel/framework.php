@@ -242,6 +242,14 @@ class stack {
 		 */
 		return self::$bundles[$bundle];
 	}
+	
+	/**
+	 * Bundle locations
+	 * @author Nate Ferrero
+	 */
+	public function __bundle_locations() {
+		return self::$_bundle_locations;
+	}
 }
 
 /**
