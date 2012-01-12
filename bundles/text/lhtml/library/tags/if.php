@@ -201,6 +201,19 @@ class Node_if extends Node {
 			
 		}
 		
+		if(isset($this->attributes['time'])) {
+		
+			$time = $this->attributes['time'];
+			$df = isset($this->attributes['df']) ? $this->attributes['df'] : 'Y-m-d H:i:s';
+			$of = (float) (isset($this->attributes['offset']) ? $this->attributes['offset'] : 0);
+			
+			$of = $of * 3600;
+			
+			if($time == date($df, time() - $of)) $retval = true;
+			else $retval = false;
+			
+		}
+		
 		if(isset($retval) && !$retval) foreach($this->children as $child) {
 			if(isset($child->fake_element) && $child->fake_element == ':else') $child->show_else = 1;
 		}
