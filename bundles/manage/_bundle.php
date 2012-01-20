@@ -22,7 +22,7 @@ class Bundle {
         if($name == 'sandbox') {
         	$path = implode('/', $path);
         	if($path === '') $path = 'index';
-        	$file = stack::$site . '/sandbox/' . $path . '.php';
+        	$file = e\site . '/sandbox/' . $path . '.php';
         	$dir = dirname($file);
         	if(!is_dir($dir))
         		throw new Exception("Sandbox directory `$dir` does not exist");

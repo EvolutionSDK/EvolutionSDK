@@ -24,7 +24,7 @@ class Bundle {
 			array_pop($args);
 		} else {
 			$master = true;
-			$file = stack::$site . "/configure/master-events.yaml";
+			$file = e\site . "/configure/master-events.yaml";
 		}
 		
 		if(empty($file))

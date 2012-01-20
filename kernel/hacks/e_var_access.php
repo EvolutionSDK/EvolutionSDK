@@ -26,17 +26,17 @@ class e_bundle_accessor {
 	private function __init() {
 		if(!isset($this->bundleCache)) {
 			$bundle = $this->bundleName;
-			if(!stack::$_bundle_initialized[$bundle]) {
-				stack::$_bundle_initialized[$bundle] = true;
-				if(method_exists(stack::$bundles[$bundle], '__initBundle'))
-					stack::$bundles[$bundle]->__initBundle();
+			if(!Stack::$bundleInitialized[$bundle]) {
+				Stack::$bundleInitialized[$bundle] = true;
+				if(method_exists(Stack::$bundles[$bundle], '__initBundle'))
+					Stack::$bundles[$bundle]->__initBundle();
 			}
 			
 			$bundle = $this->bundleName;
-			if(method_exists(stack::$bundles[$bundle], '__getBundle'))
-				$this->bundleCache = stack::$bundles[$bundle]->__getBundle();
+			if(method_exists(Stack::$bundles[$bundle], '__getBundle'))
+				$this->bundleCache = Stack::$bundles[$bundle]->__getBundle();
 			else
-				$this->bundleCache = stack::$bundles[$bundle];
+				$this->bundleCache = Stack::$bundles[$bundle];
 		}
 	}
 	
@@ -55,18 +55,20 @@ class e_bundle_accessor {
  * Load bundle names
  * TODO cache this
  */
-$file = __DIR__ . '/e_var_access_generated.php';
+$file = e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php';
 
 if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesize($file) < 1) {
 	$bundles = '';
 	$bundleList = array();
 
-	foreach(glob(e\sites . '/*/bundles/*/*/_bundle.php') as $name) {
-		$name = strtolower(basename(dirname($name)));
-		if(in_array("'$name'", $bundleList))
-			continue;
-		$bundleList[] = "'$name'";
-		$bundles .= "\n\tpublic static $$name;";
+	foreach(array(e\root, e\site) as $dir) {
+		foreach(glob($dir.'/bundles/*/_bundle.php') as $name) {
+			$name = strtolower(basename(dirname($name)));
+			if(in_array("'$name'", $bundleList))
+				continue;
+			$bundleList[] = "'$name'";
+			$bundles .= "\n\tpublic static $$name;";
+		}
 	}
 	$bundleList = implode(', ', $bundleList);
 

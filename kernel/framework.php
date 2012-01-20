@@ -1,22 +1,12 @@
 <?php
 
-class stack {
+class Stack {
 		
 	/**
 	 * Whether or not the system has been loaded
 	 */
 	public static $loaded = false;
-	
-	/**
-	 * Contains the matched site
-	 */
-	public static $site;
-	
-	/**
-	 * Contains the matched site
-	 */
-	private static $dirs = array();
-	
+
 	/**
 	 * Bundle location (and potentially other) preferences
 	 */
@@ -25,48 +15,16 @@ class stack {
 	/**
 	 * Store the bundles and if they have been used
 	 */
+	public static $dirs = array();
 	public static $bundles = array();
-	public static $_bundle_initialized = array();
-	private static $_bundle_locations = array();
+	public static $bundleInitialized = array();
+	private static $bundleLocations = array();
 	private static $methods = array();
-	
-	/**
-	 * Load the system core and look for matching site
-	 */
-	public static function __load($root, $sites, $bundles, $host) {
-		e\trace('EvolutionSDK Framework', "Looking for sites matching host `$host`");
-		
-		/**
-		 * Look for domains
-		 */
-		$domainFiles = "$sites/*/configure/domains.txt";
-		
-		/**
-		 * Discover which site to use
-		 */
-		foreach(glob($domainFiles) as $file) {
-			$domains = file($file);
-			array_walk($domains, function(&$v){ $v = trim($v); });
-			foreach($domains as $domain) {
-				if(preg_match('/^'.str_replace('*', '.+', str_replace('.', '\\.', $domain)).'$/', $host)) {
-					self::__load_site($root, dirname(dirname($file)), $bundles);
-					return;
-				}
-			}
-		}
-		
-		/**
-		 * No site found
-		 */
-		throw new Exception("No site matching host `$host` defined in `$sites/<i>site-dir</i>/configure/domains.txt`");
-	}
 	
 	/**
 	 * Load all bundles in the core and site
 	 */
-	public static function __load_site($root, $site, $bundles) {
-		
-		self::$site = $site;
+	public static function loadSite($root, $site, $bundles) {
 		
 		e\trace_enter('EvolutionSDK Framework', "Loading site `$site`");
 		
@@ -87,15 +45,15 @@ class stack {
 		/**
 		 * Load core bundles
 		 */
-		foreach(glob($root.$bundles.'/*/*/_bundle.php') as $file) {
-			self::__load_bundle($file, 'core');
+		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
+			self::loadBundle($file, 'core');
 		}
 		
 		/**
 		 * Load site bundles
 		 */
-		foreach(glob($site.$bundles.'/*/*/_bundle.php') as $file) {
-			self::__load_bundle($file, 'site');
+		foreach(glob($site.$bundles.'/*/_bundle.php') as $file) {
+			self::loadBundle($file, 'site');
 		}
 		
 		/**
@@ -117,12 +75,11 @@ class stack {
 	/**
 	 * Load and cache a bundle
 	 */
-	public static function __load_bundle($file, $location = 'other') {
+	public static function loadBundle($file, $location = 'other') {
 		
 		$dir = dirname($file);
 		$bundle = strtolower(basename($dir));
-		$category = dirname($dir);
-		$site = self::$site;
+		$site = e\site;
 		
 		/**
 		 * Check bundle preferences before loading
@@ -141,11 +98,11 @@ class stack {
 		
 		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
 		
-		if(!isset(self::$_bundle_locations[$bundle]))
-			self::$_bundle_locations[$bundle] = $category;
+		if(!isset(self::$bundleLocations[$bundle]))
+			self::$bundleLocations[$bundle] = $dir;
 		else {
-			$old = self::$_bundle_locations[$bundle];
-			throw new Exception("The bundle `$bundle` is located in both the `$old` and `$category` folders, please remove it from one of them,
+			$old = self::$bundleLocations[$bundle];
+			throw new Exception("The bundle `$bundle` is located in both the `$old` and `$dir` folders, please remove it from one of them,
 			or add a preferred bundle location in `$site/configure/bundles.txt` with the format `<em>bundlename</em> core | site | off | on`");
 		}
 		
@@ -155,8 +112,8 @@ class stack {
 		if(!class_exists($class, false))
 			throw new Exception("Bundle class `$class` not found in file `$file`");
 		self::$bundles[$bundle] = new $class($dir);
-		self::$_bundle_initialized[$bundle] = false;
-		self::__add_listener(self::$bundles[$bundle]);
+		self::$bundleInitialized[$bundle] = false;
+		self::addListener(self::$bundles[$bundle]);
 		
 		e\trace_exit();
 	}
@@ -164,7 +121,7 @@ class stack {
 	/**
 	 * Get the bundle directory
 	 */
-	public static function __bundle_directory($bundle) {
+	public static function bundleDirectory($bundle) {
 		$bundle = strtolower($bundle);
 		if(!isset(self::$dirs[$bundle]))
 			throw new Exception("Bundle `$bundle` not installed");
@@ -174,7 +131,7 @@ class stack {
 	/**
 	 * Save bundle methods
 	 */
-	public static function __add_listener(&$object) {
+	public static function addListener(&$object) {
 		foreach(get_class_methods($object) as $method) {
 			if(!isset(self::$methods[$method]))
 				self::$methods[$method] = array();
@@ -185,7 +142,7 @@ class stack {
 	/**
 	 * Get objects for method
 	 */
-	public static function &__method_objects($method) {
+	public static function &methodObjects($method) {
 		if(!isset(self::$methods[$method])) {
 			$x = array();
 			return $x;
@@ -196,7 +153,7 @@ class stack {
 	/**
 	 * Return a bundle
 	 */
-	public static function __callBundle($bundle, $args) {
+	public static function __callStatic($bundle, $args) {
 		/**
 		 * Bundle names should be case insensitive
 		 */
@@ -218,8 +175,8 @@ class stack {
 		/**
 		 * First use
 		 */
-		if(!self::$_bundle_initialized[$bundle]) {
-			self::$_bundle_initialized[$bundle] = true;
+		if(!self::$bundleInitialized[$bundle]) {
+			self::$bundleInitialized[$bundle] = true;
 			if(method_exists(self::$bundles[$bundle], '__initBundle'))
 				self::$bundles[$bundle]->__initBundle();
 		}
@@ -247,28 +204,31 @@ class stack {
 	 * Bundle locations
 	 * @author Nate Ferrero
 	 */
-	public function __bundle_locations() {
-		return self::$_bundle_locations;
+	public function _bundleLocations() {
+		return self::$bundleLocations;
 	}
 }
 
 /**
  * HACK: e_var_access
- * Allow bundle access by static variable before PHP6
+ * Allow bundle access by static variable before PHP 6
+ * @author Nate Ferrero
  */
 require_once(__DIR__ . '/hacks/e_var_access.php');
-require_once(__DIR__ . '/hacks/e_var_access_generated.php');
+require_once(e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php');
 class e extends e_var_access {
 	
 	/**
 	 * Load a bundle
+	 * @author Nate Ferrero
 	 */
 	public static function __callStatic($bundle, $args) {
-		return stack::__callBundle($bundle, $args);
+		return Stack::__callStatic($bundle, $args);
 	}
 	
 	/**
 	 * Map a string to a bundle model
+	 * @author David Boskovic
 	 */
 	public static function map($map) {
 		if(preg_match("/^(\w+)\.(\w+):([\w-]+)$/", $map)) {
@@ -287,12 +247,15 @@ class e extends e_var_access {
 
 /**
  * HACK
+ * @todo in PHP 6 remove this
+ * @author Nate Ferrero
  */
 if(function_exists('e_static_bundle_access_init'))
 	e_static_bundle_access_init();
 
 /**
  * Dump a single variable
+ * @author Nate Ferrero
  */
 function dump($dump) {
 	define('DUMP_SINGLE_VAR', 1);

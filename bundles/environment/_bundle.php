@@ -22,7 +22,7 @@ class Bundle {
 		/**
 		 * Load from EvolutionSDK sites folder
 		 */
-		self::$file = stack::$site . '.environment.yaml';
+		self::$file = e\site . '.environment.yaml';
 	}
 	
 	public function __initBundle() {

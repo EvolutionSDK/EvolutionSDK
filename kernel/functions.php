@@ -26,7 +26,7 @@ function get_object_id(&$obj) {
     var_dump($obj);// object(foo)#INSTANCE_ID (0) { }
 	$dump = substr(ob_get_clean(), 0, 250);
     preg_match('~^.+?(\#|\>)(\d+)~s', $dump, $oid);
-    return isset($oid[2]) ? $oid[2] : 'unknown';	
+    return isset($oid[2]) ? $oid[2] : 'unknown';
 }
 
 /**
@@ -241,12 +241,18 @@ function trace_exit() {
 function complete($exception = false) {
 	
 	/**
+	 * Exception occurred before framework was defined
+	 */
+	if(!class_exists('Stack', false))
+		die;
+	
+	/**
 	 * If Evolution framework is loaded, send out an complete event
 	 */
-	if(stack::$loaded && !$exception)
+	if(Stack::$loaded && !$exception)
 		e::$events->complete();
 	
-	if(!stack::$loaded)
+	if(!Stack::$loaded)
 		$dev = 'yes';
 	else if(e::$environment->active) {
 		$dev = 'yes';
@@ -266,7 +272,7 @@ function complete($exception = false) {
 	/**
 	 * Can only save hits if the framework is operational
 	 */
-	if(stack::$loaded) {
+	if(Stack::$loaded) {
 		/**
 		 * Save total time required to exec to hit
 		 */
@@ -483,4 +489,70 @@ function array_merge_recursive_simple() {
                 $merged[] = $value;
     }
     return $merged;
+}
+
+/**
+ * Fix backslashes in paths on Windows
+ */
+function convert_backslashes($str) {
+	return str_replace(
+		'\n', '/n', str_replace(
+		'\r', '/r', str_replace(
+		'\t', '/t', str_replace(
+		'\\', '/', $str))));
+}
+
+/**
+ * Error handler
+ * @author Nate Ferrero
+ */
+function error_handler($no, $msg, $file, $line) {
+	
+	// Ignore warnings and notices unless in strict mode 
+	if(!isset($_GET['--strict'])) {
+		switch ($no) {
+			case E_WARNING:
+			case E_NOTICE:
+			case E_USER_WARNING:
+			case E_USER_NOTICE:
+			case E_STRICT:
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+			return true;
+		}
+	}
+	throw new \ErrorException($msg, 0, $no, $file, $line);
+}
+
+/**
+ * Show exceptions
+ */
+function handle($exception) {	
+	try {
+		/**
+		 * Trace the exception
+		 */
+		trace_exception($exception);
+	
+		/**
+		 * If Evolution framework is loaded, send out an exception event
+		 */
+		if(class_exists('Stack', false) && Stack::$loaded) {
+			try {
+				e::$events->exception($exception);
+			} catch(Exception $exception) {}
+		}
+		require_once(root.bundles.'/debug/message.php');
+	}
+	catch(Exception $e) {
+		echo "<div class='section'><h1>".get_class($e)." in Exception Handler</h1>";
+		echo $e->getMessage()." <br />";
+		echo "<p>Error happened on <span class='line'>line " . $e->getLine() .
+			'</span> of <code class="file">' . $e->getFile() . '</code></p><br />';
+		echo "<br />";
+		echo "<div class='section'><h1>Original ".get_class($exception)."</h1>";
+		echo $exception->getMessage()." <br />";
+		echo "<p>Error happened on <span class='line'>line " . $exception->getLine() .
+			'</span> of <code class="file">' . $exception->getFile() . '</code></p></div></div>';
+	}
 }

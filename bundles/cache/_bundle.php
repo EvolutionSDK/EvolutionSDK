@@ -21,7 +21,7 @@ class Bundle {
 	private $_cache_path;
 	
 	public function __construct($dir) {
-		$this->_cache_path = e\root.'/cache/' . basename(stack::$site);
+		$this->_cache_path = e\root.'/cache/' . basename(e\site);
 		try {
 			if(!is_dir($this->_cache_path)) exec('mkdir -p -m 0777 '.$this->_cache_path);
 		} catch(Exception $e) {

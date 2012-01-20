@@ -48,8 +48,8 @@ function load($class) {
 	if($c === 'e')
 		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition");
 	
-	$files = array("$a/*/$b/$c.php", "$a/*/$b/library/$c.php");
-	$site = stack::$site;
+	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php");
+	$site = e\site;
 	$dirs = array(root, $site);
 	
 	if(strtolower($a) == 'bundles' && isset(stack::$bundlePreferences[$b])) {
