@@ -130,10 +130,19 @@ function test_greaterThan($a, $b) {
 function test_lessThan($a, $b) {
 	return $a < $b;
 }
+function test_greaterThanOrEqual($a, $b) {
+	return $a >= $b;
+}
+function test_lessThanOrEqual($a, $b) {
+	return $a <= $b;
+}
 function test_between($a, $b, $args) {
 	$c = array_shift($args);
 	return $a > $b && $a < $c;
 }
 function test_throws($a, $b, $args, $ex) {
 	return is_a($ex, $b);
+}
+function test_stringContains($a, $b) {
+	return strpos($a, $b) !== false;
 }
