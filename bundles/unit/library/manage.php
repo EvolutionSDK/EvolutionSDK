@@ -46,7 +46,7 @@ class Manage {
 		foreach($all as $category => $bundles)
 			$max = max($max, e\deep_count($bundles));
 		
-		echo '<ul class="categories">';
+		echo '<ul class="categories" style="margin: 0; padding: 0;">';
 		foreach($all as $category => $bundles) {
 			$total = e\deep_count($bundles);
 			$width = 140;

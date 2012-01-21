@@ -45,8 +45,7 @@
 }
 
 .manage-page {
-	padding: 0 0 0 2em;
-	margin-right: -30px;
+	padding: 0 10px 0 0;
 }
 ul {
 	list-style-type: none;
@@ -73,7 +72,8 @@ ul {
 }
 .category {
 	width: 585px;
-	margin-right: 50px;
+	margin-left: 30px;
+	margin-right: 10px;
 	float: left;
 }
 ul.categories h1 {

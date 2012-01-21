@@ -28,13 +28,18 @@ class Manage {
 					continue;
 				if(!($tile instanceof Tile))
 					throw new Exception("Bundle manager `$class` tile is not a valid Tile class");
-				$out .= $tile->output($manage->title);
+				$tiles[$manage->title] = $tile->output($manage->title);
 			} catch(Exception $e) {
 				e\trace_exception($e);
 				$tile = $this->tile($e->getMessage());
-				$out .= $tile->output($link);
+				$tiles[$link] = $tile->output($link);
 			}
 		}
+
+		ksort($tiles);
+		foreach($tiles as $tile)
+			$out .= $tile;
+
 		$out .= '</div>';
 		return $out;
 	}
