@@ -1,8 +1,0 @@
-pending:
-	fields:
-		service: string
-		args: text
-		key: string
-		id: _suppress
-		created_timestamp: _suppress
-		updated_timestamp: _suppress

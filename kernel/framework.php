@@ -153,7 +153,7 @@ class Stack {
 	/**
 	 * Return a bundle
 	 */
-	public static function __callStatic($bundle, $args) {
+	public static function bundle($bundle, $args) {
 		/**
 		 * Bundle names should be case insensitive
 		 */
@@ -204,7 +204,7 @@ class Stack {
 	 * Bundle locations
 	 * @author Nate Ferrero
 	 */
-	public function _bundleLocations() {
+	public function bundleLocations() {
 		return self::$bundleLocations;
 	}
 }
@@ -223,7 +223,7 @@ class e extends e_var_access {
 	 * @author Nate Ferrero
 	 */
 	public static function __callStatic($bundle, $args) {
-		return Stack::__callStatic($bundle, $args);
+		return Stack::bundle($bundle, $args);
 	}
 	
 	/**

@@ -5,15 +5,6 @@ use stack;
 use e;
 
 /**
- * Support eval(d)
- * Dumps all variables referenced in the last few lines of code
- * @author Nate Ferrero
- */
-define('d', 'preg_match("/^(.*)\\((\\d+)\\)\\s\\:\\seval\\(\\)\\\'d code/", __FILE__, $___DUMP);
-	if(defined("e\dump"))throw new Exception("Evolution dump already loaded");
-	require_once("'.root.bundles.'/system/debug/dump.php");');
-
-/**
  * Get global object ID
  * From: http://stackoverflow.com/questions/2872366/get-instance-id-of-an-object-in-php
  * By: Alix Axel, non-greedy regex fix & xdebug compat by Nate Ferrero
@@ -189,10 +180,10 @@ function disable_trace() {
  */
 function display_trace() {
 	if(TraceVars::$enabled)
-		require_once(root.bundles.'/system/debug/trace.php');
+		require_once(root.bundles.'/debug/trace.php');
 	else if(isset($_GET['--debug'])) {
 		echo '<style>';
-		include(root.bundles.'/system/debug/theme.css');
+		include(root.bundles.'/debug/theme.css');
 		echo '</style>';
 		echo '<div style="clear:both"></div><div class="section"><h1>Trace Disabled</h1>';
 		echo stylize_stack_trace(TraceVars::$disabled_at);
@@ -264,7 +255,7 @@ function complete($exception = false) {
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
 			$trace = e::$environment->requireVar('Development.Trace', 'yes | no');
-			if($trace != 'no' && $trace != false)
+			if($trace !== 'no' && $trace != false)
 				display_trace();
 		}
 	}
@@ -276,7 +267,7 @@ function complete($exception = false) {
 		/**
 		 * Save total time required to exec to hit
 		 */
-		e::$session->complete_hit(timer(true));
+		e::$events->complete_hit(timer(true));
 	}
 	
 	/**
@@ -544,7 +535,7 @@ function handle($exception) {
 		}
 		require_once(root.bundles.'/debug/message.php');
 	}
-	catch(Exception $e) {
+	catch(\Exception $e) {
 		echo "<div class='section'><h1>".get_class($e)." in Exception Handler</h1>";
 		echo $e->getMessage()." <br />";
 		echo "<p>Error happened on <span class='line'>line " . $e->getLine() .

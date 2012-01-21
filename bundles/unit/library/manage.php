@@ -31,7 +31,7 @@ class Manage {
 				<span class="state-complete"><em>Tests Complete!</em> |<a onclick="unit.reset()">Reset</a></span>
 			</div>';
 		
-		foreach(stack::__bundle_locations() as $bundle => $location) {
+		foreach(Stack::bundleLocations() as $bundle => $location) {
 			$location = explode(DIRECTORY_SEPARATOR, $location);
 			$category = array_pop($location);
 			if(!isset($all[$category]))

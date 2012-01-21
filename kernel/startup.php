@@ -35,6 +35,15 @@ define('e\\bundles', '/bundles');
 define('e\\siteCache', root.'/cache/'.basename(site));
 
 /**
+ * Support eval(d)
+ * Dumps all variables referenced in the last few lines of code
+ * @author Nate Ferrero
+ */
+define('d', 'preg_match("/^(.*)\\((\\d+)\\)\\s\\:\\seval\\(\\)\\\'d code/", __FILE__, $___DUMP);
+	if(defined("e\dump"))throw new Exception("Evolution dump already loaded");
+	require_once("'.root.bundles.'/debug/dump.php");');
+
+/**
  * Handle Fatal Errors as Exceptions
  */
 set_error_handler('e\\error_handler');

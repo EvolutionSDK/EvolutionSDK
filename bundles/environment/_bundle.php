@@ -22,7 +22,7 @@ class Bundle {
 		/**
 		 * Load from EvolutionSDK sites folder
 		 */
-		self::$file = e\site . '.environment.yaml';
+		self::$file = e\root . '/cache/' . basename(e\site) . '/environment.yaml';
 	}
 	
 	public function __initBundle() {
@@ -107,7 +107,7 @@ class Bundle {
 		// If not found show the form
 		$title = "EvolutionSDK&trade; Edit Environment Variable";
 		$header = '<span>EvolutionSDK</span> &rarr; <a href="/@manage">Manage System</a> &rarr; <a href="/@manage/environment">Environment</a> &rarr; <span>Edit Variable</span>';
-		$css = file_get_contents(e\root.e\bundles.'/system/debug/theme.css');
+		$css = file_get_contents(e\root.e\bundles.'/debug/theme.css');
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><h1>$header</h1>";
 		echo $this->requireForm($var, $value, $format, $why).$ex;
 		echo "</body></html>";
@@ -129,7 +129,7 @@ class Bundle {
 	
 	public static function load() {
 		// Check for file
-		if(!is_file(self::$file))
+		if(!is_file(self::$file) && !e::$yaml->save(self::$file, array()))
 			throw new Exception("No environment file at `".self::$file."`");
 		
 		// Load environment file

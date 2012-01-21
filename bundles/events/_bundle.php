@@ -12,7 +12,7 @@ class Bundle {
 	public function __call($event, $args) {
 		
 		$method = '_on_' . $event;
-		$objects = stack::__method_objects($method);
+		$objects = stack::methodObjects($method);
 		
 		/**
 		 * Allow configurable event handling
