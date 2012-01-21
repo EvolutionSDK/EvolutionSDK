@@ -29,31 +29,17 @@ class Stack {
 		e\trace_enter('EvolutionSDK Framework', "Loading site `$site`");
 		
 		/**
-		 * Check for a bundles.txt
+		 * Load site bundles
 		 */
-		$prefs = $site . '/configure/bundles.txt';
-		if(is_file($prefs)) {
-			foreach(file($prefs) as $line) {
-				$line = explode(' ', $line);
-				$bname = strtolower(array_shift($line));
-				$bpref = strtolower(array_shift($line));
-				
-				self::$bundlePreferences[$bname] = $bpref;
-			}
+		foreach(glob($site.$bundles.'/*/_bundle.php') as $file) {
+			self::loadBundle($file, 'site');
 		}
-		
+
 		/**
 		 * Load core bundles
 		 */
 		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'core');
-		}
-		
-		/**
-		 * Load site bundles
-		 */
-		foreach(glob($site.$bundles.'/*/_bundle.php') as $file) {
-			self::loadBundle($file, 'site');
 		}
 		
 		/**
@@ -81,30 +67,15 @@ class Stack {
 		$bundle = strtolower(basename($dir));
 		$site = e\site;
 		
-		/**
-		 * Check bundle preferences before loading
-		 */
-		if(isset(self::$bundlePreferences[$bundle])) {
-			if(self::$bundlePreferences[$bundle] == 'off') {
-				e\trace('EvolutionSDK Framework', "Bundle `$bundle` is turned off in `$site/configure/bundles.txt`", array($file), 9);
-				return;
-			}
-			else if(self::$bundlePreferences[$bundle] == 'on') { /* OK */ }
-			else if(self::$bundlePreferences[$bundle] != $location) {
-				e\trace('EvolutionSDK Framework', "Skipped loading $location bundle `$bundle` because it is to be loaded from another location per `$site/configure/bundles.txt`", array($file), 9);
-				return;
-			}
-		}
-		
-		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
-		
 		if(!isset(self::$bundleLocations[$bundle]))
 			self::$bundleLocations[$bundle] = $dir;
 		else {
 			$old = self::$bundleLocations[$bundle];
-			throw new Exception("The bundle `$bundle` is located in both the `$old` and `$dir` folders, please remove it from one of them,
-			or add a preferred bundle location in `$site/configure/bundles.txt` with the format `<em>bundlename</em> core | site | off | on`");
+			e\trace('EvolutionSDK Framework', "Bundle `$bundle` has already been loaded from `$old`", array($file), 9);
+			return;
 		}
+
+		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
 		
 		require_once($file);
 		self::$dirs[$bundle] = $dir;
