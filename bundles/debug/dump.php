@@ -66,6 +66,15 @@ function dumpVar($var, $value, $depth = 0) {
 			$var = DUMP_SINGLE_VARNAME;
 		$out = "<h4><code>$$var</code>$xtra</h4><div class='trace'><div class='step'>";
 	}
+
+	/**
+	 * Hack for now because get_object_id does not work on large LHTML nodes due to insane amounts of output buffering!
+	 */
+	if($value instanceof \Bundles\LHTML\Node) {
+
+		$out .= '<div class="object">LHTML Node'.$oid.' <b>'.($value->fake_element).'</b></div></div></div>';
+		return $out;
+	}
 	
 	if(is_object($value)) {
 		
