@@ -70,23 +70,31 @@ function dumpVar($var, $value, $depth = 0) {
 	/**
 	 * Hack for now because get_object_id does not work on large LHTML nodes due to insane amounts of output buffering!
 	 */
-	if($value instanceof \Bundles\LHTML\Node) {
-
-		$out .= '<div class="object">LHTML Node'.$oid.' <b>'.($value->fake_element).'</b></div></div></div>';
-		return $out;
+	$getOID = true;
+	$extra = '';
+	if($value instanceof \Bundles\LHTML\Node || $value instanceof \Bundles\LHTML\Scope) {
+		$getOID = false;
+		if($value instanceof \Bundle\LHTML\Node)
+			$extra = ' &bull; <b>&lt;'.($value->fake_element).'&gt;</b>';
+			
+		if($depth > 4) {
+			$out .= '<div class="object">' . get_class($value) . ' ' . $extra . '</div></div></div>';
+			return $out;
+		}
 	}
 	
 	if(is_object($value)) {
 		
 		// Custom get object id
-		$oid = e\get_object_id($value);
-        
-        // Check for a current reference
-		if(isset(Dump::$references[$oid])) {
+		if($getOID)
+			$oid = e\get_object_id($value);
+
+		// Check for a current reference
+		if($getOID && isset(Dump::$references[$oid])) {
 			$out .= '<div class="object">Duplicate Object #'.$oid.' <b>'.get_class($value).'</b></div>';
 		} else {
 			Dump::$references[$oid] = true;
-			$out .= '<div class="object">Object #'.$oid.' <b>'.get_class($value).'</b></div>';
+			$out .= '<div class="object">Object '.($oid ? '#' . $oid : '').' <b>'.get_class($value).'</b>'.$extra.'</div>';
 			$reflect = new \ReflectionClass($value);
 			$methods   = $reflect->getMethods();
 			$out .= '<div class="methods"><b>Methods:</b> ';
