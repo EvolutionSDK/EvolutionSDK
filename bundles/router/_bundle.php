@@ -14,6 +14,11 @@ class Bundle {
 	public $url;
 	public $path;
 	public $type;
+
+	public function domainSegment($id = 0) {
+		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
+		return isset($segs[$id]) ? $segs[$id] : null;
+	}
 	
 	public function _on_ready() {
 		
