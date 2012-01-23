@@ -85,6 +85,7 @@ class Bundle {
 				}
 			}
 			
+			$save = false;
 			if($save = true) {
 				self::$masterEvents = $current;
 			}
