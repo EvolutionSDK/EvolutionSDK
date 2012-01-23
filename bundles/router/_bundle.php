@@ -19,6 +19,12 @@ class Bundle {
 		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
 		return isset($segs[$id]) ? $segs[$id] : null;
 	}
+
+	public function urlSegment($id = 0) {
+		dump($_SERVER);
+		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
+		return isset($segs[$id]) ? $segs[$id] : null;
+	}
 	
 	public function _on_ready() {
 		
