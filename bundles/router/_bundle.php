@@ -21,8 +21,7 @@ class Bundle {
 	}
 
 	public function urlSegment($id = 0) {
-		dump($_SERVER);
-		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
+		$segs = explode('/', trim($_SERVER['REDIRECT_URL'], '/'));
 		return isset($segs[$id]) ? $segs[$id] : null;
 	}
 	
