@@ -14,6 +14,11 @@ class Bundle {
 	}
 
 	public function route($path) {
+
+		/**
+		 * Security access for development
+		 */
+		e::$security->developerAccess();
 		
 		// Get name
 		$name = array_shift($path);

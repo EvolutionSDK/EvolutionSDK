@@ -91,6 +91,11 @@ class Bundle {
 			if(!$new)
 				return $value;
 		}
+
+		/**
+		 * Security access for development
+		 */
+		e::$security->developerAccess();
 		
 		$file = self::$file;
 		
@@ -115,10 +120,17 @@ class Bundle {
 	}
 	
 	public function route($path) {
+
+		/**
+		 * Security access for development
+		 */
+		e::$security->developerAccess();
+
 		$form = array_shift($path);
 		$var = array_shift($path);
 		if(!in_array($form, array('edit', 'delete', 'update')))
 			throw new Exception("Invalid environment variable action `$form`");
+		
 		$this->$form($var);
 		e\complete();
 	}
