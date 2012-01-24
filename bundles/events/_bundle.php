@@ -85,7 +85,6 @@ class Bundle {
 				}
 			}
 			
-			$save = false;
 			if($save = true) {
 				self::$masterEvents = $current;
 			}
@@ -102,7 +101,10 @@ class Bundle {
 				}
 			}
 		}
-		
+
+		// Disable master save
+		if($master) $save = false;
+
 		if($save) {
 			switch($ext) {
 				case 'json':
