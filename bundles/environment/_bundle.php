@@ -116,7 +116,9 @@ class Bundle {
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><h1>$header</h1>";
 		echo $this->requireForm($var, $value, $format, $why).$ex;
 		echo "</body></html>";
-		e\complete();
+		
+		// Exit PHP
+		exit;
 	}
 	
 	public function route($path) {
