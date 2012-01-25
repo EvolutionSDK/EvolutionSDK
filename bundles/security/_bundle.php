@@ -126,7 +126,8 @@ class Bundle {
 		echo "<div class='section'><h2>$header</h2><h4>$message</h4><div class='trace'>$form<div style='clear: both'></div></div></div>";
 		echo "</div></body></html>";
 
-		e\complete();
+		// Exit PHP
+		exit;
 	}
 
 	private static function style() {
