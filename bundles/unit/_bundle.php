@@ -146,3 +146,6 @@ function test_throws($a, $b, $args, $ex) {
 function test_stringContains($a, $b) {
 	return strpos($a, $b) !== false;
 }
+function test_instanceOf($a, $b) {
+	return $a instanceof $b;
+}
