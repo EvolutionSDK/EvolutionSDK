@@ -20,6 +20,11 @@ class Bundle {
 
 		$developer = false;
 
+		// Check for development mode
+		$dmode = e::$environment->requireVar('development.master');
+		if($dmode === 'yes' || $dmode === true)
+			$developer = true;
+
 		// Check cookie login
 		if(isset($_COOKIE['e-developer'])) {
 			
