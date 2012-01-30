@@ -21,6 +21,18 @@ function get_object_id(&$obj) {
 }
 
 /**
+ * Array key index
+ * @author Nate Ferrero
+ */
+function array_key_index(&$arr, $key) {
+	$i = 0;
+	foreach(array_keys($arr) as $k) {
+		if($k == $key) return $i;
+		$i++;
+	}
+}
+
+/**
  * Plural count function
  * @author Nate Ferrero
  */

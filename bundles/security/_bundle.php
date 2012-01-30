@@ -10,17 +10,14 @@ use e;
  * @author Nate Ferrero
  */
 class Bundle {
+
+	private $developer = false;
 	
 	public function _on_framework_loaded() {
 		
 		// Add manager
 		e::configure('manage')->activeAddKey('bundle', __NAMESPACE__, 'security');
-	}
 
-	/**
-	 * Security access for development
-	 */
-	public function developerAccess() {
 		$developer = false;
 
 		// Check cookie login
@@ -62,14 +59,22 @@ class Bundle {
 			}
 		}
 
+		$this->developer = $developer;
+	}
+
+	/**
+	 * Security access for development
+	 */
+	public function developerAccess() {
+
 		// If cookie and post credentials both failed
-		if(!$developer)
+		if(!$this->developer)
 			$this->page('access');
 
 	}
 
 	public function genCookieSegment($name, $key) {
-		$stuff = md5($_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].'_'.date('z'));
+		$stuff = md5($_SERVER['REMOTE_ADDR'].'_'.date('m'));
 		return md5($key . $stuff . $name);
 	}
 
