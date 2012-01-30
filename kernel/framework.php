@@ -51,6 +51,7 @@ class Stack {
 		 * Send out an event if events bundle is present
 		 */
 		if(isset(self::$bundles['events'])) {
+			e::$events->framework_security();
 			e::$events->framework_loaded();
 			e::$events->after_framework_loaded();
 		}
