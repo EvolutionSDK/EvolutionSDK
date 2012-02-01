@@ -209,6 +209,10 @@ class e extends e_var_access {
 			list($bundle, $model) = explode('.', $map);
 			$model = ucwords($model);
 			$model = "get$model";
+				
+			if(!isset(e::$$bundle))
+				throw new Exception("Bundle `$bundle` is not installed");
+			
 			return e::$$bundle->$model($access);
 		}
 		else {
