@@ -338,7 +338,7 @@ function complete($exception = false) {
  */
 function redirect($url) {
 
-	if($url == '@notfound')
+	if($url == '--notfound')
 		throw new \Bundles\Router\NotFoundException;
 
 	if(stack::$loaded) {

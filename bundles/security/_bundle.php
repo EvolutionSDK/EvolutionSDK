@@ -55,6 +55,8 @@ class Bundle {
 					setcookie('e-developer', $name . '_' . $this->genCookieSegment($name, $key));
 
 					$developer = true;
+				} else {
+					$this->page('access', 'You entered incorrect credentials');
 				}
 			}
 		}
@@ -119,9 +121,8 @@ class Bundle {
 		/**
 		 * Show developer login form
 		 */
-		$title = "EvolutionSDK&trade; Developer Access";
+		$title = "Developer Access";
 		$css = file_get_contents(__DIR__.'/../debug/theme.css') . self::style();
-		$header = "<span>$title</span>";
 		
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><div class='manage-page'>";
 
@@ -133,13 +134,13 @@ class Bundle {
 		exit;
 	}
 
-	public function developerAccessForm($which = 'access', $extra = '') {
+	public function developerAccessForm($which = 'access', $extra = '', $header="Developer Access") {
 		if(strlen($extra) > 0)
-			$extra = "<div class='message'>$extra</div>";
+			$extra = "<div class='da-message'>$extra</div>";
 
 		if($which == 'access') {
 			$message = 'Enter Credentials';
-			$form = "<form method='post'><input name='e-developer-credentials' type='password' /></form>";
+			$form = "<form method='post'>$extra<input name='e-developer-credentials' type='password' /></form>";
 		} elseif($which == 'generate') {
 			$message = 'Generate Security Credentials';
 			$form = "<form method='post'>$extra<input name='e-developer-credentials' type='password' /></form>";
@@ -168,7 +169,7 @@ input {
 	border-radius: 2px;
 	text-align: center;
 }
-.message {
+body._e_dump .da-message {
 	margin-bottom: 1em;
 	font-family: Monaco, monospace;
 	font-size: 12px;
