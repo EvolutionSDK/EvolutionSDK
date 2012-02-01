@@ -301,7 +301,7 @@
 	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 </style>
-<div id="-e-debug-panel-wrap" class="closed">
+<div id="-e-debug-panel-wrap" class="<?php echo Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed'; ?>">
 	<div id="-e-debug-panel" class="windowed show-important">
 		<div class="title-bar">
 			<div class="window-icon close-icon" onclick="_e_debug_close()"></div>

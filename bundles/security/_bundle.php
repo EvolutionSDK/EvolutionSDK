@@ -63,6 +63,13 @@ class Bundle {
 	}
 
 	/**
+	 * Return developer status
+	 */
+	public function isDeveloper() {
+		return $this->developer;
+	}
+
+	/**
 	 * Security access for development
 	 */
 	public function developerAccess() {
@@ -116,7 +123,7 @@ class Bundle {
 		$css = file_get_contents(__DIR__.'/../debug/theme.css') . self::style();
 		$header = "<span>$title</span>";
 		
-		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><div class='manage-page'>";
+		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><div class='manage-page'>";
 
 		echo $this->developerAccessForm($which, $extra);
 		
@@ -142,7 +149,7 @@ class Bundle {
 
 	private static function style() {
 		return <<<_
-body {
+body._e_dump {
 	margin: 2em auto;
 	width: 600px;
 	h1 {text-align: center;}

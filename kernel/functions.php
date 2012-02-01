@@ -311,7 +311,7 @@ function complete($exception = false) {
 		if(!defined('E_COMPLETE_RAN')) {
 			define('E_COMPLETE_RAN', true);
 			$trace = e::$environment->requireVar('Development.Trace', 'yes | no');
-			if($trace !== 'no' && $trace != false)
+			if(e::$security->isDeveloper() || ($trace !== 'no' && $trace != false))
 				display_trace();
 		}
 	}

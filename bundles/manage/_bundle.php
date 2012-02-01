@@ -56,7 +56,7 @@ class Bundle {
 		$title = "EvolutionSDK&trade; &rarr; " . $panel->title;
 		$css = file_get_contents(__DIR__.'/../debug/theme.css') . self::style();
 		$header = '<span>EvolutionSDK</span> &rarr; <a href="/@manage">Manage System</a>' . ($name !== 'manage' ? " &rarr; <span>" . $panel->title . "</span>": '');
-		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><h1>$header</h1><div class='manage-page'>";
+		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><h1>$header</h1><div class='manage-page'>";
 		echo $panel->page($path);
 		echo "</div></body></html>";
 		e\complete();

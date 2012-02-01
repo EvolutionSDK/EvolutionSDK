@@ -6,13 +6,13 @@
 ._e_dump p {
 	font-size: 14px;
 	font-family: Sans, Lucida Grande, Tahoma, Verdana, Helvetica, sans-serif;
-	color: #000;
+	color: #333;
 }
 ._e_dump {
 	padding: 0 0 30px;
 	margin: 0;
 }
-._e_dump > h1 {
+body._e_dump > h1 {
 	margin: 0;
 	font-size: 18px;
 	color: white;

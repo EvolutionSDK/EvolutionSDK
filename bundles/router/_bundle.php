@@ -1,6 +1,7 @@
 <?php
 
 namespace Bundles\Router;
+use Bundles\Portal\Bundle as PortalBundle;
 use Exception;
 use stack;
 use e;
@@ -74,27 +75,32 @@ class Bundle {
 	}
 	
 	public function route_bundle() {
-		$path = $this->path;
-		$bundle = substr(array_shift($path), 1);
-		$realm = array_shift($path);
-		
-		if(preg_match('/[^a-zA-Z]/', $bundle))
-			throw new Exception("Bundle name `@$bundle` contains invalid characters");
+		try {
+			$path = $this->path;
+			$bundle = substr(array_shift($path), 1);
+			$realm = array_shift($path);
 			
-		if(!isset(e::$$bundle))
-			throw new Exception("Bundle `@$bundle` does not exist");
-		
-		switch($realm) {
-			case 'api':
-				$this->route_bundle_api($bundle, $path);
-				break;
-			default:
-				array_unshift($path, $realm);
-				e::$$bundle->route($path);
-				break;
+			if(preg_match('/[^a-zA-Z]/', $bundle))
+				throw new Exception("Bundle name `@$bundle` contains invalid characters");
+				
+			if(!isset(e::$$bundle))
+				throw new Exception("Bundle `@$bundle` does not exist");
+			
+			switch($realm) {
+				case 'api':
+					$this->route_bundle_api($bundle, $path);
+					break;
+				default:
+					array_unshift($path, $realm);
+					e::$$bundle->route($path);
+					break;
+			}
+			
+			throw new Exception("Bundle `@$bundle` routing did not complete");
+		} catch(Exception $e) {
+			PortalBundle::$currentException = $e;
+			e\complete();
 		}
-		
-		throw new Exception("Bundle `@$bundle` routing did not complete");
 	}
 		
 	
