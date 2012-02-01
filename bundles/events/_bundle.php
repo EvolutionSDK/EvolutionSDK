@@ -105,7 +105,7 @@ class Bundle {
 		// Disable master save
 		if($master) $save = false;
 
-		if($save) {
+		if($save && $_GET['--debug']) {
 			switch($ext) {
 				case 'json':
 					e\encode_file($file, $current);
