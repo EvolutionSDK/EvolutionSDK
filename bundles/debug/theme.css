@@ -1,12 +1,18 @@
-body, textarea, input, div, p {
+
+._e_dump, 
+._e_dump textarea, 
+._e_dump input, 
+._e_dump div, 
+._e_dump p {
 	font-size: 14px;
 	font-family: Sans, Lucida Grande, Tahoma, Verdana, Helvetica, sans-serif;
+	color: #000;
 }
-body {
+._e_dump {
 	padding: 0 0 30px;
 	margin: 0;
 }
-body > h1 {
+._e_dump > h1 {
 	margin: 0;
 	font-size: 18px;
 	color: white;
@@ -15,7 +21,9 @@ body > h1 {
 	text-shadow: 2px 2px 1px #000;
 	padding: 30px;
 }
-body > h1 > a:link, body > h1 > a, body > h1 > span {
+._e_dump > h1 > a:link, 
+._e_dump > h1 > a, 
+._e_dump > h1 > span {
 	color: #fff;
 	text-decoration: none;
 	border: 2px solid transparent;
@@ -24,54 +32,66 @@ body > h1 > a:link, body > h1 > a, body > h1 > span {
 	margin: -4px 0;
 	background: none;
 }
-body > h1 > a:hover {
+._e_dump body > h1 > a:hover {
 	background: #555;
 	box-shadow: 0 0 3px #000;
 	text-shadow: 1px 1px 1px #000;
 }
-body > h1 > a:active {
+._e_dump body > h1 > a:active {
 	background: #555;
 	box-shadow: inset 0 0 3px #000;
 	text-shadow: 0 0 1px #000;
 }
-a {
+._e_dump a {
 	color: #666;	
 }
-.section {
-	font-size: 15px;	
+._e_dump .section {
+	font-size: 15px;
 	padding: 0 30px;
 }
-.section .section {
+._e_dump.panel-page .section {
+	padding: 0;
+}
+._e_dump .section .section {
 	border-left: 30px solid #eee;
 }
-h1 {
+._e_dump h1 {
 	font-size: 120%;
 	margin: 30px 0 14px;
+	color: black;
 }
-code, .trace, h4, .key {
+#-e-debug-panel ._e_dump h1 {
+	margin: 0 0 14px;
+}
+._e_dump code, 
+._e_dump .trace, 
+._e_dump h4, 
+._e_dump .key {
 	padding: 2px 4px;
 	margin: 0 2px;
 	border-radius: 4px;
 }
-h4 code {
+._e_dump h4 code {
 	margin: 0 -4px;
 }
-code {
+._e_dump code {
 	background: #fe8;
 	text-shadow: 1px 1px 1px #ffa;
 	font-family: Consolas, monospace;
 }
-code.alt, code.alt code {
+._e_dump code.alt, 
+._e_dump code.alt code {
 	background:#237;	
 	text-shadow: 1px 1px 1px #124;
 	color: #fff;
 }
-code.alt2, code.alt2 code  {
+._e_dump code.alt2, 
+._e_dump code.alt2 code  {
 	background:#732;	
 	text-shadow: 1px 1px 1px #421;
 	color: #fff;
 }
-h4 {
+._e_dump h4 {
 	float: left;
 	padding: 6px 10px;
 	position: relative;
@@ -80,7 +100,7 @@ h4 {
 	box-shadow: inset 0 4px 10px #ccc;
 	font-weight: bold;
 }
-.reveal {
+._e_dump .reveal {
 	opacity: 0.1;
 	margin-top: 3em;
 	-webkit-transition: all 250ms ease;
@@ -88,31 +108,34 @@ h4 {
 	-o-transition: all 250ms ease;
 	transition: all 250ms ease;
 }
-.reveal:hover {
+._e_dump .reveal:hover {
 	opacity: 1;
 }
-.trace {
+._e_dump .trace {
 	clear: left;
 	font-family: Consolas, monospace;
 	box-shadow: inset 0 0 10px #ccc;
 	margin-bottom: 20px;
 }
-.trace, h4 {	
+._e_dump .trace, ._e_dump h4 {	
 	text-shadow: 1px 1px 1px #fff;
 	background: #eee;
 }
-.trace > .step, .trace > p, .trace > textarea, .trace > input {
+._e_dump .trace > .step, 
+._e_dump .trace > p, 
+._e_dump .trace > textarea, 
+._e_dump .trace > input {
 	font-size: 13px;	
 	margin: 8px;
 }
-.trace > p {
+._e_dump .trace > p {
 	margin: 1em 8px;	
 }
-.trace > div.pad-sides {
+._e_dump .trace > div.pad-sides {
 	padding: 0 8px;
 	margin: 8px 0;
 }
-.trace textarea {
+._e_dump .trace textarea {
 	width: 100%;
 	height: 12em;
 	box-sizing: border-box;
@@ -120,63 +143,62 @@ h4 {
 	padding: 8px;
 	line-height: 1.6;
 }
-.trace > input {
+._e_dump .trace > input {
 	margin: 0 8px 12px;
 	padding: 8px 12px;
 }
-.line, .func, .parens {
+._e_dump .line, 
+._e_dump .func, 
+._e_dump .parens {
 	font-weight: bold;
 }
-.func, 
-.function 	{	color: darkblue;	}
-.array 		{	color: orange;		}
-.string 	{	color: green;		}
-.boolean 	{	color: orange;		}
-.number 	{	color: red;			}
-.object 	{	color: darkred;		}
-.class 		{	color: darkred;		}
-.line 		{	color: purple;		}
-
-.invisibles {
+._e_dump .func, 
+._e_dump .function 	{	color: darkblue;	}
+._e_dump .array 		{	color: orange;		}
+._e_dump .string 	{	color: green;		}
+._e_dump .boolean 	{	color: orange;		}
+._e_dump .number 	{	color: red;			}
+._e_dump .object 	{	color: darkred;		}
+._e_dump .class 		{	color: darkred;		}
+._e_dump .line 		{	color: purple;		}
+._e_dump .invisibles {
 	color: gray; padding: 0 2px;
 }
-
-h1 {clear: both;}
-
-.selected {
+._e_dump h1 {clear: both;}
+._e_dump .selected {
 	padding: 2px 4px;
 	border-radius: 4px;
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
 }
-.class.selected {
+._e_dump .class.selected {
 	background: darkred;
 	color: white;
 }
-.selected a {
+._e_dump .selected a {
 	color: white;
 	text-decoration: none;	
 }
-
 /* Environment Var style */
-.var {padding: 1em; margin: 0 -1px -1px 0; border: 1px solid #ddd; background: #f8f8f8; width: 25%; float: left;}
-.var label {width: 100px; float: left; padding: 8px 6px; color: #444; background: #ddd; border: 1px solid #bbb; font-size: 14px; font-weight: bold; text-align: right;}
-.var input, .var select {border: 1px solid #bbb; background: white; padding: 8px 6px; margin: 0 0 0 -1px; font-size: 14px;}
-.var h3 {margin-top: 0}
-.var a {text-decoration: none; cursor: pointer;}
-.var a:hover {text-decoration: underline; cursor: pointer;}
-.clear {clear:both; height: 1px; margin-top: -1px}
+
+._e_dump .var {padding: 1em; margin: 0 -1px -1px 0; border: 1px solid #ddd; background: #f8f8f8; width: 25%; float: left;}
+._e_dump .var label {width: 100px; float: left; padding: 8px 6px; color: #444; background: #ddd; border: 1px solid #bbb; font-size: 14px; font-weight: bold; text-align: right;}
+._e_dump .var input, .var select {border: 1px solid #bbb; background: white; padding: 8px 6px; margin: 0 0 0 -1px; font-size: 14px;}
+._e_dump .var h3 {margin-top: 0}
+._e_dump .var a {text-decoration: none; cursor: pointer;}
+._e_dump .var a:hover {text-decoration: underline; cursor: pointer;}
+._e_dump .clear {clear:both; height: 1px; margin-top: -1px}
 
 /* List Styles */
-table.list {
+._e_dump table.list {
 	border-collapse: collapse;
 	width: 100%;
 }
-table.list th {
+._e_dump table.list th {
 	background: #eee;
 	border: 1px solid #ccc;
 	padding: 12px 6px;
 }
-table.list td {
+._e_dump table.list td {
 	border: 1px solid #eee;
 	padding: 6px 6px;
 	text-align: left;
@@ -184,35 +206,34 @@ table.list td {
 }
 
 /* Dump Styles */
-table.dump {
+._e_dump table.dump {
 	border-collapse: collapse;
 	width: 100%;
 }
-table.dump td {
+._e_dump table.dump td {
 	padding: 4px 0;	
 }
-table.dump td.dump-array {
+._e_dump table.dump td.dump-array {
 	background: #f8f8f8;
 	padding: 8px;
 	border: 1px solid #ccc;
 }
-table.dump td.dump-array td.dump-array {
+._e_dump table.dump td.dump-array td.dump-array {
 	background: #fcfcfc;
 }
-table.dump td.dump-array td.dump-array td.dump-array {
+._e_dump table.dump td.dump-array td.dump-array td.dump-array {
 	background: #eee;
 }
-table.dump td.dump-array td.dump-array td.dump-array td.dump-array {
+._e_dump table.dump td.dump-array td.dump-array td.dump-array td.dump-array {
 	background: #f8f8f8;
 }
-
-table.dump td.dump-key {
+._e_dump table.dump td.dump-key {
 	padding: 4px 2px;
 }
-.methods {
+._e_dump .methods {
 	margin-top: 1em;	
 }
-.key { background: #e0e0e0; color: black;
+._e_dump .key { background: #e0e0e0; color: black;
 	font-size: 12px;
 	white-space: nowrap;
 	text-shadow: 1px 1px 1px #fff; margin: 0 6px 0 0;

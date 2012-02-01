@@ -67,7 +67,7 @@ function render_exception(&$exception) {
 	$out .= "<div class='reveal'>";
 	
 	$out .= "<p>Error happened on <span class='line'>line " . $exception->getLine() .
-		'</span> of <code class="file">' . $exception->getFile() . '</code></p>';
+		'</span> of <code class="file">' . str_replace('/', '/&#8203;', $exception->getFile()) . '</code></p>';
 	
 	/**
 	 * Show stack trace

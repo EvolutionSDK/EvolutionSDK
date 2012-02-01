@@ -62,7 +62,7 @@
 		-o-transition: all 125ms ease;
 		transition: all 125ms ease;
 	}
-	#-e-debug-panel, #-e-debug-panel .step .reveal {
+	#-e-debug-panel, #-e-debug-panel .trace-step .reveal {
 		-webkit-transition: all 250ms ease;
 		-moz-transition: all 250ms ease;
 		-o-transition: all 250ms ease;
@@ -191,7 +191,7 @@
 	#-e-debug-panel a.link {
 		margin-left: 10px;
 	}
-	#-e-debug-panel h1 {
+	#-e-debug-panel h5 {
 		margin: 0 0 30px;
 		font-size: 120%;
 	}
@@ -200,16 +200,16 @@
 		font-size: 11px;
 		margin-top: 8px;
 	}
-	#-e-debug-panel .message {
+	#-e-debug-panel .trace-message {
 		font-size: 11px;
 		margin-top: 8px;
 	}
-	#-e-debug-panel .step .name {
+	#-e-debug-panel .trace-step .name {
 		font-size: 11px;
 		font-weight: bold;
 		color: #888;
 	}
-	#-e-debug-panel .step .name b {
+	#-e-debug-panel .trace-step .name b {
 		color: #444;
 	}
 	#-e-debug-panel .branch {
@@ -218,7 +218,7 @@
 		border-bottom: 1px solid #aaa;
 		margin-bottom: -1px;
 	}
-	#-e-debug-panel .step {
+	#-e-debug-panel .trace-step {
 		padding: 10px 10px 10px 90px;
 		background: #f8f8f8;
 		border: 1px solid #aaa;
@@ -228,18 +228,18 @@
 		position: relative;
 	}
 	
-	#-e-debug-panel .step .reveal {
+	#-e-debug-panel .trace-step .reveal {
 		height: 1em;
 		overflow: hidden;
 	}
 	
-	#-e-debug-panel .step:hover .reveal {
+	#-e-debug-panel .trace-step:hover .reveal {
 		height: auto;
 		overflow: auto;
 		
 	}
 	
-	#-e-debug-panel .step .time {
+	#-e-debug-panel .trace-step .time {
 		border-right: 1px solid #888;
 		position: absolute;
 		left: 0;
@@ -252,16 +252,16 @@
 		font-weight: bold;
 		font-size: 10px;
 	}
-	#-e-debug-panel .step.hilite {
+	#-e-debug-panel .trace-step.hilite {
 		background: #fff;
 	}
 	#-e-debug-panel.show-important .low {
 		display: none;
 	}
-	#-e-debug-panel.show-all .step.high {
+	#-e-debug-panel.show-all .trace-step.high {
 		background: #ffb;
 	}
-	#-e-debug-panel.show-all .step.high.hilite {
+	#-e-debug-panel.show-all .trace-step.high.hilite {
 		background: #ffa;
 	}
 	#-e-debug-panel .line, #-e-debug-panel .func, #-e-debug-panel .parens {
@@ -309,10 +309,18 @@
 			<div class="window-icon zoom-icon" onclick="_e_debug_zoom()"></div>
 			<span>Evolution SDK&trade; &mdash; Page Event Log</span>
 		</div>
+
 		<div class="body">
-			<span class='link' style="float:right;" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
-			<span class='link' style="float:right;display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
-			<p style="margin-top: 0;">You are on <?php echo gethostname(); ?></p>
+			
+			<?php if(Bundles\Portal\Bundle::$currentException instanceof Exception) {
+				echo '<style>'; include(e\root.e\bundles.'/debug/theme.css'); echo '</style>'; ?>
+				<div class="panel-page panel-exception _e_dump"><?php echo e\render_exception(Bundles\Portal\Bundle::$currentException); ?></div>
+			<?php } ?>
+
+			<div class="panel-page panel-trace">
+				<span class='link' style="float:right;" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
+				<span class='link' style="float:right;display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
+				<p style="margin-top: 0;">You are on <?php echo gethostname(); ?></p>
 
 <?php
 
@@ -386,17 +394,18 @@ foreach(trace::$arr as $id => $trace) {
 	 */
 	$step = "<div class=\"time\">$time ms</div><div class=\"name\">$trace[title]</div>";
 	if(strlen(trim($trace['message'])) > 0)
-		$step .= '<div class="message">'.preg_replace('/`([^`]*)`/x', '<code>$1</code>', trim($trace['message'])).'</div>';
+		$step .= '<div class="trace-message">'.preg_replace('/`([^`]*)`/x', '<code>$1</code>', trim($trace['message'])).'</div>';
 	if(count($trace['args']) > 0) {
 		$step .= '<div class="args">'.implode(', ', e\stylize_array($trace['args'], $trace['argdepth'])).'</div>';
 	}
 	$sc = $i++ % 2 ? '' : ' hilite';
-	echo "<div class=\"step$sc $priority\">$step</div>";
+	echo "<div class=\"trace-step$sc $priority\">$step</div>";
 }
 
 // Close any open trees
 echo str_repeat('</div>', count(trace::$stack) + 1);
 
 ?>
+		</div>
 	</div>
 </div>

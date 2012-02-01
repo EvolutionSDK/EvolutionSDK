@@ -118,6 +118,15 @@ class Bundle {
 		
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body><div class='manage-page'>";
 
+		echo $this->developerAccessForm($which, $extra);
+		
+		echo "</div></body></html>";
+
+		// Exit PHP
+		exit;
+	}
+
+	public function developerAccessForm($which = 'access', $extra = '') {
 		if(strlen($extra) > 0)
 			$extra = "<div class='message'>$extra</div>";
 
@@ -128,11 +137,7 @@ class Bundle {
 			$message = 'Generate Security Credentials';
 			$form = "<form method='post'>$extra<input name='e-developer-credentials' type='password' /></form>";
 		}
-		echo "<div class='section'><h2>$header</h2><h4>$message</h4><div class='trace'>$form<div style='clear: both'></div></div></div>";
-		echo "</div></body></html>";
-
-		// Exit PHP
-		exit;
+		return "<div class='section'><h2>$header</h2><h4>$message</h4><div class='trace'>$form<div style='clear: both'></div></div></div>";
 	}
 
 	private static function style() {

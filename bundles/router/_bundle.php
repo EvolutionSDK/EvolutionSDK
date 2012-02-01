@@ -5,6 +5,8 @@ use Exception;
 use stack;
 use e;
 
+class NotFoundException extends Exception {}
+
 /**
  * Router Bundle
  * @author Nate Ferrero
