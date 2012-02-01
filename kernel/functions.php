@@ -53,7 +53,7 @@ function render_exception(&$exception) {
 	
 	// Get message
 	$message = $exception->getMessage();
-	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', $message);
+	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', str_replace('/', '/&#8203;', $message));
 	
 	$out = "<div class='section'><h1>Uncaught ".get_class($exception)."</h1>";
 	

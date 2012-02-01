@@ -101,16 +101,8 @@
 	font-weight: bold;
 }
 ._e_dump .reveal {
-	opacity: 0.1;
-	margin-top: 3em;
-	-webkit-transition: all 250ms ease;
-	-moz-transition: all 250ms ease;
-	-o-transition: all 250ms ease;
-	transition: all 250ms ease;
 }
-._e_dump .reveal:hover {
-	opacity: 1;
-}
+
 ._e_dump .trace {
 	clear: left;
 	font-family: Consolas, monospace;
