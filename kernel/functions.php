@@ -337,6 +337,10 @@ function complete($exception = false) {
  * @author Nate Ferrero
  */
 function redirect($url) {
+
+	if($url == '@notfound')
+		throw new \Bundles\Router\NotFoundException;
+
 	if(stack::$loaded) {
 		if(e::$environment->active)
 			$dev = 'yes';
