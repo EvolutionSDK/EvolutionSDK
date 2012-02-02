@@ -6,7 +6,11 @@ use Exception;
 use stack;
 use e;
 
-class NotFoundException extends Exception {}
+class NotFoundException extends Exception {
+	public function __construct() {
+		$this->message = '404 Resource Not Found at ' . $_SERVER['REDIRECT_URL'];
+	}
+}
 
 /**
  * Router Bundle
