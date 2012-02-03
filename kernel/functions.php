@@ -53,7 +53,8 @@ function render_exception(&$exception) {
 	
 	// Get message
 	$message = $exception->getMessage();
-	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', str_replace('/', '/&#8203;', $message));
+	// Not a good idea :( &#8203;
+	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', str_replace('/', '/', $message));
 	
 	$out = "<div class='section'><h1>Uncaught ".get_class($exception)."</h1>";
 	
@@ -65,9 +66,9 @@ function render_exception(&$exception) {
 	 * Start reveal div
 	 */	
 	$out .= "<div class='reveal'>";
-	
+	// Not a good idea :( &#8203;
 	$out .= "<p>Error happened on <span class='line'>line " . $exception->getLine() .
-		'</span> of <code class="file">' . str_replace('/', '/&#8203;', $exception->getFile()) . '</code></p>';
+		'</span> of <code class="file">' . str_replace('/', '/', $exception->getFile()) . '</code></p>';
 	
 	/**
 	 * Show stack trace
