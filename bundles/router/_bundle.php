@@ -186,6 +186,8 @@ class Bundle {
 					echo $result;
 					break;
 				case 'json':
+					if(method_exists($result, '__toAPI'))
+						$result = $result->__toAPI();
 					echo json_encode($result);
 					break;
 			}
