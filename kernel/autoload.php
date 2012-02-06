@@ -51,6 +51,8 @@ function load($class) {
 	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php");
 	$site = e\site;
 	$dirs = array(root, $site);
+	if(defined('EvolutionBundleLibrary'))
+		$dirs[] = \EvolutionBundleLibrary;
 	
 	if(strtolower($a) == 'bundles' && isset(stack::$bundlePreferences[$b])) {
 		if(stack::$bundlePreferences[$b] == 'off')
@@ -63,6 +65,13 @@ function load($class) {
 	
 	foreach($dirs as $dir) {
 		foreach($files as $pattern) {
+
+			if(defined('EvolutionBundleLibrary') && $dir === \EvolutionBundleLibrary) {
+				$pat = explode('/', $pattern, 2);
+				if($pat[0] === 'bundles')
+					$pattern = $pat[1];
+			}
+
 			$pattern = "$dir/".strtolower($pattern);
 			foreach(glob($pattern) as $file) {
 				require_once($file);

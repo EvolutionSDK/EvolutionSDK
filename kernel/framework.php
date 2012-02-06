@@ -36,6 +36,15 @@ class Stack {
 		}
 
 		/**
+		 * Load external bundles
+		 */
+		if(defined('EvolutionBundleLibrary')) {
+			foreach(glob(EvolutionBundleLibrary.'/*/_bundle.php') as $file) {
+				self::loadBundle($file, 'library');
+			}
+		}
+
+		/**
 		 * Load core bundles
 		 */
 		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
