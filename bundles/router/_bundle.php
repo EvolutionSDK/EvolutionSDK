@@ -32,12 +32,11 @@ class Bundle {
 		return isset($segs[$id]) ? $segs[$id] : null;
 	}
 	
-	public function _on_ready() {
-		
-		/**
-		 * @todo Create URL bundle
-		 */
-		$url = $_SERVER['REDIRECT_URL'];
+	/**
+	 * Event: route
+	 * @author Nate Ferrero
+	 */
+	public function route($url) {
 
 		$this->url = $url;
 		
