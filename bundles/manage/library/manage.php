@@ -66,10 +66,11 @@ class Tile {
 	public $body = '';
 	public $class = '';
 	
-	public function __construct($link = '', $class = '') {
+	public function __construct($link = '', $class = '', $alert = '') {
 		
 		$this->link = $link;
 		$this->class = $class;
+		$this->alert = $alert;
 			
 	}
 	
@@ -78,6 +79,7 @@ class Tile {
 			$this->link = '/' . $this->link;
 		return '<a class="tile '.$this->class.'" href="/@manage'.$this->link.'">'.
 			'<h1>'. (strpos($this->class, 'alert') !== false ? '&#9733; ' : '') . $title.'</h1>'.
+			'<span class="alert">'.$this->alert.'</span>'.
 			$this->body.'</a>';	
 	}
 }

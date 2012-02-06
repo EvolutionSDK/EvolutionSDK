@@ -85,6 +85,13 @@ class Bundle {
 		.tile > ul {
 			padding: 0 0 0 18px;
 		}
+		.tile span.alert {
+			color:red;
+			font-size:10px;
+			position:absolute;
+			top:5px;
+			right:3px;
+		}
 EOF;
 	}
 }
