@@ -11,8 +11,6 @@ Creating your own tests
 Unit tests are defined in your bundle's `./library` folder inside `unit.php`. An example `unit.php` file is shown here.
 
 ```php
-<?php
-
 namespace Bundles\MyBundle;
 use Exception;
 use e;
