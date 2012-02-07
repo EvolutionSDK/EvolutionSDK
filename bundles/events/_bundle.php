@@ -1,6 +1,6 @@
 <?php
 
-namespace bundles\events;
+namespace Bundles\Events;
 use Exception;
 use stack;
 use e;
