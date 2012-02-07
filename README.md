@@ -93,8 +93,6 @@ Then create `./runtime/environment.php` with the contents.
 ```php
 <?php
 
-<?php
-
 define("EvolutionSDK", "/usr/local/bin/EvolutionSDK");          # Path to EvolutionSDK
 define("EvolutionBundleLibrary", "/var/www/ExternelBundles");   # Externel Bundle Folder
 ```
