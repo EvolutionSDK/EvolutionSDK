@@ -74,14 +74,17 @@ Available validation functions are
 ```php
 <?php
 
-->equals($val);
-->strictEquals($val);
-->greaterThan($val);
-->lessThan($val);
-->greaterThanOrEqual($val);
-->lessThanOrEqual($val);
-->between($val, $args);
-->throws($val, $args, $ex);
-->stringContains($val);
-->instanceOf($val, $b);
+e::$unit
+	->test('addition')
+	->description('Sample test: 4 plus 6 should be 10')
+	->equals($val)
+	->strictEquals($val)
+	->greaterThan($val)
+	->lessThan($val)
+	->greaterThanOrEqual($val)
+	->lessThanOrEqual($val)
+	->between($val, $val2)
+	->throws($class)
+	->stringContains($val)
+	->instanceOf($class);
 ```
