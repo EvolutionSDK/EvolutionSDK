@@ -10,39 +10,39 @@ Creating your own tests
 =======================
 Unit tests are defined in your bundle's `./library` folder inside `unit.php`. An example `unit.php` file is shown here.
 
-	```php
-	<?php
+```php
+<?php
 
-	namespace Bundles\MyBundle;
-	use Exception;
-	use e;
+namespace Bundles\MyBundle;
+use Exception;
+use e;
 
-	class Unit {
+class Unit {
+	
+	public function tests() {
 		
-		public function tests() {
-			
-			e::$unit
-				->test('addition')
-				->description('Sample test: 4 plus 6 should be 10')
-				->strictEquals(10);
-			
-			e::$unit
-				->test('subtraction')
-				->description('Sample test: 3 minus 7 should be -4')
-				->strictEquals(-4);
-			
-		}
+		e::$unit
+			->test('addition')
+			->description('Sample test: 4 plus 6 should be 10')
+			->strictEquals(10);
 		
-		public function addition() {
-			return 4 + 6;
-		}
-		
-		public function subtraction() {
-			return 3 - 7;
-		}
+		e::$unit
+			->test('subtraction')
+			->description('Sample test: 3 minus 7 should be -4')
+			->strictEquals(-4);
 		
 	}
-	```
+	
+	public function addition() {
+		return 4 + 6;
+	}
+	
+	public function subtraction() {
+		return 3 - 7;
+	}
+	
+}
+```
 
 Your tests should go inside the `tests()` function. Tests are created in the format of.
 
