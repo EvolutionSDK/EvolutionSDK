@@ -93,6 +93,12 @@ class Bundle {
 		}
 
 		/**
+		 * Is using getVar return null on no variable.
+		 * @author: Kelly Lauren Summer Becker
+		 */
+		if($throw == false) return null;
+
+		/**
 		 * Security access for development
 		 */
 		e::$security->developerAccess();
