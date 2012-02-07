@@ -10,6 +10,7 @@ Creating your own tests
 =======================
 Unit tests are defined in your bundle's `./library` folder inside `unit.php`. An example `unit.php` file is shown here.
 
+	```php
 	<?php
 
 	namespace Bundles\MyBundle;
@@ -41,6 +42,7 @@ Unit tests are defined in your bundle's `./library` folder inside `unit.php`. An
 		}
 		
 	}
+	```
 
 Your tests should go inside the `tests()` function. Tests are created in the format of.
 
