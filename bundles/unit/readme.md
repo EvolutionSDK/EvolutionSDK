@@ -11,6 +11,8 @@ Creating your own tests
 Unit tests are defined in your bundle's `./library` folder inside `unit.php`. An example `unit.php` file is shown here.
 
 ```php
+<?php
+
 namespace Bundles\MyBundle;
 use Exception;
 use e;
@@ -44,30 +46,42 @@ class Unit {
 
 Your tests should go inside the `tests()` function. Tests are created in the format of.
 
-	e::$unit
-		->test('addition')
-		->description('Sample test: 4 plus 6 should be 10')
-		->strictEquals(10);
+```php
+<?php
+
+e::$unit
+	->test('addition')
+	->description('Sample test: 4 plus 6 should be 10')
+	->strictEquals(10);
+```
 
 If you notice from out above whole file `addition()` runs `4 + 6` which equals `10` and since `strictEquals` expects `10` it returns true; satisfying the unit test and passing.
 
 Variable requirements are also stackable, it is completely valid to run.
 
-	e::$unit
-		->test('addition')
-		->description('Sample test: 4 plus 6 should be 10')
-		->strictEquals(10);
-		->lessThan(20);
+```php
+<?php
+
+e::$unit
+	->test('addition')
+	->description('Sample test: 4 plus 6 should be 10')
+	->strictEquals(10);
+	->lessThan(20);
+```
 
 Available validation functions are
 
-	->equals($val);
-	->strictEquals($val);
-	->greaterThan($val);
-	->lessThan($val);
-	->greaterThanOrEqual($val);
-	->lessThanOrEqual($val);
-	->between($val, $args);
-	->throws($val, $args, $ex);
-	->stringContains($val);
-	->instanceOf($val, $b);
+```php
+<?php
+
+->equals($val);
+->strictEquals($val);
+->greaterThan($val);
+->lessThan($val);
+->greaterThanOrEqual($val);
+->lessThanOrEqual($val);
+->between($val, $args);
+->throws($val, $args, $ex);
+->stringContains($val);
+->instanceOf($val, $b);
+```
