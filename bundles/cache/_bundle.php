@@ -102,8 +102,7 @@ class Bundle {
 		if($this->check($library, $key)) {
 			$data = file_get_contents($this->_cache_path."/$library/$mkey.cache");
 			$data = unserialize(base64_decode($data));
-			$this->cache[$library][$key] = $data;
-			return $this->cache[$library][$key];
+			return $this->cache[$library][$key] = $data;
 		}
 		else return NULL;
 	}
