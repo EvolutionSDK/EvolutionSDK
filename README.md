@@ -14,50 +14,104 @@ You can also count on E3 do these things reliably:
 
 # Installing and Creating your first site
 
-Install git and clone this repository or download and extract it into a folder.
+Install git and clone this repository or download and extract it into a folder. (You can put this anywhere however for the purposes of this readme we are going to put the core into /usr/local/bin)
 
-    myfolder/EvolutionSDK
-    
-Create a folder for your new site and a configure folder
+	/usr/local/bin/EvolutionSDK
+	
+Create a folder for your new site. (for the purposes of this readme we are going to use /var/www/MySite)
 
-    myfolder/MySite
-    myfolder/MySite/configure
-    
-Add your domain to hosts file
-    
-Add domains.txt with your domain
+	/var/www/MySite
 
-    myfolder/MySite/configure/domains.txt
+Inside the site folder create these folders.
 
-Contents:
+	./configure
+	./runtime
 
-    mysite.dev
-    
-Create an en environment yaml file:
+Then create `./.htaccess` with the contents.
 
-    myfolder/MySite.environment.yaml
-    
-Contents:
+	# PHP flags
+	php_flag    display_errors          1
+	php_flag    display_startup_errors  1
+	php_flag    log_errors              1
+	php_flag    register_globals        0
+	php_flag    short_open_tag          1
 
-    ---
-        Airbrake.Enabled: no
-        Development.Master: yes
-        Session.Enabled: no
-        SQL.Enabled: no
+	# PHP values
+	php_value   error_reporting     6135
+	php_value   memory_limit        100M
+	SetEnv TZ   UTC
 
+	# URL rewriting directives
+	<IfModule mod_rewrite.c>
+		RewriteEngine On
+		RewriteBase /
+		RewriteRule ^(static|favicon.ico)($|/) - [L]
+		RewriteRule ^runtime\/startup\.php$ - [L]
+		RewriteRule .* /runtime/startup.php [L]
+	</IfModule>
+
+Then create `./runtime/startup.php` with the contents.
+
+```php
+<?php
+
+const MinimalError = <<<_
+<html>
+	<head>
+		<title>Evolution Setup</title>
+		<style>
+			body {font-family: sans-serif;}
+			p {color: darkred;}
+		</style>
+	</head>
+	<body>
+		<h1>Evolution Setup</h1>
+		<p>%message</p>
+	</body>
+_;
+
+define('EvolutionSite', dirname(__DIR__));
+
+$file = __DIR__ . '/' . 'environment.php';
+if(!file_exists($file))
+	die(str_replace('%message', 'Please create <code>' . $file . '</code>', MinimalError));
+require($file);
+
+if(!defined('EvolutionSDK'))
+	die(str_replace('%message', 'Please <code>define("EvolutionSDK", "<i>/path/to/EvolutionSDK</i>");</code> in <code>' . $file . '</code>', MinimalError));
+
+require(EvolutionSDK . '/kernel/startup.php');
+
+/**
+ * Use the evolution router
+ */
+e::$router->route($_SERVER['REDIRECT_URL']);
+```
+
+Then create `./runtime/environment.php` with the contents.
+
+```php
+<?php
+
+<?php
+
+define("EvolutionSDK", "/usr/local/bin/EvolutionSDK");          # Path to EvolutionSDK
+define("EvolutionBundleLibrary", "/var/www/ExternelBundles");   # Externel Bundle Folder
+```
+	
 Then setup Apache with virtual hosts:
 
-    NameVirtualHost *:80
-    
-    # EvolutionSDK
-    <VirtualHost *:80>
-      DocumentRoot "/path/to/myfolder/EvolutionSDK"
-    	ServerName evolution.dev
-      ServerAlias mysite.dev
-    <Directory /path/to/myfolder/EvolutionSDK>
-    	AllowOverride All
-    </Directory>
-    </VirtualHost>
+	NameVirtualHost *:80
+	
+	<VirtualHost *:80>
+		DocumentRoot "/var/www/MySite"
+		ServerName evolution.dev
+		ServerAlias mysite.dev
+		
+		<Directory /var/www/EvolutionSDK>
+			AllowOverride All
+		</Directory>
+	</VirtualHost>
 
 # Getting Started
 The EvolutionSDK is built around this simple concept:  
