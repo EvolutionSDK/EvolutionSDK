@@ -40,7 +40,11 @@
 	
 	Kelly Becker
 	
-	[Add info]
+	Colorado Springs | Los Angeles | Kalamazoo | Detroit
+	@kellylsb
+	kellylsbkr@gmail.com
+	http://kellybecker.me
+	http://github.com/KellyLSB
 
 # Technologies
 
@@ -61,5 +65,9 @@
 	MomentumOS, Inc for the opportunity to work
 	with a super badass dev and product team
 	
-	David Boskovic for turning me (Nate) into a tenfold
+	David Boskovic for turning us (Nate & Kelly) into a tenfold
 	better coder in rapid time
+
+	Nate Ferrero for tolerating my hyperness (Kelly)
+
+	The Adademy

@@ -6,17 +6,25 @@ Usage
 =====
 There are no defined functions in events rather it uses a catch all. For example running.
 
-	e::$events->whatIsYourName(...args...);
+```php
+<?php
+
+e::$events->whatIsYourName(...args...);
+```
 
 Would start by looking in every bundle for `e::$bundle->_on_whatIsYourName(...args...);` it will run every function that matches this criteria on every bundle, and return the results in an array formatted like this (Regardless of the amount of events that have returned).
 
-	array(
-		"Bundles\SQL\Bundle" => 'SQL Bundle',
-		"Bundles\Members\Bundle" => 'Members Bundle',
-		"Bundles\Cache\Bundle" => 'Caching Bundle',
-		"Bundles\Security\Bundle" => 'Security Bundle',
-		"Bundles\Unit\Bundle" => 'Unit Testing Bundle'
-	);
+```php
+<?php
+
+array(
+	"Bundles\SQL\Bundle" => 'SQL Bundle',
+	"Bundles\Members\Bundle" => 'Members Bundle',
+	"Bundles\Cache\Bundle" => 'Caching Bundle',
+	"Bundles\Security\Bundle" => 'Security Bundle',
+	"Bundles\Unit\Bundle" => 'Unit Testing Bundle'
+);
+```
 
 The Master-Events File
 ======================

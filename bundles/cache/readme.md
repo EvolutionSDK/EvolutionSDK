@@ -6,23 +6,43 @@ Usage
 =====
 Check to see if there is anything cached for the requested value.
 
-	e::$cache->check($library, $key);
+```php
+<?php
+
+e::$cache->check($library, $key);
+```
 
 Get the last modified time of the file in unix timestamp format. Returns false if the variable does not exist.
 
-	e::$cache->timestamp($libary, $key);
+```php
+<?php
+
+e::$cache->timestamp($libary, $key);
+```
 
 Return the value of a cached variable. Returns NULL if the variable does not exist.
 
-	e::$cache->get($library, $key);
+```php
+<?php
+
+e::$cache->get($library, $key);
+```
 
 Store a value to the cache.
 
-	e::$cache->store($library, $key, $value);
+```php
+<?php
+
+e::$cache->store($library, $key, $value);
+```
 
 Delete a cache file
 
-	e::$cache->delete($library, $key);
+```php
+<?php
+
+e::$cache->delete($library, $key);
+```
 
 Advanced Use
 ============
