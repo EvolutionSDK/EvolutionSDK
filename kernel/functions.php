@@ -608,3 +608,12 @@ function handle($exception) {
 			'</span> of <code class="file">' . $exception->getFile() . '</code></p></div></div>';
 	}
 }
+
+/**
+ * Simple function to keep track of call count
+ */
+function after($count) {
+	static $sofar = 0;
+	$sofar++;
+	return $sofar >= $count;
+}

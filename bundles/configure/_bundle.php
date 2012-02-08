@@ -12,12 +12,21 @@ class Bundle {
 	
 	private $configs = array();
 	
+	/**
+	 * Return configuration instance
+	 * Second attribute should be false if you need to prevent loading of files
+	 * @author Nate Ferrero
+	 */
 	public function __callBundle($path, $load = true) {
 		if(!isset($this->configs[$path]))
 			$this->configs[$path] = new Configuration($path, $load);
 		return $this->configs[$path];
 	}
 	
+	/**
+	 * Load configuration files
+	 * @author Nate Ferrero
+	 */
 	public function _on_configuration_load($path) {
 		$path = str_replace('.', '/', $path);
 		$file = e\site . '/configure/' . $path . '.yaml';
@@ -26,6 +35,10 @@ class Bundle {
 		);
 	}
 	
+	/**
+	 * Save configuration files
+	 * @author Nate Ferrero
+	 */
 	public function _on_configuration_save($path, $value) {
 		$path = str_replace('.', '/', $path);
 		$file = e\site . '/configure/' . $path . '.yaml';
@@ -34,10 +47,18 @@ class Bundle {
 	
 }
 
+/**
+ * Configuration instance
+ * @author Nate Ferrero
+ */
 class Configuration {
 	private $data = array();
 	private $active = array();
 	
+	/**
+	 * Construct the instance
+	 * @author Nate Ferrero
+	 */
 	public function __construct($path, $load = true) {
 		if(!$load) return;
 		
@@ -53,6 +74,10 @@ class Configuration {
 		}
 	}
 	
+	/**
+	 * Get a configuration variable
+	 * @author Nate Ferrero
+	 */
 	public function __get($var) {
 		if(isset($this->active[$var]))
 			return $this->active[$var];
@@ -61,22 +86,49 @@ class Configuration {
 		return $this->data[$var];
 	}
 	
+	/**
+	 * Set a configuration variable
+	 * @author Nate Ferrero
+	 */
 	public function __set($var, $value) {
 		return $this->data[$var] = $value;
 	}
+
+	/**
+	 * Check if a configuration variable exists
+	 * @author Nate Ferrero
+	 */
+	public function __isset($var) {
+		if(isset($this->active[$var]))
+			return true;
+		return isset($this->data[$var]);
+	}
 	
+	/**
+	 * Active add a configuration key
+	 * @author Nate Ferrero
+	 */
 	public function activeAddKey($var, $key, $value) {
 		if(!isset($this->active[$var]))
 			$this->active[$var] = array();
 		$this->active[$var][$key] = $value;
 	}
 	
+	/**
+	 * Active add a configuration variable
+	 * @author Nate Ferrero
+	 */
 	public function activeAdd($var, $value) {
 		if(!isset($this->active[$var]))
 			$this->active[$var] = array();
 		$this->active[$var][] = $value;
 	}
 	
+	/**
+	 * Only get active configuration variable
+	 * Use in situations where loading from the configuration files is not possible
+	 * @author Nate Ferrero
+	 */
 	public function activeGet($var) {
 		return isset($this->active[$var]) || !empty($this->active[$var]) ? $this->active[$var] : null;
 	}
