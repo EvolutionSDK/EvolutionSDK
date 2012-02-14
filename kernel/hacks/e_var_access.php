@@ -60,9 +60,13 @@ $file = e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php';
 if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesize($file) < 1) {
 	$bundles = '';
 	$bundleList = array();
+	$dirs = array(e\root.'/bundles', e\site.'/bundles');
 
-	foreach(array(e\root, e\site) as $dir) {
-		foreach(glob($dir.'/bundles/*/_bundle.php') as $name) {
+	if(defined('\\EvolutionBundleLibrary'))
+		$dirs[] = \EvolutionBundleLibrary;
+
+	foreach($dirs as $dir) {
+		foreach(glob($dir.'/*/_bundle.php') as $name) {
 			$name = strtolower(basename(dirname($name)));
 			if(in_array("'$name'", $bundleList))
 				continue;
