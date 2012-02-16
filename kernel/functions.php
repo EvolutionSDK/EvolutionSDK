@@ -21,6 +21,26 @@ function get_object_id(&$obj) {
 }
 
 /**
+ * Call with an array of arguments
+ */
+function ArrayArgs(&$object) {
+	return new ArrayArgs($object);
+}
+
+/**
+ * Caller class
+ */
+class ArrayArgs {
+	private $object;
+	public function __construct(&$object) {
+		$this->object = $object;
+	}
+	public function __call($method, $args) {
+		return call_user_func_array(array(&$this->object, $method), $args);
+	}
+}
+
+/**
  * Array key index
  * @author Nate Ferrero
  */
