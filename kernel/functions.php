@@ -300,6 +300,7 @@ function trace_enter($title, $message = '', $args = array(), $priority = 0) {
  */
 function trace_exit() {
 	array_pop(TraceVars::$stack);
+	trace(null, null, null, '@exit');
 }
 
 /**
