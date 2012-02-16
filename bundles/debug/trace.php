@@ -299,6 +299,31 @@
 		text-shadow: 1px 1px 1px #421;
 		color: #fff;
 	}
+	#-e-debug-panel div.trace-elapsed-time {
+		width: 200px;
+		padding: 20px 0;
+		text-align: left;
+		text-shadow: -1px -1px 1px white;
+		font-weight: bold;
+		font-size: 9px;
+		position: relative;
+		color: #a0a;
+	}
+	#-e-debug-panel div.trace-elapsed-time span.num {
+		padding: 8px 8px 9px 0;
+		margin: -5px 20px;
+		background-color: #fff;
+		position: relative;
+		font-weight: normal;
+	}
+	#-e-debug-panel div.trace-elapsed-time span.ellipsis {
+		position: absolute;
+		overflow: hidden;
+		top: 0;
+		bottom: 0;
+		left: 40px;
+		border-left: 2px dotted #a0a;
+	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 </style>
 <div id="-e-debug-panel-wrap" class="<?php echo Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed'; ?>">
@@ -334,6 +359,10 @@ function highestPriority($id) {
 		return 0;
 	$idepth = trace::$arr[$id]['depth'];
 	$highest = trace::$arr[$id]['priority'];
+
+	if($highest === '@exit')
+		$highest = 5;
+
 	while(true) {
 		$id++;
 		if(!isset(trace::$arr[$id]))
@@ -341,6 +370,10 @@ function highestPriority($id) {
 		if(trace::$arr[$id]['depth'] <= $idepth)
 			break;
 		$p = trace::$arr[$id]['priority'];
+
+		if($p === '@exit')
+			$p = 5;
+
 		if($p < $highest)
 			$highest = $p;
 	}
@@ -373,7 +406,8 @@ foreach(trace::$arr as $id => $trace) {
 	/**
 	 * Get trace time
 	 */
-	$time = number_format(1000 * insideTime($id), 2);
+	$millisecs = 1000 * insideTime($id);
+	$time = number_format($millisecs, 2);
 	
 	/**
 	 * Get trace depth
@@ -388,7 +422,19 @@ foreach(trace::$arr as $id => $trace) {
 		$priority = 'low';
 	else
 		$priority = 'high';
-		
+
+	/**
+	 * Deal with trace exits
+	 * @author Nate Ferrero
+	 */
+	if($trace['priority'] === '@exit') {
+		if($millisecs > 10)
+			$priority = 'high';
+		if($millisecs > 1)
+			echo "<div class='trace-elapsed-time $priority'><span class='ellipsis'></span><span class='num'>$time ms elapsed</span></div>";
+		continue;
+	}
+
 	/**
 	 * Display the trace
 	 */
