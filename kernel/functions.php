@@ -563,6 +563,22 @@ function array_merge_recursive_simple() {
     return $merged;
 }
 
+function array2Object($array) {
+	if(!is_array($array))
+    	return $array;
+	
+	$object = new \stdClass();
+	if (is_array($array) && count($array) > 0) {
+		foreach ($array as $name=>$value) {
+			$name = strtolower(trim($name));
+			if (!empty($name))
+				$object->$name = array2Object($value);
+		}
+		return $object; 
+	}
+	else return FALSE;
+}
+
 /**
  * Fix backslashes in paths on Windows
  */
