@@ -49,3 +49,7 @@ You can also block certain events from running entirely by using the `events:` k
 		after_framework_loaded: disabled
 
 In the above example the `framework_loaded` event will still operate normally. However any events that match `after_framework_loaded` will not be run.
+
+Possible problems in bundles
+============================
+If you are using our [SQL Bundle](http://github.com/EvolutionSDK/sql) and override the `_on_framework_loaded()` method you will need to run the `parent::_on_framework_loaded()` method inside your event. This is true for anytime you override a preexisint parent event.
