@@ -219,7 +219,7 @@
 		margin-bottom: -1px;
 	}
 	#-e-debug-panel .trace-step {
-		padding: 10px 10px 10px 90px;
+		padding: 10px 10px 10px 110px;
 		background: #f8f8f8;
 		border: 1px solid #aaa;
 		margin-bottom: -1px;
@@ -245,7 +245,7 @@
 		left: 0;
 		top: 0;
 		bottom: 0;
-		width: 60px;
+		width: 80px;
 		padding: 10px;
 		text-align: center;
 		text-shadow: -1px -1px 1px #fff;
@@ -321,7 +321,7 @@
 		overflow: hidden;
 		top: 0;
 		bottom: 0;
-		left: 40px;
+		left: 50px;
 		border-left: 2px dotted #a0a;
 	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
