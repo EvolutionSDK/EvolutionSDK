@@ -22,6 +22,17 @@ class Bundle {
 	public $path;
 	public $type;
 
+	public function __initBundle() {
+		
+		$url = $_SERVER['REDIRECT_URL'];
+		
+		/**
+		 * Router bundle access
+		 */
+		if(substr($url, 0, 2) == '/@')
+			$this->route($url);
+	}
+
 	public function domainSegment($id = 0) {
 		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
 		return isset($segs[$id]) ? $segs[$id] : null;
@@ -50,15 +61,15 @@ class Bundle {
 		
 		$this->path = explode('/', $this->url);
 		if($this->path[0] === '')
-		    array_shift($this->path);
+			array_shift($this->path);
 		if($this->path[count($this->path) - 1] === '')
-		    array_pop($this->path);
+			array_pop($this->path);
 		
 		/**
 		 * Router bundle access
 		 */
 		if(substr($url, 0, 2) == '/@')
-			$this->route_bundle();
+			return $this->route_bundle();
 		
 		e::$events->router_route($this->path);
 	}
