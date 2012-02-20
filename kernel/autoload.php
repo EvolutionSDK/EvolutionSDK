@@ -73,8 +73,18 @@ function load($class) {
 			}
 
 			$pattern = "$dir/".strtolower($pattern);
-			foreach(glob($pattern) as $file) {
-				require_once($file);
+
+			/* DEBUG * /
+			echo "<p>Class <code>$class</code> could be in <code>$pattern</code></p>";
+			/* END */
+
+			if(file_exists($pattern)) {
+				require_once($pattern);
+
+				/* DEBUG * /
+				echo "<p>It was!</p>";
+				/* END */
+
 				return;
 			}
 		}
