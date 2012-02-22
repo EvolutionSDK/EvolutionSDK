@@ -87,6 +87,9 @@ class Stack {
 
 		e\trace_enter('EvolutionSDK Framework', "Loading bundle `$bundle`", array($file), 9);
 		
+		/**
+		 * Load the bundle
+		 */
 		require_once($file);
 		self::$dirs[$bundle] = $dir;
 		$class = "\\bundles\\$bundle\\bundle";
@@ -96,6 +99,15 @@ class Stack {
 		self::$bundleInitialized[$bundle] = false;
 		self::addListener(self::$bundles[$bundle]);
 		
+		/**
+		 * Load bundle extensions
+		 * @author Nate Ferrero
+		 */
+		if(is_dir($dir . '/extend')) {
+			foreach(glob($dir . '/extend/*', GLOB_ONLYDIR) as $bundle)
+				e\extend(basename($bundle), dirname($bundle));
+		}
+
 		e\trace_exit();
 	}
 	

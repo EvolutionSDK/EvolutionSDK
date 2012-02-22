@@ -24,6 +24,26 @@ function VerifyClass(&$class) {
 	}
 }
 
+/**
+ * Allow extending the autoloader
+ * @author Nate Ferrero
+ */
+function extend($bundle, $dir = null) {
+	static $extensions;
+
+	if($dir == null)
+		return isset($extensions[$bundle]) ? $extensions[$bundle] : array();
+
+	if(!isset($extensions[$bundle]))
+		$extensions[$bundle] = array();
+
+	$extensions[$bundle][] = $dir;
+}
+
+/**
+ * This is the main autoloader
+ * @author Nate Ferrero
+ */
 function load($class) {
 
 	/* DEBUG * /
@@ -83,28 +103,58 @@ function load($class) {
 	}
 
 	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php");
+	$bfiles = array("$b/$c.php", "$b/library/$c.php");
 	$site = e\site;
 	$dirs = array(root, $site);
-	if(defined('EvolutionBundleLibrary'))
-		$dirs[] = \EvolutionBundleLibrary;
+
+	/**
+	 * Special handling for bundle files
+	 * @author Nate Ferrero
+	 */
+	if(strtolower($a) === 'bundles') {
+
+		if(defined('EvolutionBundleLibrary'))
+			$dirs[] = '@'.\EvolutionBundleLibrary;
 	
-	if(strtolower($a) == 'bundles' && isset(stack::$bundlePreferences[$b])) {
-		if(stack::$bundlePreferences[$b] == 'off')
-			throw new Exception("Trying to rely on a bundle that has been turned off in `$site/configure/bundles.txt`");
-		else if(stack::$bundlePreferences[$b] == 'core')
-			$dirs = array(root);
-		else if(stack::$bundlePreferences[$b] == 'site')
-			$dirs = array($site);
+		if(isset(stack::$bundlePreferences[$b])) {
+			if(stack::$bundlePreferences[$b] == 'off')
+				throw new Exception("Trying to rely on a bundle that has been turned off in `$site/configure/bundles.txt`");
+			else if(stack::$bundlePreferences[$b] == 'core')
+				$dirs = array(root);
+			else if(stack::$bundlePreferences[$b] == 'site')
+				$dirs = array($site);
+		}
+
+		/**
+		 * Check for bundle extension folders
+		 * @author Nate Ferrero
+		 */
+		$extensions = extend($b);
+		if(is_array($extensions)) {
+			foreach($extensions as $extension) {
+				array_unshift($dirs, '@'.$extension);
+			}
+		}
 	}
 	
 	foreach($dirs as $dir) {
-		foreach($files as $pattern) {
 
-			if(defined('EvolutionBundleLibrary') && $dir === \EvolutionBundleLibrary) {
-				$pat = explode('/', $pattern, 2);
-				if($pat[0] === 'bundles')
-					$pattern = $pat[1];
-			}
+		/**
+		 * "@/some/directory" means that the bundles folder is that directory, rather than looking for a 
+		 * /bundles directory within that directory
+		 * @author Nate Ferrero
+		 */
+		if($dir[0] === '@') {
+			$xfiles = $bfiles;
+			$dir = substr($dir, 1);
+		} else {
+			$xfiles = $files;
+		}
+
+		/**
+		 * Search for specified files
+		 */
+		foreach($xfiles as $pattern) {
 
 			$pattern = "$dir/".strtolower($pattern);
 
