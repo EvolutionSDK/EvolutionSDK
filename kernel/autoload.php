@@ -7,12 +7,33 @@ use e;
 
 class AutoLoadException extends Exception {}
 
+function VerifyClass(&$class) {
+	$test = explode('\\', $class);
+	$base = array_pop($test);
+	$test = implode('\\', $test) . '\\_' . $base;
+	try {
+		if(class_exists($class))
+			return true;
+	} catch(AutoLoadException $e) {}
+	try {
+		if(class_exists($test))
+			$class = $test;
+		return true;
+	} catch(AutoLoadException $e) {
+		return false;
+	}
+}
+
 function load($class) {
 
 	/* DEBUG * /
 	echo "<p>Autoload $class</p>";
 	/* END DEBUG */
 	
+	/**
+	 * Special autoload overrides
+	 * @author Nate Ferrero
+	 */
 	if(stack::$loaded) {
 		$raw = e::configure('autoload', false)->activeGet('special');
 		if(!is_null($raw)) {
@@ -34,6 +55,7 @@ function load($class) {
 	
 	$a = array_shift($path);
 	$b = array_shift($path);
+	$base = $path[count($path) - 1];
 	$c = implode('/', $path);
 	
 	if(empty($c)) {
@@ -47,7 +69,19 @@ function load($class) {
 	
 	if($c === 'e')
 		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition");
-	
+
+	/**
+	 * Handle reserved names in classes by allowing _className
+	 * @author Nate Ferrero
+	 * @author Kelly Becker
+	 */
+	if($base[0] === '_') {
+		$base = substr($base, 1);
+		array_pop($path);
+		array_push($path, $base);
+		$c = implode('/', $path);
+	}
+
 	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php");
 	$site = e\site;
 	$dirs = array(root, $site);
