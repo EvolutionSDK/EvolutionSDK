@@ -5,7 +5,9 @@ use Exception;
 use stack;
 use e;
 
-class AutoLoadException extends Exception {}
+class AutoLoadException extends Exception {
+	public $severity = 5;
+}
 
 function VerifyClass(&$class) {
 	$test = explode('\\', $class);
