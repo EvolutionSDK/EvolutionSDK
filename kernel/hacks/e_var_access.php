@@ -34,15 +34,20 @@ class e_bundle_accessor {
 			
 			$bundle = $this->bundleName;
 			if(method_exists(Stack::$bundles[$bundle], '__getBundle'))
-				$this->bundleCache = Stack::$bundles[$bundle]->__getBundle();
+				return $this->bundleCache = Stack::$bundles[$bundle]->__getBundle();
 			else
-				$this->bundleCache = Stack::$bundles[$bundle];
+				return $this->bundleCache = Stack::$bundles[$bundle];
 		}
 	}
 	
 	public function __get($variable) {
 		$this->__init();
 		return $this->bundleCache->$variable;
+	}
+
+	public function __set($var, $val) {
+		$this->__init();
+		return $this->bundleCache->$var = $val;
 	}
 	
 	public function __call($method, $args) {
