@@ -393,8 +393,8 @@ function redirect($url) {
  */
 function stylize_string(&$value) {
 	$value = htmlspecialchars($value);
-	$replace_nl = '<span class="invisibles crarr">&crarr;</span>';
-	$replace_tab = '<span class="invisibles rarr">&rarr;</span>';
+	$replace_nl = '<span class="invisibles crarr">&crarr;</span>&#8203;';
+	$replace_tab = '<span class="invisibles rarr">&rarr;</span>&#8203;';
 	$value = str_replace("\r\n", $replace_nl, $value);
 	$value = str_replace("\n",   $replace_nl, $value);
 	$value = str_replace("\r",   $replace_nl, $value);
