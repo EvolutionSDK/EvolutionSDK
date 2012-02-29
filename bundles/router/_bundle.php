@@ -42,6 +42,12 @@ class Bundle {
 		$segs = explode('/', trim($_SERVER['REDIRECT_URL'], '/'));
 		return isset($segs[$id]) ? $segs[$id] : null;
 	}
+
+	public function urlPath($id = 0) {
+		$segs = explode('/', trim($_SERVER['REDIRECT_URL'], '/'));
+		$segs[(count($segs) - 1)] = array_shift(explode('?', $segs[(count($segs) - 1)]));
+		return '/'.implode('/', $segs);
+	}
 	
 	/**
 	 * Event: route
