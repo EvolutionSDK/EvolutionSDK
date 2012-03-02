@@ -231,7 +231,7 @@ foreach(dumpVars($___DUMP) as $___VAR) {
 /**
  * View dump
  */
-$title = "EvolutionSDK&trade; Debug Dump";
+$title = "EvolutionSDK&trade; &bull; Debug Dump";
 $css = file_get_contents(__DIR__.'/theme.css');
 echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><h1>$title</h1>";
 echo $___DUMP;
