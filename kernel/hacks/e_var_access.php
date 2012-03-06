@@ -2,6 +2,7 @@
 
 /**
  * Hack to associate $bundle static vars with bundles
+ * @author Nate Ferrero
  */
 function e_static_bundle_access_init() {
 	foreach(e_bundle_accessor::$bundleList as $name)
@@ -10,6 +11,7 @@ function e_static_bundle_access_init() {
 
 /**
  * Bundle static accessor pseudoclass
+ * @author Nate Ferrero
  */
 class e_bundle_accessor {
 	
@@ -40,6 +42,11 @@ class e_bundle_accessor {
 		}
 	}
 	
+	public function __isset($variable) {
+		$this->__init();
+		return isset($this->bundleCache->$variable);
+	}
+	
 	public function __get($variable) {
 		$this->__init();
 		return $this->bundleCache->$variable;
@@ -58,7 +65,7 @@ class e_bundle_accessor {
 
 /**
  * Load bundle names
- * TODO cache this
+ * @author Nate Ferrero
  */
 $file = e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php';
 
