@@ -255,6 +255,7 @@ if(function_exists('e_static_bundle_access_init'))
  * @author Nate Ferrero
  */
 function dump($dump) {
+	header("Content-Type: text/html");
 	define('DUMP_SINGLE_VAR', 1);
 	eval(d);
 }
