@@ -9,6 +9,11 @@ class Dump {
 	public static $references = array();
 }
 
+/**
+ * Ensure proper content type
+ * @author Kelly Becker
+ */
+header("Content-Type: text/html");
 e\trace('Debug Dump', 'Look over to the right for the results of this dump.');
 
 /**
