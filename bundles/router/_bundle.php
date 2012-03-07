@@ -53,7 +53,10 @@ class Bundle {
 	 * Event: route
 	 * @author Nate Ferrero
 	 */
-	public function route($url) {
+	public function route($url, $special = false) {
+
+		if(is_array($url))
+			$url = '/' . implode('/', $url);
 
 		$this->url = $url;
 		
@@ -61,7 +64,7 @@ class Bundle {
 		 * Handle special URLs
 		 */
 		switch($url) {
-			case '/humans.txt':
+			case '/humans':
 				return $this->humans();
 		}
 		
@@ -71,6 +74,16 @@ class Bundle {
 		if($this->path[count($this->path) - 1] === '')
 			array_pop($this->path);
 		
+		/**
+		 * Handle sitemap
+		 * @author Nate Ferrero
+		 */
+		if($special) {
+			$page = file_get_contents(__DIR__.'/library/sitemap.html');
+			echo str_replace('@--sitemap--@', $this->sitemap(), $page);
+			e\complete();
+		}
+
 		/**
 		 * Router bundle access
 		 */
@@ -85,13 +98,49 @@ class Bundle {
 	 */
 	public function humans() {
 		header('Content-Type: text/plain');
-		if(file_exists(stack::$site.'/humans.txt')) {
-			readfile(stack::$site.'/humans.txt');
+		if(file_exists(e\site.'/humans.txt')) {
+			readfile(e\site.'/humans.txt');
 			echo "\n\n";
 		}
 		if(is_file(e\root.'/humans.txt'))
 			readfile(e\root.'/humans.txt');
 		exit;
+	}
+
+	/**
+	 * Sitemap
+	 * @author Nate Ferrero
+	 */
+	public function sitemap($sitemap = null, $base = '') {
+
+		/**
+		 * Load the sitemap
+		 */
+		if(is_null($sitemap))
+			$sitemap = e::$events->router_sitemap($this->path);
+
+		/**
+		 * Present the sitemap
+		 */
+		$output = '';
+		foreach($sitemap as $bundle => $map) {
+			$bundle = explode('\\', $bundle);
+			$bundle = $bundle[1];
+			$output .= "<h1>$bundle</h1>";
+			/**
+			 * List paths
+			 */
+			$output .= "<ul>";
+			foreach($map as $path => $next) {
+				if($path == '/index' || $path == 'index')
+					$path = '';
+				$output .= '<li><a target="browser" href="' . $base . $path . '">'.($path == '' ? '/&mdash;&mdash;&mdash;' : $path).'</a></li>';
+				$output .= $this->sitemap($next, $path);
+			}
+			$output .= "</ul>";
+		}
+
+		return $output;
 	}
 	
 	public function route_bundle() {
@@ -112,7 +161,7 @@ class Bundle {
 					break;
 				default:
 					array_unshift($path, $realm);
-					e::$$bundle->route($path);
+					e::$$bundle->route($path, true);
 					break;
 			}
 			
