@@ -21,6 +21,30 @@ function get_object_id(&$obj) {
 }
 
 /**
+ * Make anything into an array
+ */
+function ToArray($input) {
+	if($input instanceof \stdClass)
+		$input = (array) $input;
+	
+	if(is_array($input) || $input instanceof \Iterator) {
+		$return = array();
+		foreach($input as $key => $item) {
+			$return[$key] = ToArray($item);
+		}
+		return $return;
+	}
+
+	if(is_object($input)) {
+		if(method_exists($input, '__toArray'))
+			return ToArray($input->__toArray());
+		else return '[Object ' . get_class($input) . ']';
+	}
+
+	return $input;
+}
+
+/**
  * Call with an array of arguments
  */
 function ArrayArgs(&$object) {
