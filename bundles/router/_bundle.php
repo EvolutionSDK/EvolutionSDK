@@ -134,7 +134,7 @@ class Bundle {
 			foreach($map as $path => $next) {
 				if($path == '/index' || $path == 'index')
 					$path = '';
-				$output .= '<li><a target="browser" href="' . $base . $path . '">'.($path == '' ? '/&mdash;&mdash;&mdash;' : $path).'</a></li>';
+				$output .= '<li><a target="browser" href="' . $base . $path . '">'.($path == '' ? '/&mdash;' : $path).'</a></li>';
 				$output .= $this->sitemap($next, $path);
 			}
 			$output .= "</ul>";
