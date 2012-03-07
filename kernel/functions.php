@@ -459,7 +459,7 @@ function stylize_array($array, $depth = 0) {
  * @author Nate Ferrero
  */
 function stylize_stack_trace($trace) {
-	$out .= '<h4>Stack Trace</h4><div class="trace">';
+	$out = '<h4>Stack Trace</h4><div class="trace">';
 	foreach($trace as $i => $step) {
 		if($step['function'] == 'evolution\{closure}')
 			continue;

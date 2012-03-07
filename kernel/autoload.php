@@ -77,7 +77,10 @@ function load($class) {
 	
 	$a = array_shift($path);
 	$b = array_shift($path);
-	$base = $path[count($path) - 1];
+	if(count($path))
+		$base = $path[count($path) - 1];
+	else
+		$base = '';
 	$c = implode('/', $path);
 	
 	if(empty($c)) {

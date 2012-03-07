@@ -1,6 +1,7 @@
 <?php
 
 namespace Bundles\Yaml;
+use Exception;
 use e;
 
 /**
@@ -42,7 +43,11 @@ class DSpyc {
 				self::$timeOffset = $realTime - $reportedTime;
 			}
 			/* Uncomment above to enable strict cache time checking */
-			return @filemtime($file) + self::$timeOffset;
+			try {
+				return filemtime($file) + self::$timeOffset;
+			} catch(Exception $e) {
+				return null;
+			}
 	}
 	
 	public function file($file) {
