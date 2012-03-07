@@ -13,6 +13,15 @@ class Manage {
 	
 	public function page($path) {
 		$out = '';
+
+		$out .= '<script>function newVar() {
+					window.location.replace(
+						"/@environment/edit?var="+
+						encodeURIComponent(prompt("Enter the key for the new variable:"))
+					);
+				}</script>';
+		$out .= '<button style="position: fixed; top: 2.75em; right: 3em;" onclick="newVar();">New Environment Variable</button>';
+
 		$env = Bundle::getAll();
 		$categories = array();
 		

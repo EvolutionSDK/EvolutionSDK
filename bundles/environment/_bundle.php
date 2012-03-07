@@ -96,7 +96,7 @@ class Bundle {
 		 * Is using getVar return null on no variable.
 		 * @author: Kelly Lauren Summer Becker
 		 */
-		if($throw == false) return null;
+		if($throw == false && $new == false) return null;
 
 		/**
 		 * Security access for development
@@ -135,7 +135,11 @@ class Bundle {
 		e::$security->developerAccess();
 
 		$form = array_shift($path);
-		$var = array_shift($path);
+		if(isset($_GET['var']))
+			$var = base64_encode($_GET['var']);
+		else
+			$var = array_shift($path);
+
 		if(!in_array($form, array('edit', 'delete', 'update')))
 			throw new Exception("Invalid environment variable action `$form`");
 		
