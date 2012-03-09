@@ -1,5 +1,7 @@
 <?php
 
+class MapException extends Exception {}
+
 class Stack {
 		
 	/**
@@ -232,12 +234,12 @@ class e extends e_var_access {
 			$model = "get$model";
 				
 			if(!isset(e::$$bundle))
-				throw new Exception("Bundle `$bundle` is not installed");
+				throw new MapException("Bundle `$bundle` is not installed");
 			
 			return e::$$bundle->$model($access);
 		}
 		else {
-			throw new Exception("Trying to load a module with an invalid map format `$map`");
+			throw new MapException("Trying to load a module with an invalid map format `$map`");
 		}
 	}
 }
