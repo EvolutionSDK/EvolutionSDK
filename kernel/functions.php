@@ -678,3 +678,31 @@ function after($count) {
 	$sofar++;
 	return $sofar >= $count;
 }
+
+/**
+ * Nate's awesome JSON function 
+ * @author Nate Ferrero
+ */
+function prepareDeepEncode($obj) {
+	if(is_object($obj)) {
+		if(method_exists($obj, '__toArray'))
+			return prepareDeepEncode($obj->__toArray());
+		if(isset($obj->model) && method_exists($obj->model, 'get_array'))
+			return prepareDeepEncode($obj->model->get_array());
+		else
+			return array('type' => 'object', 'encoding' => 'base64', 'serialized' => base64_encode(serialize($obj)));
+	} else if(is_array($obj)) {
+		$o = array();
+		foreach($obj as $key => $value) {
+			if(!is_null($value) && $value !== '')
+				$o[$key] = prepareDeepEncode($value);
+		}
+		return $o;
+	} else if(is_string($obj)) {
+		return utf8_encode($obj);
+	} else if(is_numeric($obj) || is_bool($obj) || is_null($obj)) {
+		return $obj;
+	} else {
+		return array('type' => 'unknown', 'encoding' => 'base64', 'serialized' => base64_encode(serialize($obj)));
+	}
+}
