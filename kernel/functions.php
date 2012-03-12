@@ -683,13 +683,17 @@ function after($count) {
  * Nate's awesome JSON function 
  * @author Nate Ferrero
  */
+function json_encode_safe($obj) {
+	return json_encode(prepareDeepEncode($obj));
+}
+
 function prepareDeepEncode($obj) {
 	if(is_object($obj)) {
 		if(method_exists($obj, '__toArray'))
 			return prepareDeepEncode($obj->__toArray());
-		if(isset($obj->model) && method_exists($obj->model, 'get_array'))
-			return prepareDeepEncode($obj->model->get_array());
-		else
+		else if($obj instanceof \stdClass) 
+			return prepareDeepEncode((array) $obj);
+		else 
 			return array('type' => 'object', 'encoding' => 'base64', 'serialized' => base64_encode(serialize($obj)));
 	} else if(is_array($obj)) {
 		$o = array();
