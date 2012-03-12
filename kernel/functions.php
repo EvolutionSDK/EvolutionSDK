@@ -38,7 +38,11 @@ function ToArray($input) {
 	if(is_object($input)) {
 		if(method_exists($input, '__toArray'))
 			return ToArray($input->__toArray());
-		else return '[Object ' . get_class($input) . ']';
+		else {
+			if($input instanceof \Bundles\SQL\Model) 
+				$other = '(' . $input->id . ')';
+			return '[Object ' . get_class($input) . $other . ']';
+		}
 	}
 
 	return $input;
