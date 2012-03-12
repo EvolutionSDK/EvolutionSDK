@@ -5,6 +5,9 @@ use Exception;
 use stack;
 use e;
 
+if(isset($_GET['--buffer']))
+	ob_start('framework');
+
 /**
  * Ensure the user can't stop the script
  * @author Nate Ferrero
