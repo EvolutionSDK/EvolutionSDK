@@ -93,7 +93,7 @@
 			}
 
 			code {
-				background-color: #ffddee;
+				background-color: #F4F4F4;
 				color: #736;
 				padding: 0.25em 0.5em;
 			}
@@ -107,7 +107,23 @@
 			.clear {
 				clear: both;
 			}
+
+			.documentation dl dt {
+				font-weight: bold;
+				font-size: 110%;
+			}
+
+			.documentation dl dd {
+				margin: 10px 10px 20px;
+				color: #444;
+			}
 		</style>
+		<script src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
+		<link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/magula.min.css" />
+		<script>
+			hljs.tabReplace = '    ';
+			hljs.initHighlightingOnLoad();
+		</script>
 	</head>
 	<body>
 		<div class="page">
