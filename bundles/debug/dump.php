@@ -46,6 +46,11 @@ function dumpVars(&$out) {
 		if(defined('DUMP_SINGLE_VAR')) {
 			if($i == $line) {
 				preg_match('/dump\\((.+?)\\$(.*)\\)/', $src, $var);
+				/**
+				 * @todo Fix highlighting in various cases
+				 * e.g. dump($this->extract_vars($var)); one ( goes missing
+				 * @author Nate Ferrero
+				 */
 				$src = preg_replace_callback('/dump\\(.*\\)/', function($x) {return '<code class="alt">'.strip_tags(array_shift($x)).'</code>';}, $src);
 			}
 		} else
