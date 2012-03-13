@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+	<head>
+		<title>@--title--@ &bull; EvolutionSDK&trade; Documentation</title>
+		<style>
+			body {
+				background-color: #ccc;
+				font-family: Palatino, "Palatino Linotype", "URW Palladio L", "Book Antiqua", Georgia, serif;
+				line-height: 1.45;
+				word-spacing: 0.05em;
+			}
+			.page {
+				background: #fff;
+				width: 960px;
+				margin: 20px auto;
+				box-shadow: 0 0 20px #000;
+			}
+
+			.nav-first {
+				padding: 40px 40px 0;
+				font-size: 130%;
+				font-weight: bold;
+				background: #eee;
+				border-bottom: 1px solid #ccc;
+			}
+
+			.nav-first a {
+				padding: 12px 12px 4px;
+				color: #668;
+				text-decoration: none;
+			}
+
+			.nav-first a.selected {
+				border: 1px solid #ccc;
+				background-color: #fff;
+				color: #222;
+				border-bottom: 1px solid #fff;
+			}
+
+			.nav-second {
+				padding: 20px 40px;
+			}
+
+			.nav-second a {
+				color: #668;
+				text-decoration: none;
+			}
+
+			.nav-second a.selected {
+				color: #222;
+				border-bottom: 3px double #222;
+			}
+
+			.nav-third {
+				padding: 20px 40px;
+				border: 1px solid #ccc;
+				border-left: none;
+				border-right: none;
+				background-color: #eee;
+			}
+
+			.nav-third a {
+				color: #668;
+				text-decoration: none;
+			}
+
+			.nav-third a.selected {
+				color: #222;
+				border-bottom: 3px double #222;
+			}
+
+			.documentation {
+				padding: 40px;
+			}
+
+			.documentation > *:first-child {
+				margin-top: 0;
+			}
+
+			.documentation > *:last-child {
+				margin-bottom: 0;
+			}
+
+			code {
+				background-color: #ffddee;
+				color: #736;
+				padding: 0.25em 0.5em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<div class="nav-first">
+				@--nav-first--@
+			</div>
+			<div class="nav-second">
+				@--nav-second--@
+			</div>
+			<div class="nav-third">
+				@--nav-third--@
+			</div>
+			<div class="documentation">
+				@--documentation--@
+			</div>
+		</div>
+	</body>
+</html>
