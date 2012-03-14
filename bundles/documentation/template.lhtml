@@ -99,7 +99,7 @@
 			}
 
 			.documentation img {
-				border: 2px solid #eee;
+				border: 2px solid #ccc;
 				float: left;
 				margin: 0 20px 10px 0;
 			}
@@ -116,6 +116,19 @@
 			.documentation dl dd {
 				margin: 10px 10px 20px;
 				color: #444;
+			}
+
+			.documentation hr {
+				border: none;
+				clear: both;
+				padding: 0;
+				margin: -1px 0 0;
+				height: 1px;
+			}
+
+			.documentation.roles-and-responsibilities img {
+				width: 128px;
+				heigth: 128px;
 			}
 		</style>
 		<script src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
@@ -136,9 +149,9 @@
 			<div class="nav-third">
 				@--nav-third--@
 			</div>
-			<div class="documentation">
+			<div class="documentation @--class--@">
 				@--documentation--@
-				<div class="clear"></div>
+				<hr />
 			</div>
 		</div>
 	</body>

@@ -135,6 +135,7 @@ class Bundle {
 		$this->renderNavSecond($output, $bundle, $book, $page);
 		$this->renderNavThird($output, $bundle, $book, $page);
 		$this->render($output, 'title', $this->title);
+		$this->render($output, 'class', str_replace(' ', '-', strtolower($this->title)));
 		$this->render($output, 'documentation', $this->documentationHTML);
 		$this->render($output, 'bundle', $bundle);
 		$this->render($output, 'book', $book);
