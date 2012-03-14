@@ -89,8 +89,24 @@ class Bundle {
 		 * Load the documentation page
 		 * @author Nate Ferrero
 		 */
-		if(!empty($bundle))
-			$file = stack::bundleLocations($bundle) . '/documentation/' . $page . '.md';
+		if(!empty($bundle)) {
+			$dir = stack::bundleLocations($bundle) . '/documentation';
+			$done = false;
+			while(true) {
+				$file = "$dir/$page.md";
+				if($done || is_file($file))
+					break;
+
+				/**
+				 * Get the first file
+				 */
+				$done = true;
+				foreach(glob("$dir/*.md") as $file) {
+					$page = pathinfo($file, PATHINFO_FILENAME);
+					continue;
+				}
+			}
+		}
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
 
