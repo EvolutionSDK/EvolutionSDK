@@ -971,6 +971,13 @@ class Markdown_Parser {
 	#
 	#	Process Markdown `<pre><code>` blocks.
 	#
+		/**
+		 * Add support for ``` code blocks
+		 * @author Nate Ferrero
+		 */
+		$text = preg_replace_callback('/```\w*\n([\d\D]*?)\n```/',
+			array(&$this, '_doGFCodeBlocks_callback'), $text);
+
 		$text = preg_replace_callback('{
 				(?:\n\n|\A\n?)
 				(	            # $1 = the code block -- one or more lines, starting with a space/tab
@@ -984,6 +991,22 @@ class Markdown_Parser {
 			array(&$this, '_doCodeBlocks_callback'), $text);
 
 		return $text;
+	}
+
+	/**
+	 * Add support for ``` code blocks
+	 * @author Nate Ferrero
+	 */
+	function _doGFCodeBlocks_callback($matches) {
+		$codeblock = $matches[1];
+
+		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
+
+		# trim leading newlines and trailing newlines
+		$codeblock = preg_replace('/\A\n+|\n+\z/', '', $codeblock);
+
+		$codeblock = "<pre><code>$codeblock\n</code></pre>";
+		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
 	function _doCodeBlocks_callback($matches) {
 		$codeblock = $matches[1];
