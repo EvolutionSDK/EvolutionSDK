@@ -118,13 +118,22 @@ function dumpVar($var, $value, $depth = 0) {
 			$out .= '<div class="methods"><b>Properties:</b> ';
 			
 			$props   = $reflect->getProperties();
+			if(method_exists($value, '__toArray')) {
+				foreach($value->__toArray() as $ak => $av)
+					$props[] = array($ak, $av);
+			}
 			$out .= '<div class="dump"><table class="dump">';
 			$listed = array();
 			foreach($props as $prop) {
-				$key = $prop->getName();
+				if(is_array($prop)) {
+					$key = array_shift($prop);
+					$sub = array_shift($prop);
+				} else {
+					$key = $prop->getName();
+					$prop->setAccessible(true);
+					$sub = $prop->getValue($value);
+				}
 				$listed[$key] = true;
-				$prop->setAccessible(true);
-				$sub = $prop->getValue($value);
 				$c = count($sub);
 				if(is_array($sub) && $c > 0)
 					$type = 'array';
