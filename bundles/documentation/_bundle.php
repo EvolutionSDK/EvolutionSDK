@@ -177,12 +177,15 @@ class Bundle {
 		 */
 		foreach(stack::bundleLocations() as $dir) {
 			$bundle = basename($dir);
+			$name = ucfirst($bundle);
+			foreach(glob($dir . '/*.name') as $file)
+				$name = pathinfo($file, PATHINFO_FILENAME);
 			foreach(glob($dir . '/documentation/*.md') as $file) {
 				if(!isset($this->files['bundles'][$bundle]))
-					$this->files['bundles'][$bundle] = array();
+					$this->files['bundles'][$bundle] = array('name' => $name, 'files' => array());
 				$filename = pathinfo($file, PATHINFO_FILENAME);
 				if($filename[0] !== '-')
-					$this->files['bundles'][$bundle][$filename] = "$bundle/$filename";
+					$this->files['bundles'][$bundle]['files'][$filename] = "$bundle/$filename";
 			}
 		}
 
@@ -226,8 +229,8 @@ class Bundle {
 	private function renderNavSecond(&$output, $bundle, $book, $page) {
 		$html = '';
 		if(!empty($bundle)) {
-			foreach($this->files['bundles'] as $name => $files)
-				$html .= '<a class="'.($bundle == $name ? 'selected' : '').'" href="'.$this->root.$name.'">'.ucfirst($name).'</a> ';
+			foreach($this->files['bundles'] as $name => $data)
+				$html .= '<a class="'.($bundle == $name ? 'selected' : '').'" href="'.$this->root.$name.'">'.$data['name'].'</a> ';
 		}
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
@@ -245,7 +248,7 @@ class Bundle {
 	private function renderNavThird(&$output, $bundle, $book, $page) {
 		$html = '';
 		if(!empty($bundle)) {
-			foreach($this->files['bundles'][$bundle] as $name => $path)
+			foreach($this->files['bundles'][$bundle]['files'] as $name => $path)
 				$html .= '<a class="'.($page == $name ? 'selected' : '').'" href="'.$this->root.$path.'">'.ucfirst($name).'</a> ';
 		}
 		if(!empty($book)) {
