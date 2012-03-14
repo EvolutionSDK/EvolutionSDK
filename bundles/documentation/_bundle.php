@@ -211,10 +211,10 @@ class Bundle {
 	private function renderNavFirst(&$output, $bundle, $book, $page) {
 		$html = '';
 		if(count($this->files['bundles']))
-			$html .= '<a class="'.(empty($bundle) ? '' : 'selected').'" href="'.$this->root.'">Bundles</a>';
+			$html .= '<a class="'.(empty($bundle) ? '' : 'selected').'" href="'.$this->root.'">Bundles</a> ';
 		foreach($this->files['books'] as $path => $section) {
 			$name = basename($section);
-			$html .= '<a class="'.($book == $path ? 'selected' : '').'" href="'.$this->root.$path.'">'.$name.'</a>';
+			$html .= '<a class="'.($book == $path ? 'selected' : '').'" href="'.$this->root.$path.'">'.$name.'</a> ';
 		}
 		$this->render($output, 'nav-first', $html);
 	}
@@ -227,7 +227,7 @@ class Bundle {
 		$html = '';
 		if(!empty($bundle)) {
 			foreach($this->files['bundles'] as $name => $files)
-				$html .= '<a class="'.($bundle == $name ? 'selected' : '').'" href="'.$this->root.$name.'">'.ucfirst($name).'</a>';
+				$html .= '<a class="'.($bundle == $name ? 'selected' : '').'" href="'.$this->root.$name.'">'.ucfirst($name).'</a> ';
 		}
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
@@ -246,7 +246,7 @@ class Bundle {
 		$html = '';
 		if(!empty($bundle)) {
 			foreach($this->files['bundles'][$bundle] as $name => $path)
-				$html .= '<a class="'.($page == $name ? 'selected' : '').'" href="'.$this->root.$path.'">'.ucfirst($name).'</a>';
+				$html .= '<a class="'.($page == $name ? 'selected' : '').'" href="'.$this->root.$path.'">'.ucfirst($name).'</a> ';
 		}
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
@@ -255,7 +255,7 @@ class Bundle {
 				if($name[0] == '-')
 					continue;
 				$path = md5($name);
-				$html .= '<a class="'.($page == $path ? 'selected' : '').'" href="'.$this->root.$book.'/'.$path.'">'.ucfirst($name).'</a>';
+				$html .= '<a class="'.($page == $path ? 'selected' : '').'" href="'.$this->root.$book.'/'.$path.'">'.ucfirst($name).'</a> ';
 			}
 		}
 		$this->render($output, 'nav-third', $html);
