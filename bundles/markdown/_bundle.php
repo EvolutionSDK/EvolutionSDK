@@ -33,4 +33,31 @@ class Bundle {
 		return Markdown(file_get_contents($file));
 	}
 
+	/**
+	 * Parse a string
+	 * @author Kelly Becker
+	 */
+	public function string($string) {
+
+		/**
+		 * Include the slightly modified markdown class
+		 */
+		require_once(__DIR__ . '/markdown.php');
+
+		/**
+		 * Transform the text
+		 */
+		return Markdown($string);
+	}
+
+	/**
+	 * Auto load file or string
+	 * @author Kelly Becker
+	 */
+	public function __callBundle($string_file) {
+		if(is_file($string_file))
+			return $this->file($string_file);
+		else return $this->string($string_file);
+	}
+
 }
