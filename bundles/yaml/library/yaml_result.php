@@ -68,7 +68,7 @@ class Yaml_Result {
 		return Bundle::dump($this->_arrayize($this->_data));
 	}
 	
-	public function get_array() {
+	public function __toArray() {
 		return $this->_arrayize($this->_data);
 	}
 	
