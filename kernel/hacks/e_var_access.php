@@ -10,6 +10,34 @@ function e_static_bundle_access_init() {
 }
 
 /**
+ * Utility class
+ * @author Nate Ferrero
+ */
+class e_var_access_util {
+
+	/**
+	 * On Evolution update, clear cache
+	 * @author Nate Ferrero
+	 */
+	public function _on_e_command_update($dir) {
+		$file = "$dir/e_var_access_generated.php";
+		if(is_file($file) && filesize($file) > 0) {
+			file_put_contents($file, '');
+			return "Cleared static bundle access cache";
+		}
+		else
+			return "No action taken";
+	}
+
+}
+
+/**
+ * Handle events with utility class
+ * @author Nate Ferrero
+ */
+Stack::addListener(new e_var_access_util);
+
+/**
  * Bundle static accessor pseudoclass
  * @author Nate Ferrero
  */

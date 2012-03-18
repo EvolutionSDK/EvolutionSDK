@@ -6,16 +6,19 @@ class Stack {
 		
 	/**
 	 * Whether or not the system has been loaded
+	 * @author Nate Ferrero
 	 */
 	public static $loaded = false;
 
 	/**
 	 * Bundle location (and potentially other) preferences
+	 * @author Nate Ferrero
 	 */
 	public static $bundlePreferences = array();
 	
 	/**
 	 * Store the bundles and if they have been used
+	 * @author Nate Ferrero
 	 */
 	public static $dirs = array();
 	public static $bundles = array();
@@ -25,6 +28,7 @@ class Stack {
 	
 	/**
 	 * Load all bundles in the core and site
+	 * @author Nate Ferrero
 	 */
 	public static function loadSite($root, $site, $bundles) {
 		
@@ -32,6 +36,7 @@ class Stack {
 		
 		/**
 		 * Load site bundles
+		 * @author Nate Ferrero
 		 */
 		foreach(glob($site.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'site');
@@ -39,6 +44,7 @@ class Stack {
 
 		/**
 		 * Load external bundles
+		 * @author Nate Ferrero
 		 */
 		if(defined('EvolutionBundleLibrary')) {
 			foreach(glob(EvolutionBundleLibrary.'/*/_bundle.php') as $file) {
@@ -48,6 +54,7 @@ class Stack {
 
 		/**
 		 * Load core bundles
+	 	 * @author Nate Ferrero
 		 */
 		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'core');
@@ -57,11 +64,28 @@ class Stack {
 		 * Mark system as loaded
 		 */
 		self::$loaded = true;
+
+		/**
+		 * Run EvolutionSDK Commands
+		 * @author Nate Ferrero
+		 */
+		if(substr($_SERVER['REQUEST_URI'], 0, 4) === '/@--') {
+			$init = substr($_SERVER['REQUEST_URI'], 4);
+			$command = preg_replace('/[^a-z0-9\-]/', '', $init);
+			if($command !== $init)
+				throw new Exception('Invalid command syntax');
+			$command = e\root . "/commands/$command.php";
+			if(file_exists($command))
+				require_once($command);
+			else
+				throw new Exception("Command `$command` not found");
+		}
 		
 		/**
-		 * Send out an event if events bundle is present
+		 * Send out some events if events bundle is present
+	 	 * @author Nate Ferrero
 		 */
-		if(isset(self::$bundles['events'])) {
+		if(isset(e::$events)) {
 			e::$events->framework_security();
 			e::$events->framework_loaded();
 			e::$events->after_framework_loaded();
@@ -72,6 +96,7 @@ class Stack {
 	
 	/**
 	 * Load and cache a bundle
+	 * @author Nate Ferrero
 	 */
 	public static function loadBundle($file, $location = 'other') {
 		
@@ -115,6 +140,7 @@ class Stack {
 	
 	/**
 	 * Get the bundle directory
+	 * @author Nate Ferrero
 	 */
 	public static function bundleDirectory($bundle) {
 		$bundle = strtolower($bundle);
@@ -125,6 +151,7 @@ class Stack {
 	
 	/**
 	 * Save bundle methods
+	 * @author Nate Ferrero
 	 */
 	public static function addListener(&$object) {
 		foreach(get_class_methods($object) as $method) {
@@ -136,6 +163,7 @@ class Stack {
 	
 	/**
 	 * Get objects for method
+	 * @author Nate Ferrero
 	 */
 	public static function &methodObjects($method) {
 		if(!isset(self::$methods[$method])) {
@@ -147,6 +175,7 @@ class Stack {
 	
 	/**
 	 * Return a bundle
+	 * @author Nate Ferrero
 	 */
 	public static function bundle($bundle, $args) {
 		/**
@@ -209,6 +238,7 @@ class Stack {
 /**
  * HACK: e_var_access
  * Allow bundle access by static variable before PHP 6
+ * @todo Remove this in PHP 6
  * @author Nate Ferrero
  */
 require_once(__DIR__ . '/hacks/e_var_access.php');
