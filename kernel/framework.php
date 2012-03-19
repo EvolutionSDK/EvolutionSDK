@@ -292,3 +292,13 @@ function dump($dump) {
 	define('DUMP_SINGLE_VAR', 1);
 	eval(d);
 }
+
+/**
+ * Dump a single variable formatted as plain text
+ * @author Nate Ferrero
+ */
+function dumpt($dump) {
+	define('DUMP_SINGLE_VAR', 1);
+	define('DUMP_FORMAT_TEXT', 1);
+	eval(d);
+}
