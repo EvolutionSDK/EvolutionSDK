@@ -23,6 +23,19 @@ class Bundle {
 	public $type;
 
 	public function __initBundle() {
+
+		/**
+		 * Add LHTML hooks
+		 */
+		e::configure('lhtml')->activeAddKey('hook', ':slug', function() { return e::$router->_get_special_vars(':slug'); });
+		e::configure('lhtml')->activeAddKey('hook', ':id', function() { return e::$router->_get_special_vars(':id'); });
+		e::configure('lhtml')->activeAddKey('hook', ':urlVars', function() { return e::$router->_get_special_vars(':urlVars'); } );
+		
+		/**
+		 * Set $_GET and $_POST to hooks
+		 */
+		e::configure('lhtml')->activeAddKey('hook', ':get', &$_GET);
+		e::configure('lhtml')->activeAddKey('hook', ':post', &$_POST);
 		
 		$url = $_SERVER['REDIRECT_URL'];
 		
@@ -33,6 +46,24 @@ class Bundle {
 			$this->route($url);
 	}
 
+	/**
+	 * @todo Clean up, possibly move to url bundle
+	 */
+	public function _get_special_vars($matcher) {
+		switch($matcher) {
+			case ':id' :
+				if(isset(Bundle::$url_vars[0]) && is_numeric(Bundle::$url_vars[0])) return Bundle::$url_vars[0];
+			break;
+			case ':slug':
+				if(isset(Bundle::$url_vars[0])) return Bundle::$url_vars[0];
+			break;
+			case ':urlVars':
+				if(isset(Bundle::$url_vars[0])) return Bundle::$url_vars;
+			break;
+		}
+		return null;
+	}
+	
 	public function domainSegment($id = 0) {
 		$segs = array_reverse(explode('.', $_SERVER['HTTP_HOST']));
 		return isset($segs[$id]) ? $segs[$id] : null;

@@ -316,14 +316,22 @@ function dumpVarsText(&$out) {
  */
 function dumpVarText($var, $value, $depth = 0) {
 	$out = "";
-	if($depth === 0) {
-		$xtra = '';
-		if(is_array($value))
-			$xtra = ' (Array with ' . e\plural($value) . ')';
+	if($depth === 0 && !is_null($var)) {
 		if(defined('DUMP_SINGLE_VARNAME'))
 			$var = DUMP_SINGLE_VARNAME;
-		$out = "  Var: $$var$xtra\n";
+		$out = "  Var: $$var$xtra";
 	}
+
+	$out .= str_replace("\n", "\n       ", dumpVarValue($value));
+	return $out;
+}
+
+/**
+ * Dump a variable's value as text
+ * @author Nate Ferrero
+ */
+function dumpVarValue($value, $depth) {
+	$out = "\n";
 
 	/**
 	 * Hack for now because get_object_id does not work on large LHTML nodes due to insane amounts of output buffering!
@@ -333,10 +341,10 @@ function dumpVarText($var, $value, $depth = 0) {
 	if($value instanceof \Bundles\LHTML\Node || $value instanceof \Bundles\LHTML\Scope) {
 		$getOID = false;
 		if($value instanceof \Bundle\LHTML\Node)
-			$extra = ' &bull; <b>&lt;'.($value->fake_element).'&gt;</b>';
+			$extra = ' - <'.($value->fake_element).'>';
 			
 		if($depth > 4) {
-			$out .= '<div class="object">' . get_class($value) . ' ' . $extra . '</div></div></div>';
+			$out .= '{' . get_class($value) . '} ' . $extra . '';
 			return $out;
 		}
 	}
@@ -349,28 +357,17 @@ function dumpVarText($var, $value, $depth = 0) {
 
 		// Check for a current reference
 		if($getOID && isset(Dump::$references[$oid])) {
-			$out .= '<div class="object">Duplicate Object #'.$oid.' <b>'.get_class($value).'</b></div>';
+			$out .= '{Duplicate #'.$oid.' '.get_class($value).'}'.$extra;
 		} else {
 			Dump::$references[$oid] = true;
-			$out .= '<div class="object">Object '.($oid ? '#' . $oid : '').' <b>'.get_class($value).'</b>'.$extra.'</div>';
+			$out .= '{'.($oid ? '#' . $oid . ' ' : '').get_class($value).'}'.$extra;
 			$reflect = new \ReflectionClass($value);
-			$methods   = $reflect->getMethods();
-			$out .= '<div class="methods"><b>Methods:</b> ';
-			foreach ($methods as $method) {
-			    $out .= ' &nbsp; <span class="function">' . $method->getName() .
-			    	'</span>()';
-			}
-			$out .= '</div>';
-			
-			// Properties
-			$out .= '<div class="methods"><b>Properties:</b> ';
 			
 			$props   = $reflect->getProperties();
 			if(method_exists($value, '__toArray')) {
 				foreach($value->__toArray() as $ak => $av)
 					$props[] = array($ak, $av);
 			}
-			$out .= '<div class="dump"><table class="dump">';
 			$listed = array();
 			foreach($props as $prop) {
 				if(is_array($prop)) {
@@ -382,110 +379,55 @@ function dumpVarText($var, $value, $depth = 0) {
 					$sub = $prop->getValue($value);
 				}
 				$listed[$key] = true;
+				$lsp = " ";
 				$c = count($sub);
-				if(is_array($sub) && $c > 0)
-					$type = 'array';
-				else
-					$type = 'value';
-				$out .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . htmlspecialchars($key) . '</span></td>';
-				$output = dumpVar(null, $sub, $depth + 1);
-				if(is_array($sub) && $c > 5) {
-					
-					// Overflow
-					$b1 = "<button onclick=\"this.style.display='none';this.nextSibling.style.display='block'\">Show Array with ".$c." Elements</button>";
-					$b2 = "<button onclick=\"this.parentNode.style.display='none';this.parentNode.previousSibling.style.display='inline'\" style='margin-bottom: 8px;'>Hide</button>";
-					$output = "$b1<div style='display:none;'>$b2$output</div>";
-				}
-				if(is_object($sub)) {
-
-					// Overflow
-					$class = get_class($sub);
-					$b1 = "<button onclick=\"this.style.display='none';this.nextSibling.style.display='block'\">Show $class Object</button>";
-					$b2 = "<button onclick=\"this.parentNode.style.display='none';this.parentNode.previousSibling.style.display='inline'\" style='margin-bottom: 8px;'>Hide</button>";
-					$output = "$b1<div style='display:none;'>$b2$output</div>";
-				}
-				$out .= '<td class="dump-'.$type.'">' . $output . '</td></tr>';
+				if(is_array($sub))
+					$key .= " [".($c ? e\plural($c) : '')."]";
+				$out .= "\n$lsp" . '# ' . $key . "";
+				$out .= str_replace("\n", "\n$lsp|   ", rtrim(dumpVarValue($sub, $depth + 1))) . "\n";
 			}
 			foreach($value as $key => $sub) {
 				if(isset($listed[$key])) continue;
-				
-				if(is_array($sub) && count($sub) > 0)
-					$type = 'array';
-				else
-					$type = 'value';
-				$out .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . htmlspecialchars($key) . '</span></td>';
-				$out .= '<td class="dump-'.$type.'">' . dumpVar(null, $sub, $depth + 1) . '</td></tr>';
+				$out .= "\n$lsp" . '# ' . $key . "";
+				$out .= str_replace("\n", "\n$lsp|   ", rtrim(dumpVarValue($sub, $depth + 1))) . "\n";
 				
 			}
-			$out .= '</table></div>';
-			
-			// End object output
-			$out .= '</div>';
 		}
-	}
-	
-	else if($value === array()) {
-		$out .= '<span class="array">Empty Array</span>';
 	}
 	
 	else if(is_array($value)) {
-		$out .= '<div class="dump"><table class="dump">';
+		$lsp = " ";
 		foreach($value as $key => $sub) {
-			$c = count($sub);
-			if(is_array($sub) && $c > 0)
-				$type = 'array';
-			else
-				$type = 'value';
-			$out .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . htmlspecialchars($key) . '</span></td>';
-			$output = dumpVar(null, $sub, $depth + 1);
-			if(is_array($sub) && $c > 5) {
-				
-				// Overflow
-				$b1 = "<button onclick=\"this.style.display='none';this.nextSibling.style.display='block'\">Show Array with ".$c." Elements</button>";
-				$b2 = "<button onclick=\"this.parentNode.style.display='none';this.parentNode.previousSibling.style.display='inline'\" style='margin-bottom: 8px;'>Hide</button>";
-				$output = "$b1<div style='display:none;'>$b2$output</div>";
-			}
-			if(is_object($sub)) {
-
-				// Overflow
-				$class = get_class($sub);
-				$b1 = "<button onclick=\"this.style.display='none';this.nextSibling.style.display='block'\">Show $class Object</button>";
-				$b2 = "<button onclick=\"this.parentNode.style.display='none';this.parentNode.previousSibling.style.display='inline'\" style='margin-bottom: 8px;'>Hide</button>";
-				$output = "$b1<div style='display:none;'>$b2$output</div>";
-			}
-			$out .= '<td class="dump-'.$type.'">' . $output . '</td></tr>';
+			$out .= "\n$lsp" . '# ' . $key . "";
+			$out .= str_replace("\n", "\n$lsp|   ", rtrim(dumpVarValue($sub, $depth + 1))) . "\n";
 		}
-		$out .= '</table></div>';
 	}
 	
 	else if(is_string($value)) {
-		stylize_string($value);
-		$out .= '<span class="string">\'' . $value . '\'</span>';
+		$out .= '\'' . $value . '\'';
 	}
 	
 	else if($value === true) {
-		$out .= '<span class="boolean">true</span>';
+		$out .= 'true';
 	}
 	
 	else if($value === false) {
-		$out .= '<span class="boolean">false</span>';
+		$out .= 'false';
 	}
 	
 	else if($value === null) {
-		$out .= '<span class="boolean">null</span>';
+		$out .= 'null';
 	}
 	
 	else if(is_numeric($value)) {
-		$out .= '<span class="number">' . htmlspecialchars($value) . '</span>';
+		$out .= $value;
 	}
 	
 	else {
-		$out .= print_r($value, true);	
+		$out .= print_r($value, true);
 	}
-	 
-	if($depth === 0)
-		$out .= '</div></div>';
-	return $out;
+
+	return $out . "\n";
 }
 
 /**
