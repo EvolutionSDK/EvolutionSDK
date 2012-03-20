@@ -120,6 +120,9 @@
 		overflow: auto;
 		background: #fff;
 	}
+	#-e-debug-panel.fullscreen .body {
+		right: 405px;
+	}
 	#-e-debug-panel .title-bar {
 		cursor: default;
 		font-size: 13px;
@@ -147,6 +150,36 @@
 	#-e-debug-panel.windowed .title-bar {
 		border-radius: 4px 4px 0 0;
 	}
+	#-e-debug-panel.windowed .-e-stack {
+		display: none;
+	}
+	#-e-debug-panel.fullscreen .-e-stack {
+		display: block;
+		position: fixed;
+		top: 56px;
+		right: 0;
+		bottom: 0px;
+		width: 400px;
+		padding: 20px;
+		border-left: 1px solid #aaa;
+		background-color: white;
+		overflow: auto;
+		font-size: 10px;
+	}
+	#-e-debug-panel.fullscreen .-e-stack h4 {
+		margin-top: 0;
+	}
+	#-e-debug-panel.fullscreen .-e-stack .step {
+		margin-bottom: 1em;
+	}
+	#-e-debug-panel.fullscreen .-e-stack span.file {
+		xfont-size: 8px;
+	}
+
+	#-e-debug-panel.fullscreen .trace-step:hover .-e-stack {
+		z-index: 1000;
+	}
+
 	#-e-debug-panel .title-bar .window-icon {
 		height: 13px;
 		width: 13px;
@@ -226,6 +259,10 @@
 		font-size: 12px;
 		overflow: hidden;
 		position: relative;
+	}
+
+	#-e-debug-panel.fullscreen .trace-step:hover {
+		background: #e0f8ff;
 	}
 	
 	#-e-debug-panel .trace-step .reveal {
@@ -444,8 +481,14 @@ foreach(trace::$arr as $id => $trace) {
 	if(count($trace['args']) > 0) {
 		$step .= '<div class="args">'.implode(', ', e\stylize_array($trace['args'], $trace['argdepth'])).'</div>';
 	}
+	if(isset($trace['stack'])) {
+		while(substr($trace['stack'][0]['function'], 0, 7) === 'e\\trace')
+			array_shift($trace['stack']);
+		$stack = e\stylize_stack_trace($trace['stack']);
+	} else
+		$stack = '<h4>No Stack Trace Available</h4>';
 	$sc = $i++ % 2 ? '' : ' hilite';
-	echo "<div class=\"trace-step$sc $priority\">$step</div>";
+	echo "<div class=\"trace-step$sc $priority\">$step<div class=\"-e-stack\">$stack</div></div>";
 }
 
 // Close any open trees

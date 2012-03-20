@@ -301,7 +301,7 @@ function display_trace() {
  * @author Nate Ferrero
  */
 function trace($title, $message = '', $args = array(), $priority = 0, $argdepth = 1) {
-	TraceVars::$arr[] = array('title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
+	TraceVars::$arr[] = array('stack' => debug_backtrace(), 'title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
 		'priority' => $priority, 'depth' => count(TraceVars::$stack), 'time' => microtime(1));
 }
 
@@ -452,7 +452,8 @@ function stylize_array($array, $depth = 0) {
 		} else if(is_numeric($value)) {
 			$array[$key] = "<span class='key'>$key</span><span class='number'>$value</span>";
 		} else if(is_object($value)) {
-			$array[$key] = "<span class='key'>$key</span><span class='object'>Object ".get_class($value)."</span>";
+			$xt = method_exists($value, '__describe') ? " <span class='string'>&apos;".$value->__describe()."&apos;</span>" : '';
+			$array[$key] = "<span class='key'>$key</span><span class='object'>Object ".get_class($value)."</span>$xt";
 		}
 	}
 	return $array;
@@ -469,7 +470,7 @@ function stylize_stack_trace($trace) {
 			continue;
 		
 		$class = isset($step['class']) 		? "<span class='class'>$step[class]</span>$step[type]" : '';
-		$args = isset($step['args']) 		? implode(', ', e\stylize_array($step['args'], 1)) : '';
+		$args = '';//isset($step['args']) 		? implode(', ', e\stylize_array($step['args'], 1)) : '';
 		$func = isset($step['function']) 	? "<span class='func'>$step[function]</span><span class='parens'>(</span>$args<span class='parens'>)</span>" : '';
 		$file = isset($step['file']) 		? "<span class='file'>in $step[file]</span>" : '';
 		$line = isset($step['line']) 		? "on <span class='line'>line $step[line]</span>" : '';

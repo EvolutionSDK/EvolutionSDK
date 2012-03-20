@@ -63,10 +63,7 @@ class e_bundle_accessor {
 			}
 			
 			$bundle = $this->bundleName;
-			if(method_exists(Stack::$bundles[$bundle], '__getBundle'))
-				return $this->bundleCache = Stack::$bundles[$bundle]->__getBundle();
-			else
-				return $this->bundleCache = Stack::$bundles[$bundle];
+			$this->bundleCache = Stack::$bundles[$bundle];
 		}
 	}
 	
@@ -77,17 +74,35 @@ class e_bundle_accessor {
 	
 	public function __get($variable) {
 		$this->__init();
-		return $this->bundleCache->$variable;
+		if(method_exists($this->bundleCache, '__getBundle')) {
+			$obj = $this->bundleCache->__getBundle();
+			if(!is_object($obj))
+				throw new Exception("Cannot get `$variable` because bundle `$this->bundleName` did not return an object on `__getBundle`");
+			return $obj->$variable;
+		} else
+			return $this->bundleCache->$variable;
 	}
 
 	public function __set($var, $val) {
 		$this->__init();
-		return $this->bundleCache->$var = $val;
+		if(method_exists($this->bundleCache, '__getBundle')) {
+			$obj = $this->bundleCache->__getBundle();
+			if(!is_object($obj))
+				throw new Exception("Cannot set `$var` because bundle `$this->bundleName` did not return an object on `__getBundle`");
+			return $obj->$var = $val;
+		} else
+			return $this->bundleCache->$var = $val;
 	}
 	
 	public function __call($method, $args) {
 		$this->__init();
-		return call_user_func_array(array($this->bundleCache, $method), $args);
+		if(method_exists($this->bundleCache, '__getBundle')) {
+			$obj = $this->bundleCache->__getBundle();
+			if(!is_object($obj))
+				throw new Exception("Cannot call `$method` because bundle `$this->bundleName` did not return an object on `__getBundle`");
+			return call_user_func_array(array($obj, $method), $args);
+		} else
+			return call_user_func_array(array($this->bundleCache, $method), $args);
 	}
 }
 
