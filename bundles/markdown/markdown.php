@@ -1088,10 +1088,18 @@ class Markdown_Parser {
 			# Each loop iteration search for the next emphasis token. 
 			# Each token is then passed to handleSpanToken.
 			#
-			$parts = preg_split($token_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
-			$text_stack[0] .= $parts[0];
-			$token =& $parts[1];
-			$text =& $parts[2];
+			/**
+			 * Fix error when regex is empty
+			 * @author Nate Ferrero
+			 */
+			if(empty($token_re))
+				$token = null;
+			else {
+				$parts = preg_split($token_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+				$text_stack[0] .= $parts[0];
+				$token =& $parts[1];
+				$text =& $parts[2];
+			}
 			
 			if (empty($token)) {
 				# Reached end of text span: empty stack without emitting.
