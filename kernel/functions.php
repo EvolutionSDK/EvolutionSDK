@@ -301,7 +301,7 @@ function display_trace() {
  * @author Nate Ferrero
  */
 function trace($title, $message = '', $args = array(), $priority = 0, $argdepth = 1) {
-	TraceVars::$arr[] = array('stack' => debug_backtrace(), 'title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
+	TraceVars::$arr[] = array('stack' => isset($_GET['--stack']) ? debug_backtrace() : null, 'title' => $title, 'message' => $message, 'args' => $args, 'argdepth' => 1,
 		'priority' => $priority, 'depth' => count(TraceVars::$stack), 'time' => microtime(1));
 }
 
