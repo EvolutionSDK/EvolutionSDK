@@ -30,10 +30,7 @@ class Bundle {
 		/**
 		 * Transform the text
 		 */
-		$text = file_get_contents($file);
-		$result = Markdown($text);
-		dump($result);
-		return $result;
+		return Markdown(file_get_contents($file));
 	}
 
 	/**
