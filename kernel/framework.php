@@ -228,7 +228,7 @@ class Stack {
 	 * Bundle locations
 	 * @author Nate Ferrero
 	 */
-	public function bundleLocations($which = null) {
+	public static function bundleLocations($which = null) {
 		return empty($which) ? self::$bundleLocations : (
 			isset(self::$bundleLocations[$which]) ? self::$bundleLocations[$which] : null
 		);
