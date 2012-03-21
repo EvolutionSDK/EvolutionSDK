@@ -98,6 +98,16 @@ class Bundle {
 					break;
 
 				/**
+				 * Check for alternate file
+				 * @author Nate Ferrero
+				 */
+				$alt = "$dir/" . ucfirst($page) . ".md";
+				if(is_file($alt)) {
+					$file = $alt;
+					break;
+				}
+
+				/**
 				 * Get the first file
 				 */
 				$done = true;
