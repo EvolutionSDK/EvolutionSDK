@@ -5,6 +5,7 @@
  * @author Nate Ferrero
  */
 namespace Bundles\Markdown;
+use Exception;
 
 #
 # Markdown Extra  -  A text-to-HTML conversion tool for web writers
@@ -193,9 +194,18 @@ class Markdown_Parser {
 		# contorted like /[ ]*\n+/ .
 		$text = preg_replace('/^[ ]+$/m', '', $text);
 
+
+
 		# Run document gamut methods.
 		foreach ($this->document_gamut as $method => $priority) {
+			/**
+			 * Add debugging if a method killed the output
+			 * @author Nate Ferrero
+			 */
+			$wasEmpty = empty($text);
 			$text = $this->$method($text);
+			if(!$wasEmpty && empty($text))
+				throw new Exception("Markdown method `$method` removed all output");
 		}
 		
 		$this->teardown();
@@ -975,8 +985,8 @@ class Markdown_Parser {
 		 * Add support for ``` code blocks
 		 * @author Nate Ferrero
 		 */
-		//$text = preg_replace_callback('/```\w*\n([\d\D]*?)\n```/',
-		//	array(&$this, '_doGFCodeBlocks_callback'), $text);
+		$text = preg_replace_callback('/```\w*\n([\d\D]*?)\n```/',
+			array(&$this, '_doGFCodeBlocks_callback'), $text);
 
 		$text = preg_replace_callback('{
 				(?:\n\n|\A\n?)
@@ -1008,7 +1018,7 @@ class Markdown_Parser {
 		$codeblock = "<pre><code>$codeblock\n</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
-	
+
 	function _doCodeBlocks_callback($matches) {
 		$codeblock = $matches[1];
 
