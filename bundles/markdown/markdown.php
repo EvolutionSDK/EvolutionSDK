@@ -975,8 +975,8 @@ class Markdown_Parser {
 		 * Add support for ``` code blocks
 		 * @author Nate Ferrero
 		 */
-		$text = preg_replace_callback('/```\w*\n([\d\D]*?)\n```/',
-			array(&$this, '_doGFCodeBlocks_callback'), $text);
+		//$text = preg_replace_callback('/```\w*\n([\d\D]*?)\n```/',
+		//	array(&$this, '_doGFCodeBlocks_callback'), $text);
 
 		$text = preg_replace_callback('{
 				(?:\n\n|\A\n?)
@@ -1008,6 +1008,7 @@ class Markdown_Parser {
 		$codeblock = "<pre><code>$codeblock\n</code></pre>";
 		return "\n\n".$this->hashBlock($codeblock)."\n\n";
 	}
+	
 	function _doCodeBlocks_callback($matches) {
 		$codeblock = $matches[1];
 
