@@ -475,7 +475,16 @@ class Markdown_Parser {
 	# whole-document pass.
 	#
 		foreach ($this->block_gamut as $method => $priority) {
+			/**
+			 * Add debugging if a method killed the output
+			 * @author Nate Ferrero
+			 */
+			$trimmed = trim(strip_tags($text));
+			$wasEmpty = empty($trimmed);
 			$text = $this->$method($text);
+			$trimmed = trim(strip_tags($text));
+			if(!$wasEmpty && empty($trimmed))
+				throw new Exception("Markdown method `$method` removed all output");
 		}
 		
 		# Finally form paragraph and restore hashed blocks.
@@ -532,7 +541,16 @@ class Markdown_Parser {
 	# Run span gamut tranformations.
 	#
 		foreach ($this->span_gamut as $method => $priority) {
+			/**
+			 * Add debugging if a method killed the output
+			 * @author Nate Ferrero
+			 */
+			$trimmed = trim(strip_tags($text));
+			$wasEmpty = empty($trimmed);
 			$text = $this->$method($text);
+			$trimmed = trim(strip_tags($text));
+			if(!$wasEmpty && empty($trimmed))
+				throw new Exception("Markdown method `$method` removed all output");
 		}
 
 		return $text;
