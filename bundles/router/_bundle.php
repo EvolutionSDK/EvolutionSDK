@@ -27,8 +27,8 @@ class Bundle {
 		/**
 		 * Set $_GET and $_POST to hooks
 		 */
-		e::configure('lhtml')->activeAddKey('hook', ':get', &$_GET);
-		e::configure('lhtml')->activeAddKey('hook', ':post', &$_POST);
+		e::configure('lhtml')->activeAddKey('hook', ':get', array('--reference' => &$_GET));
+		e::configure('lhtml')->activeAddKey('hook', ':post', array('--reference' => &$_POST));
 		
 		$url = $_SERVER['REDIRECT_URL'];
 		
