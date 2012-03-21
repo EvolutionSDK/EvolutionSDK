@@ -92,8 +92,8 @@ function load($class) {
 		 */
 	}
 	
-	if($c === 'e')
-		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition");
+	if($base === 'e')
+		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition.");
 
 	/**
 	 * Handle reserved names in classes by allowing _className

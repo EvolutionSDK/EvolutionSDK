@@ -168,6 +168,7 @@
 	}
 	#-e-debug-panel.fullscreen .-e-stack h4 {
 		margin-top: 0;
+		margin-bottom: 1em;
 	}
 	#-e-debug-panel.fullscreen .-e-stack .step {
 		margin-bottom: 1em;
@@ -362,6 +363,10 @@
 		border-left: 2px dotted #a0a;
 	}
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
+	#-e-debug-panel span.link {
+		position: absolute;
+		top: 13px; right: 13px;
+	}
 </style>
 <div id="-e-debug-panel-wrap" class="<?php echo Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed'; ?>">
 	<div id="-e-debug-panel" class="windowed show-important">
@@ -370,6 +375,8 @@
 			<div class="window-icon hide-icon" onclick="_e_debug_hide()"></div>
 			<div class="window-icon zoom-icon" onclick="_e_debug_zoom()"></div>
 			<span>Evolution SDK&trade; &mdash; Page Event Log</span>
+			<span class='link' style="" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
+			<span class='link' style="display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
 		</div>
 
 		<div class="body">
@@ -380,8 +387,6 @@
 			<?php } ?>
 
 			<div class="panel-page panel-trace">
-				<span class='link' style="float:right;" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
-				<span class='link' style="float:right;display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
 				<p style="margin-top: 0;">You are on <?php echo gethostname(); ?></p>
 
 <?php
