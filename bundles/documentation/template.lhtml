@@ -37,7 +37,7 @@
 				border: 1px solid #ccc;
 				background-color: #fff;
 				color: #222;
-				border-bottom: 1px solid transparent;
+				border-bottom: none;
 			}
 
 			.nav-second {
