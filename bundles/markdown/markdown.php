@@ -198,6 +198,16 @@ class Markdown_Parser {
 
 		# Run document gamut methods.
 		foreach ($this->document_gamut as $method => $priority) {
+
+			/**
+			 * Allow markdown debugging
+			 * @author Nate Ferrero
+			 */
+			if(!isset($_GET['--markdown-debug'])) {
+				$text = $this->$method($text);
+				continue;
+			}
+
 			/**
 			 * Add debugging if a method killed the output
 			 * @author Nate Ferrero
@@ -475,6 +485,16 @@ class Markdown_Parser {
 	# whole-document pass.
 	#
 		foreach ($this->block_gamut as $method => $priority) {
+
+			/**
+			 * Allow markdown debugging
+			 * @author Nate Ferrero
+			 */
+			if(!isset($_GET['--markdown-debug'])) {
+				$text = $this->$method($text);
+				continue;
+			}
+
 			/**
 			 * Add debugging if a method killed the output
 			 * @author Nate Ferrero
@@ -541,6 +561,16 @@ class Markdown_Parser {
 	# Run span gamut tranformations.
 	#
 		foreach ($this->span_gamut as $method => $priority) {
+			
+			/**
+			 * Allow markdown debugging
+			 * @author Nate Ferrero
+			 */
+			if(!isset($_GET['--markdown-debug'])) {
+				$text = $this->$method($text);
+				continue;
+			}
+
 			/**
 			 * Add debugging if a method killed the output
 			 * @author Nate Ferrero
@@ -1124,13 +1154,12 @@ class Markdown_Parser {
 			 * @author Nate Ferrero
 			 */
 			if(empty($token_re))
-				$token = null;
-			else {
-				$parts = preg_split($token_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
-				$text_stack[0] .= $parts[0];
-				$token =& $parts[1];
-				$text =& $parts[2];
-			}
+				return $text;
+
+			$parts = preg_split($token_re, $text, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$text_stack[0] .= $parts[0];
+			$token =& $parts[1];
+			$text =& $parts[2];
 
 			if (empty($token)) {
 				# Reached end of text span: empty stack without emitting.
