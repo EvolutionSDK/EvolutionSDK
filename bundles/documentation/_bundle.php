@@ -116,7 +116,20 @@ class Bundle {
 					continue;
 				}
 			}
+
+			/**
+			 * Set default page title
+			 * @author Nate Ferrero
+			 */
+			$bundleName = $this->files['bundles'][$bundle]['name'];
+			$defaultTitle = ucwords($page);
+			$titleSuffix = " &bull; $bundleName";
 		}
+
+		/**
+		 * Load Documentation Books
+		 * @author Nate Ferrero
+		 */
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
 
@@ -140,6 +153,10 @@ class Bundle {
 				if($pagePath == $page)
 					$file = $current;
 			}
+
+			$defaultTitle = ucwords($name);
+			$bookName = $this->files['bookNames'][$book];
+			$titleSuffix = " &bull; $bookName";
 		}
 
 		if(!file_exists($file))
@@ -152,7 +169,7 @@ class Bundle {
 		 */
 		$tagname = 'h1';
   		preg_match("/<$tagname ?.*>(.*)<\/$tagname>/", $this->documentationHTML, $matches);
-  		$this->title = isset($matches[1]) ? $matches[1] : ucwords("$page &bull; $bundle");
+  		$this->title = isset($matches[1]) ? $matches[1] : $defaultTitle;
 
 		/**
 		 * Render various sections of the document
@@ -160,7 +177,7 @@ class Bundle {
 		$this->renderNavFirst($output, $bundle, $book, $page);
 		$this->renderNavSecond($output, $bundle, $book, $page);
 		$this->renderNavThird($output, $bundle, $book, $page);
-		$this->render($output, 'title', $this->title);
+		$this->render($output, 'title', $this->title . $titleSuffix);
 		$this->render($output, 'class', str_replace(' ', '-', strtolower($this->title)));
 		$this->render($output, 'documentation', $this->documentationHTML);
 		$this->render($output, 'bundle', $bundle);
@@ -206,6 +223,7 @@ class Bundle {
 			$name = basename($section);
 			$path = md5($name);
 			$this->files['books'][$path] = $section;
+			$this->files['bookNames'][$path] = $name;
 		}
 	}
 
