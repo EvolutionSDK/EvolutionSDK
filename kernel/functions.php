@@ -399,6 +399,14 @@ function redirect($url) {
 	}
 	else
 		$dev = 'no';
+
+	/**
+	 * Redirect Event
+	 * @author Nate Ferrero
+	 */
+	if(isset(e::$events))
+		e::$events->redirect($url);
+
 	if($dev == 'yes' && false) {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
