@@ -202,9 +202,11 @@ class Markdown_Parser {
 			 * Add debugging if a method killed the output
 			 * @author Nate Ferrero
 			 */
-			$wasEmpty = empty(trim(strip_tags($text)));
+			$trimmed = trim(strip_tags($text));
+			$wasEmpty = empty($trimmed);
 			$text = $this->$method($text);
-			if(!$wasEmpty && empty(trim(strip_tags($text))))
+			$trimmed = trim(strip_tags($text));
+			if(!$wasEmpty && empty($trimmed))
 				throw new Exception("Markdown method `$method` removed all output");
 		}
 		
