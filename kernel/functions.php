@@ -400,6 +400,9 @@ function redirect($url) {
 	else
 		$dev = 'no';
 
+	if(isset(e::$session))
+		e::$session->data->destinationURL = $_SERVER['REDIRECT_URL'];
+
 	/**
 	 * Redirect Event
 	 * @author Nate Ferrero
