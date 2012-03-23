@@ -104,7 +104,7 @@ function render_exception(&$exception) {
 	// Not a good idea :( &#8203;
 	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', str_replace('/', '/', $message));
 	
-	$out = "<div class='section'><h1>Uncaught ".get_class($exception)."</h1>";
+	$out = "<div class='section'><h1>Uncaught ".(method_exists($exception, '__class') ? $exception->__class() : get_class($exception))."</h1>";
 	
 	// Show message
 	if(strlen($message) > 1)

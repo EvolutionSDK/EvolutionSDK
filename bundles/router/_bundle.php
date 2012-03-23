@@ -54,12 +54,21 @@ class Bundle {
 		$segs[(count($segs) - 1)] = array_shift(explode('?', $segs[(count($segs) - 1)]));
 		return '/'.implode('/', $segs);
 	}
+
+	public function route($url, $special = false) {
+		try {
+			$this->_route($url, $special);
+		} catch(Exception $e) {
+			e::$events->exception($e);
+			throw $e;
+		}
+	}
 	
 	/**
 	 * Event: route
 	 * @author Nate Ferrero
 	 */
-	public function route($url, $special = false) {
+	public function _route($url, $special = false) {
 
 		if(is_array($url))
 			$url = '/' . implode('/', $url);
@@ -176,6 +185,7 @@ class Bundle {
 			
 			throw new Exception("Bundle `@$bundle` routing did not complete");
 		} catch(Exception $e) {
+			e::$events->exception($e);
 			PortalBundle::$currentException = $e;
 			e\complete();
 		}
@@ -268,6 +278,7 @@ class Bundle {
 			}
 		}
 		catch(Exception $exception) {
+			e::$events->exception($exception);
 			if(isset($_GET['--debug']))
 				throw $exception;
 			
