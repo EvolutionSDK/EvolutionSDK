@@ -100,7 +100,7 @@ class Bundle {
 	public function get($library, $key, $force_reload = false) {
 		if($this->check($library, $key)) {
 			if($this->_is_loaded($library, $key) && !$force_reload)
-				return $this->cache[$library][$key];
+				return unserialize($this->cache[$library][$key]);
 			else
 				return $this->_load($library, $key);
 		}
@@ -116,8 +116,9 @@ class Bundle {
 		$mkey = md5($key);
 		if($this->check($library, $key)) {
 			$data = file_get_contents($this->_cache_path."/$library/$mkey.cache");
-			$data = unserialize(base64_decode($data));
-			return $this->cache[$library][$key] = $data;
+			$data = base64_decode($data);
+			$this->cache[$library][$key] = $data;
+			return unserialize($data);
 		}
 		else return NULL;
 	}
