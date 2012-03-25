@@ -101,7 +101,7 @@ class Bundle {
 		/**
 		 * Security access for development
 		 */
-		e::$security->developerAccess();
+		e::$security->developerAccess("Environment variable <code>$var</code> is invalid.");
 		
 		$file = self::$file;
 		
@@ -132,7 +132,7 @@ class Bundle {
 		/**
 		 * Security access for development
 		 */
-		e::$security->developerAccess();
+		e::$security->developerAccess("Modify environment variable.");
 
 		$form = array_shift($path);
 		if(isset($_GET['var']))

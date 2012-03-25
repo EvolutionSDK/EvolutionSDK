@@ -29,6 +29,26 @@ class Bundle {
 
 			// Use key to encrypt cookie
 			$keys = e::configure('developers');
+			if(!isset($keys->$name))
+				throw new Exception("Invalid developer access username in cookie");
+			$key = $keys->$name;
+
+			$check = $this->genCookieSegment($name, $key);
+
+			if($check === $cookie[1])
+				$developer = true;
+		}
+
+		// Check file based access
+		$file = realpath(e\root . "/../.e-developer");
+		if($file) {
+			$cookie = explode('_', file_get_contents($file), 2);
+			$name = $cookie[0];
+
+			// Use key to encrypt cookie
+			$keys = e::configure('developers');
+			if(!isset($keys->$name))
+				throw new Exception("Invalid developer access username in file");
 			$key = $keys->$name;
 
 			$check = $this->genCookieSegment($name, $key);
@@ -74,12 +94,11 @@ class Bundle {
 	/**
 	 * Security access for development
 	 */
-	public function developerAccess() {
+	public function developerAccess($note = 'Unknown error while loading page') {
 
 		// If cookie and post credentials both failed
 		if(!$this->developer)
-			$this->page('access');
-
+			$this->page('access', '', $note);
 	}
 
 	public function genCookieSegment($name, $key) {
@@ -115,18 +134,18 @@ class Bundle {
 		return($name . '_' . md5(base64_encode(md5($key . '!@#$%^*()' . $pass))));
 	}
 
-	public function page($which, $extra = '') {
+	public function page($which, $extra = '', $note = '') {
 		
 		
 		/**
 		 * Show developer login form
 		 */
-		$title = "Developer Access";
+		$title = "System Configuration Error";
 		$css = file_get_contents(__DIR__.'/../debug/theme.css') . self::style();
 		
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><div class='manage-page'>";
 
-		echo $this->developerAccessForm($which, $extra);
+		echo $this->developerAccessForm($which, $extra, $title, $note);
 		
 		echo "</div></body></html>";
 
@@ -134,30 +153,31 @@ class Bundle {
 		exit;
 	}
 
-	public function developerAccessForm($which = 'access', $extra = '', $header="Developer Access") {
+	public function developerAccessForm($which = 'access', $extra = '', $header = "Page Header", $note = '') {
 		if(strlen($extra) > 0)
-			$extra = "<div class='da-message'>$extra</div>";
+			$extra = '<div class="da-message">'.$extra.'</div>';
 
 		if($which == 'access') {
 			$message = 'Enter Credentials';
-			$form = "<form method='post'>$extra<input name='e-developer-credentials' type='password' /></form>";
+			$form = '<form method="post">'.$extra.'<input name="e-developer-credentials" type="password" /></form>';
 		} elseif($which == 'generate') {
 			$message = 'Generate Security Credentials';
-			$form = "<form method='post'>$extra<input name='e-developer-credentials' type='password' /></form>";
+			$form = '<form method="post">'.$extra.'<input name="e-developer-credentials" type="password" /></form>';
 		}
-		return "<div class='section'><h2>$header</h2><h4>$message</h4><div class='trace'>$form<div style='clear: both'></div></div></div>";
+		$note = '<p>' . $note . '</p><h4 style="cursor: pointer" onclick="this.style.display=\'none\';document.getElementById(\'da-form\').style.display = \'block\'">Details +</h4>';
+		return '<div class="section"><h2>'.$header.'</h2>'.$note.'<div id="da-form"><h4>'.$message.'</h4><div class="trace">'.$form.'<div style="clear: both"></div></div></div></div>';
 	}
 
 	private static function style() {
 		return <<<_
 body._e_dump {
-	margin: 2em auto;
+	margin: 2em auto 0;
+	padding: 0;
 	width: 600px;
 	h1 {text-align: center;}
 }
 form {
 	padding: 1em;
-
 }
 input {
 	box-sizing: border-box;
@@ -173,6 +193,13 @@ body._e_dump .da-message {
 	margin-bottom: 1em;
 	font-family: Monaco, monospace;
 	font-size: 12px;
+}
+#da-form {
+	display: none;
+}
+button {
+	margin: 0 7px;
+	vertical-align: 2px;
 }
 _;
 	}

@@ -18,7 +18,7 @@ class Bundle {
 		/**
 		 * Security access for development
 		 */
-		e::$security->developerAccess();
+		e::$security->developerAccess("EvolutionSDK Management Center");
 		
 		// Get name
 		$name = array_shift($path);

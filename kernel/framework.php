@@ -87,6 +87,7 @@ class Stack {
 		 */
 		if(isset(e::$events)) {
 			e::$events->framework_security();
+			e::$events->framework_database();
 			e::$events->framework_loaded();
 			e::$events->after_framework_loaded();
 		}

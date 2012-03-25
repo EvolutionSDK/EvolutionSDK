@@ -4,7 +4,7 @@ Handles security of the manage center, and adds the ability to use developer aut
 
 Using E3 Security
 =================
-You can activate security two ways. One you can either run the event `e::$events->framework_security();` or manually call `e::$security->developerAccess();` thats all there is to it.
+You can activate security two ways. One you can either run the event `e::$events->framework_security();` or manually call `e::$security->developerAccess("Reason for requiring developer access");` thats all there is to it.
 
 Adding Users
 ============
