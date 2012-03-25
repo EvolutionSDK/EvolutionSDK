@@ -1,0 +1,8 @@
+exception:
+	singular: exception
+	plural: exceptions
+	fields:
+		url: string
+		get: text
+		post: text
+		serialized: text
