@@ -89,6 +89,7 @@ class Bundle extends SQLBundle {
 			$get = unserialize(base64_decode($ex->get));
 			$post = unserialize(base64_decode($ex->post));
 			$url = $ex->url;
+			$overrideUrl = $url;
 
 			$additional = "<div class='section'><h4>Page Information</h4><div class='trace' style=\"margin-bottom: 0\"><div class='step'>";
 			$additional .= '<table class="dump"><tbody>';

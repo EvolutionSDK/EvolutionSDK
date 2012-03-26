@@ -97,12 +97,16 @@ function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
 /**
  * Render an exception
  */
-function render_exception(&$exception) {
+function render_exception(&$exception, $overrideUrl = null) {
 	
 	// Get message
 	$message = $exception->getMessage();
 	// Not a good idea :( &#8203;
-	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', str_replace('/', '/', $message));
+	$message = preg_replace('/`([^`]*)`/x', '<code>$1</code>', $message);
+
+	// Allow links
+	if(!is_null($overrideUrl))
+		$message = preg_replace('/href\=("|\')\?/x', 'href=$1' . $overrideUrl . '?', $message);
 	
 	$out = "<div class='section'><h1>Uncaught ".(method_exists($exception, '__class') ? $exception->__class() : get_class($exception))."</h1>";
 	
