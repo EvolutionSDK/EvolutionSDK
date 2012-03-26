@@ -49,7 +49,7 @@ class SerializeableException {
 		$this->file = $ex->getFile();
 		$this->trace = $ex->getTrace();
 		foreach($this->trace as $key => $step)
-			$this->trace[$key]['args'] = e\ToArray($this->trace[$key]['args']);
+			$this->trace[$key]['args'] = null;//e\ToArray($this->trace[$key]['args']);
 	}
 }
 

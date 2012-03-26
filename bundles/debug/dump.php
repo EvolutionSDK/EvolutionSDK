@@ -191,16 +191,19 @@ function dumpVar($var, $value, $depth = 0) {
 				}
 				$out .= '<td class="dump-'.$type.'">' . $output . '</td></tr>';
 			}
-			foreach($value as $key => $sub) {
-				if(isset($listed[$key])) continue;
-				
-				if(is_array($sub) && count($sub) > 0)
-					$type = 'array';
-				else
-					$type = 'value';
-				$out .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . htmlspecialchars($key) . '</span></td>';
-				$out .= '<td class="dump-'.$type.'">' . dumpVar(null, $sub, $depth + 1) . '</td></tr>';
-				
+
+			if(!($value instanceof \Iterator)) {
+				foreach($value as $key => $sub) {
+					if(isset($listed[$key])) continue;
+					
+					if(is_array($sub) && count($sub) > 0)
+						$type = 'array';
+					else
+						$type = 'value';
+					$out .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . htmlspecialchars($key) . '</span></td>';
+					$out .= '<td class="dump-'.$type.'">' . dumpVar(null, $sub, $depth + 1) . '</td></tr>';
+					
+				}
 			}
 			$out .= '</table></div>';
 			
