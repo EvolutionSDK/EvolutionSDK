@@ -145,11 +145,13 @@ class Bundle {
 		
 		# make sure the current library values are loaded
 		$this->check($library, $key);
+
+		$value = serialize($value);
 		
 		switch($encrypt) {
 			default:
 				# get base64string
-				$save_value = wordwrap(base64_encode(serialize($value)), 120, "\n", true);
+				$save_value = wordwrap(base64_encode($value), 120, "\n", true);
 			break;
 		}
 		$this->cache[$library][$key] = $value;
