@@ -1,6 +1,7 @@
 <?php
 
 namespace e;
+use Exception;
 use stack;
 use e;
 
@@ -18,6 +19,27 @@ function get_object_id(&$obj) {
 	$dump = substr(ob_get_clean(), 0, 250);
     preg_match('~^.+?(\#|\>)(\d+)~s', $dump, $oid);
     return isset($oid[2]) ? $oid[2] : 'unknown';
+}
+
+/**
+ * Bundle Status
+ * Sets and retrieves a text file for a bundle
+ * @author Nate Ferrero
+ */
+function bundle_status($bundle, $status = null) {
+	if($bundle !== preg_replace('/[^a-z]/', '', $bundle))
+		throw new Exception("Invalid bundle name");
+	$file = e\root . '/cache/' . e\sitename . '/status/'.$bundle.'.txt';
+	if(is_null($status))
+		return is_file($file) ? file_get_contents($file) : 'No status.';
+	else {
+		if(!is_dir(dirname($status)))
+			mkdir(dirname($status));
+		$bytes = file_put_contents($file, $status);
+		if($bytes == 0 && strlen($status) > 0)
+			throw new Exception("Unable to write bundle status at `$file`");
+		return true;
+	}
 }
 
 /**

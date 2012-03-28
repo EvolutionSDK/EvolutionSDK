@@ -2,6 +2,9 @@ exception:
 	singular: exception
 	plural: exceptions
 	fields:
+		message: string
+		file: string
+		line: string
 		url: string
 		get: text
 		post: text

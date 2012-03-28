@@ -33,6 +33,16 @@ class Stack {
 	public static function loadSite($root, $site, $bundles) {
 		
 		e\trace_enter('EvolutionSDK Framework', "Loading site `$site`");
+
+		/**
+		 * Check for bundle status
+		 * @author Nate Ferrero
+		 */
+		if(substr($_SERVER['REQUEST_URI'], 0, 11) === '/@--status-') {
+			$bundle = substr($_SERVER['REQUEST_URI'], 11);
+			echo e\bundle_status($bundle);
+			e\complete();
+		}
 		
 		/**
 		 * Load site bundles

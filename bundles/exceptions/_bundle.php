@@ -72,8 +72,19 @@ class Bundle extends SQLBundle {
 			return $this->last();
 
 		if(!is_array($path) || count($path) !== 1 || !is_numeric($id = $path[0])) {
-			$exception = new Exception("Invalid exception URL");
-			require(e\root . '/' . bundles . '/debug/message.php');
+			if($path[0] == 'clear')
+				return $this->clearAll();
+			$links = array();
+			$all = $this->getExceptions()->all();
+			foreach($all as $item) {
+				$links[] = '<a href="/@exceptions/'.$item->id.'">' . $item->id . '</a>';
+			}
+			$count = count($all);
+			$title = "Found $count Exceptions";
+			$body = implode(' ', $links);
+			$body .= ' <a href="/@exceptions/clear">Clear All</a>';
+			require(e\root . '/' . e\bundles . '/debug/message.php');
+			exit;
 		}
 
 		try {
@@ -113,6 +124,15 @@ class Bundle extends SQLBundle {
 	}
 
 	/**
+	 * Clear all
+	 * @author Nate Ferrero
+	 */
+	public function clearAll() {
+		e::$sql->query("DELETE FROM `exceptions.exception`");
+		e\redirect('/@exceptions');
+	}
+
+	/**
 	 * Save exception
 	 * @author Nate Ferrero
 	 */
@@ -131,6 +151,9 @@ class Bundle extends SQLBundle {
 			 * @author Nate Ferrero
 			 */
 			$model = $this->newException();
+			$model->message = $ex->getMessage();
+			$model->file = $ex->getFile();
+			$model->line = $ex->getLine();
 			$model->serialized = base64_encode(serialize($ex));
 			$model->url = $_SERVER['REDIRECT_URL'];
 			$model->get = base64_encode(serialize(e\ToArray($_GET)));
