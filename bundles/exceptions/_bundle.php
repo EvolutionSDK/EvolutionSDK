@@ -71,8 +71,10 @@ class Bundle extends SQLBundle {
 	 */
 	public function route($path) {
 
-		if($path === array('test'))
-			throw new Exception("Test Exception");
+		if($path === array('test')) {
+			e::$events->exception(new Exception("Test Exception"));
+			e\redirect('/@exceptions');
+		}
 
 		if($path === array('last'))
 			return $this->last();
@@ -91,9 +93,9 @@ class Bundle extends SQLBundle {
 					htmlspecialchars($item->url) . '</span> &mdash; occurred '.e\time_since($item->created_timestamp).'.</a>';
 			}
 			$count = count($all);
-			$title = "Found " . e\plural($count, "Exception", "Exceptions");
+			$title = e\plural($count, "Exception/s", "No");
 			$body = implode(' ', $links);
-			$body .= ' <a href="/@exceptions">Reload</a> &bull; <a href="/@exceptions/clear">Clear All</a>';
+			$body .= ' <a href="/@exceptions/test">Trigger</a> &bull; <a href="/@exceptions">Reload</a> &bull; <a href="/@exceptions/clear">Clear All</a>';
 			require(e\root . '/' . e\bundles . '/debug/message.php');
 			exit;
 		}
