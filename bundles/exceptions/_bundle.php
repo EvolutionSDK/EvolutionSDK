@@ -88,7 +88,7 @@ class Bundle extends SQLBundle {
 			foreach($all as $item) {
 				$links[] = '<a class="exception-link" href="/@exceptions/'.$item->id.'"><span class="key">' .
 					$item->class . '</span> '. e\code_blocks($item->message) .' on <span class="line">' . 
-					htmlspecialchars($item->url) . '</span> &mdash; about '.e\time_since($item->created_timestamp).'.</a>';
+					htmlspecialchars($item->url) . '</span> &mdash; occurred '.e\time_since($item->created_timestamp).'.</a>';
 			}
 			$count = count($all);
 			$title = "Found " . e\plural($count, "Exception", "Exceptions");

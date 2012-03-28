@@ -143,8 +143,8 @@ function render_exception(&$exception, $overrideUrl = null) {
 	 */
 	$hasTime = method_exists($exception, 'getTime');
 	$message .= (strlen($message) > 0 ? 
-		' &mdash; ' . ($hasTime ? 'about ' : 'just now.') :
-		($hasTime ? 'About ' : 'Just now.')
+		' &mdash; ' . ($hasTime ? 'occurred ' : 'just now.') :
+		($hasTime ? 'Occurred ' : 'Just now.')
 	);
 	if($hasTime) $message .= e\time_since($exception->getTime()) . '.'; 
 
