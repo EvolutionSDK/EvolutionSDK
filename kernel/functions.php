@@ -116,6 +116,11 @@ function plural($num, $word = 'item/s', $empty = '0', $chr = '/') {
 			($num === 1 ? '' : $word[1])
 		);
 }
+
+function code_blocks($code) {
+	return preg_replace('/`([^`]*)`/x', '<code>$1</code>', $code);
+}
+
 /**
  * Render an exception
  */
@@ -130,10 +135,21 @@ function render_exception(&$exception, $overrideUrl = null) {
 	if(!is_null($overrideUrl))
 		$message = preg_replace('/href\=("|\')\?/x', 'href=$1' . $overrideUrl . '?', $message);
 	
-	$out = "<div class='section'><h1>Uncaught ".(method_exists($exception, '__class') ? $exception->__class() : get_class($exception))."</h1>";
+	$out = "<div class='section'><h1>Uncaught ".(method_exists($exception, 'getClass') ? $exception->getClass() : get_class($exception))."</h1>";
 
 	if(isset($exception->query)) $out .= "<p>SQL Query: <code>".$exception->query."</code></p>";
 	
+	/**
+	 * Show exception time
+	 * @author Nate Ferrero
+	 */
+	$hasTime = method_exists($exception, 'getTime');
+	$message .= (strlen($message) > 0 ? 
+		' &mdash; ' . ($hasTime ? 'occurred ' : 'just now.') :
+		($hasTime ? 'Occurred ' : 'Just now.')
+	);
+	if($hasTime) $message .= e\time_since($exception->getTime()) . '.'; 
+
 	// Show message
 	if(strlen($message) > 1)
 		$out .= "<p>$message</p>";

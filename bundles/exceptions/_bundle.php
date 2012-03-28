@@ -17,7 +17,7 @@ class SerializeableException {
 	protected $code;
 	protected $line;
 	protected $file;
-	public function __class() {
+	public function getClass() {
 		return $this->className;
 	}
 	public function getMessage() {
@@ -40,6 +40,12 @@ class SerializeableException {
 	}
 	public function getPrevious() {
 		return $this->previous;
+	}
+	public function getTime() {
+		return $this->time;
+	}
+	public function setTime($time) {
+		$this->time = $time;
 	}
 	public function import($ex) {
 		$this->className = get_class($ex);
@@ -74,15 +80,20 @@ class Bundle extends SQLBundle {
 		if(!is_array($path) || count($path) !== 1 || !is_numeric($id = $path[0])) {
 			if($path[0] == 'clear')
 				return $this->clearAll();
+
+			echo '<style>._e_dump a.exception-link { text-decoration: none; display: block; margin-bottom: 12px;}</style>';
+
 			$links = array();
 			$all = $this->getExceptions()->all();
 			foreach($all as $item) {
-				$links[] = '<a href="/@exceptions/'.$item->id.'">' . $item->id . '</a>';
+				$links[] = '<a class="exception-link" href="/@exceptions/'.$item->id.'"><span class="key">' .
+					$item->class . '</span> '. e\code_blocks($item->message) .' on <span class="line">' . 
+					htmlspecialchars($item->url) . '</span> &mdash; occurred '.e\time_since($item->created_timestamp).'.</a>';
 			}
 			$count = count($all);
-			$title = "Found $count Exceptions";
+			$title = "Found " . e\plural($count, "Exception", "Exceptions");
 			$body = implode(' ', $links);
-			$body .= ' <a href="/@exceptions/clear">Clear All</a>';
+			$body .= ' <a href="/@exceptions">Reload</a> &bull; <a href="/@exceptions/clear">Clear All</a>';
 			require(e\root . '/' . e\bundles . '/debug/message.php');
 			exit;
 		}
@@ -101,8 +112,9 @@ class Bundle extends SQLBundle {
 			$post = unserialize(base64_decode($ex->post));
 			$url = $ex->url;
 			$overrideUrl = $url;
+			$exception->setTime($ex->created_timestamp);
 
-			$additional = "<div class='section'><h4>Page Information</h4><div class='trace' style=\"margin-bottom: 0\"><div class='step'>";
+			$additional = "<div class='section'><h4>Page Information</h4><div class='trace'><div class='step'>";
 			$additional .= '<table class="dump"><tbody>';
 			foreach(array('URL' => 'url', '$_GET' => 'get', '$_POST' => 'post') as $name => $var) {
 				$additional .= '<tr><td align="right" width="1" class="dump-key"><span class="key">' . $name . 
@@ -151,9 +163,10 @@ class Bundle extends SQLBundle {
 			 * @author Nate Ferrero
 			 */
 			$model = $this->newException();
-			$model->message = $ex->getMessage();
-			$model->file = $ex->getFile();
+			$model->message = addslashes($ex->getMessage());
+			$model->file = addslashes($ex->getFile());
 			$model->line = $ex->getLine();
+			$model->class = addslashes($ex->getClass());
 			$model->serialized = base64_encode(serialize($ex));
 			$model->url = $_SERVER['REDIRECT_URL'];
 			$model->get = base64_encode(serialize(e\ToArray($_GET)));
