@@ -774,3 +774,35 @@ function prepareDeepEncode($obj) {
 		return array('type' => 'unknown', 'encoding' => 'base64', 'serialized' => base64_encode(serialize($obj)));
 	}
 }
+
+/**
+ * Modify an array key
+ * @author Nate Ferrero
+ */
+function modify_deep_array_value($array, $segments, $content) {
+	if(count($segments) == 0)
+		return $content;
+	if(!is_array($array))
+		throw new Exception("Array must be provided to `modify_deep_array_value`");
+	$new = array();
+	$current = array_shift($segments);
+	foreach($array as $key => $value) {
+		$new[$key] = ($key == $current) ? (
+			count($segments) == 0 ? $content : modify_deep_array_value($value, $segments, $content)
+		) : $value;
+	}
+	return $new;
+}
+
+/**
+ * Weave a value to the left of others in an array
+ * @author Nate Ferrero
+ */
+function array_weave_left($array, $string) {
+	$new = array();
+	foreach($array as $value) {
+		$new[] = $string;
+		$new[] = $value;
+	}
+	return $new;
+}
