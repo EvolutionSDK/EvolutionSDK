@@ -131,6 +131,8 @@ function render_exception(&$exception, $overrideUrl = null) {
 		$message = preg_replace('/href\=("|\')\?/x', 'href=$1' . $overrideUrl . '?', $message);
 	
 	$out = "<div class='section'><h1>Uncaught ".(method_exists($exception, '__class') ? $exception->__class() : get_class($exception))."</h1>";
+
+	if(isset($exception->query)) $out .= "<p>SQL Query: <code>".$exception->query."</code></p>";
 	
 	// Show message
 	if(strlen($message) > 1)
