@@ -44,6 +44,8 @@ class DSpyc {
 			}
 			/* Uncomment above to enable strict cache time checking */
 			try {
+				if(!is_file($file))
+					return null;
 				return filemtime($file) + self::$timeOffset;
 			} catch(Exception $e) {
 				return null;
