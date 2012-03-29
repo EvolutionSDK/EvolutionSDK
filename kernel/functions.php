@@ -806,3 +806,17 @@ function array_weave_left($array, $string) {
 	}
 	return $new;
 }
+
+/**
+ * Get array key as array
+ * @author Nate Ferrero
+ */
+function array_get_keys(&$array, $key, $type = 'default') {
+	$new = array();
+	foreach($array as $item) {
+		if($type = 'float')
+			$item[$key] = (float) $item[$key];
+		$new[] = $item[$key];
+	}
+	return $new;
+}
