@@ -33,8 +33,8 @@ function bundle_status($bundle, $status = null) {
 	if(is_null($status))
 		return is_file($file) ? file_get_contents($file) : 'No status.';
 	else {
-		if(!is_dir(dirname($status)))
-			mkdir(dirname($status));
+		if(!is_dir(dirname($file)))
+			mkdir(dirname($file));
 		$bytes = file_put_contents($file, $status);
 		if($bytes == 0 && strlen($status) > 0)
 			throw new Exception("Unable to write bundle status at `$file`");
