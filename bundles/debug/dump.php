@@ -146,6 +146,12 @@ function dumpVar($var, $value, $depth = 0) {
 			    	'</span>()';
 			}
 			$out .= '</div>';
+
+			// Virtual objects (not in database)
+			if(method_exists($value, '__isVirtual')) {
+				if($value->__isVirtual())
+					$out .= '<p><i>Virtual Model</i></p>';
+			}
 			
 			// Properties
 			$out .= '<div class="methods"><b>Properties:</b> ';

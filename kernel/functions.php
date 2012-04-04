@@ -22,6 +22,28 @@ function get_object_id(&$obj) {
 }
 
 /**
+ * Super simple download script
+ * @author Nate Ferrero
+ */
+function download($file) {
+	if(file_exists($file)) {
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename='.basename($file));
+		header('Content-Transfer-Encoding: binary');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length: ' . filesize($file));
+		ob_clean();
+		flush();
+		readfile($file);
+		exit;
+	}
+	throw new Exception("File does not exist");
+}
+
+/**
  * Bundle Status
  * Sets and retrieves a text file for a bundle
  * @author Nate Ferrero
