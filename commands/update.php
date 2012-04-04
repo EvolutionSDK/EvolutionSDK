@@ -10,7 +10,7 @@ foreach(glob(e\root . '/cache/*/', GLOB_ONLYDIR) as $dir) {
 	/**
 	 * Handle updates
 	 */
-	$sites[basename($dir)] = e::$events->e_command_update($dir);
+	$sites[basename($dir)] = e::$events->e_command_update($dir, basename($dir));
 }
 
 /**
