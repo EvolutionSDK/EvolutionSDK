@@ -81,7 +81,7 @@ function load($class) {
 		$base = $path[count($path) - 1];
 	else
 		$base = '';
-	$ns = clone $path;
+	$ns = $path;
 	array_pop($ns);
 	$ns = implode('/', $ns);
 	$c = implode('/', $path);
