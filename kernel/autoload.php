@@ -81,6 +81,9 @@ function load($class) {
 		$base = $path[count($path) - 1];
 	else
 		$base = '';
+	$ns = clone $path;
+	array_pop($ns);
+	$ns = implode('/', $ns);
 	$c = implode('/', $path);
 	
 	if(empty($c)) {
@@ -93,10 +96,10 @@ function load($class) {
 	}
 	
 	if($base === 'e')
-		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition.");
+		throw new Exception("You need to put `use e;` at the top of your PHP file with namespace `$ns`.");
 
 	if(strtolower($base) === 'exception')
-		throw new Exception("You need to put `use Exception;` at the top of your PHP files, after the namespace definition.");
+		throw new Exception("You need to put `use Exception;` at the top of your PHP file with namespace `$ns`.");
 
 	/**
 	 * Handle reserved names in classes by allowing _className
