@@ -7,7 +7,6 @@
 
 namespace Bundles\Unit;
 use Exception;
-use e\AutoLoadException;
 use e;
 
 class Bundle {
@@ -41,7 +40,7 @@ class Bundle {
 			$this->instance = new $class;
 			$this->instance->tests();
 			return $this->tests;
-		} catch(AutoLoadException $e) {
+		} catch(e\AutoLoadException $e) {
 			return array();
 		}
 	}
