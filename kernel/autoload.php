@@ -95,6 +95,9 @@ function load($class) {
 	if($base === 'e')
 		throw new Exception("You need to put `use e;` at the top of your PHP files, after the namespace definition.");
 
+	if(strtolower($base) === 'exception')
+		throw new Exception("You need to put `use Exception;` at the top of your PHP files, after the namespace definition.");
+
 	/**
 	 * Handle reserved names in classes by allowing _className
 	 * @author Nate Ferrero
