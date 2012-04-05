@@ -75,15 +75,16 @@ function load($class) {
 	if($path[0] == '')
 		array_shift($path);
 	
+	$ns = $path;
+	array_pop($ns);
+	$ns = implode('/', $ns);
+	
 	$a = array_shift($path);
 	$b = array_shift($path);
 	if(count($path))
 		$base = $path[count($path) - 1];
 	else
 		$base = '';
-	$ns = $path;
-	array_pop($ns);
-	$ns = implode('/', $ns);
 	$c = implode('/', $path);
 	
 	if(empty($c)) {
