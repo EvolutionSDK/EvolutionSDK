@@ -130,8 +130,8 @@ if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesiz
 			return false;
 		else return true;
 	});
-	foreach(array_flip($EBL) as $dir)
-		$dirs[] = $dir;
+	foreach(array_flip($EBL) as $EBLD)
+		$dirs[] = $EBLD;
 
 	foreach($dirs as $dir) {
 		foreach(glob($dir.'/*/_bundle.php') as $name) {

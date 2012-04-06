@@ -125,8 +125,21 @@ function load($class) {
 	 */
 	if(strtolower($a) === 'bundles') {
 
-		if(defined('EvolutionBundleLibrary'))
-			$dirs[] = '@'.\EvolutionBundleLibrary;
+		/**
+		 * Get bundle libraries
+		 * ====================
+		 *    04 - 06 - 2012
+		 * ====================
+		 * @author Kelly Becker
+		 */
+		$constants = get_defined_constants(true);
+		$EBL = array_filter(array_flip($constants['user']), function($key) {
+			if(strpos($key, 'EvolutionBundleLibrary') === false)
+				return false;
+			else return true;
+		});
+		foreach(array_flip($EBL) as $EBLD)
+			$dirs[] = '@'.$EBLD;
 	
 		if(isset(stack::$bundlePreferences[$b])) {
 			if(stack::$bundlePreferences[$b] == 'off')
