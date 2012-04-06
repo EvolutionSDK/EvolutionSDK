@@ -132,48 +132,85 @@ class Bundle {
 				continue;
 			}
 		}
-		
-		foreach($objects as &$obj) {
-			
-			$class = get_class($obj);
-			
-			if($master) {
-				/**
-				 * Check if the current handler is enabled in master-events
-				 */
-				if($current['handlers'][$class] !== 'enabled') {
-					e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>", null, 9);
-					continue;
-				}
+
+		/**
+		 * Sort by priority
+		 * @todo Cache most event functionality
+		 * @author Nate Ferrero
+		 */
+		$sortCategories = array(
+			'first' => array(),
+			'unsorted' => array(),
+			'last' => array()
+		);
+		$sortedObjects = array();
+		$sort = $method . '_order';
+		foreach($objects as $obj) {
+			if(isset($obj->$sort)) {
+				$s = $obj->$sort;
+
+				if(!isset($sortCategories[$s]))
+					throw new Exception("Invalid event sort order `$s`");
+
+				$sortCategories[$s][] = $obj;
+			} else {
+				$sortCategories['unsorted'][] = $obj;
 			}
-			
-			/**
-			 * Check if the current event is regulated
-			 */
-			if(isset($current) && isset($current[$event])) {
+		}
+
+		/**
+		 * Debug
+		 */
+		if(isset($_GET['--events-event']) && $_GET['--events-event'] == $event)
+			dump($sortCategories);
+
+		/**
+		 * Run all events
+		 * @author Nate Ferrero
+		 */
+		foreach($sortCategories as $category => $objs) {
+			foreach($objs as $obj) {
 				
-				if(!isset($current[$event][$class]) || $current[$event][$class] !== "enabled") {
-					e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>", null, 9);
-					continue;
+				$class = get_class($obj);
+				
+				if($master) {
+					/**
+					 * Check if the current handler is enabled in master-events
+					 */
+					if($current['handlers'][$class] !== 'enabled') {
+						e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>", null, 9);
+						continue;
+					}
 				}
-			}
-			
-			e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event', '', null, 9);
-			
-			try {
-				$results[$class] = call_user_func_array(array($obj, $method), $args);
-				e\trace_exit();
-			}
-			
-			catch(Exception $e) {
-				e\trace_exception($e);
 				
 				/**
-				 * Trace_exit needs to be here twice, not a typo
+				 * Check if the current event is regulated
 				 */
-				e\trace_exit();
-				e\trace_exit();
-				throw $e;
+				if(isset($current) && isset($current[$event])) {
+					
+					if(!isset($current[$event][$class]) || $current[$event][$class] !== "enabled") {
+						e\trace('Event handler <code class="alt2">'.$class.'</code> is disabled', "In file <code>$file</code>", null, 9);
+						continue;
+					}
+				}
+				
+				e\trace_enter('Object <code class="alt2">'.$class.'</code> handling event', '', null, 9);
+				
+				try {
+					$results[$class] = call_user_func_array(array($obj, $method), $args);
+					e\trace_exit();
+				}
+				
+				catch(Exception $e) {
+					e\trace_exception($e);
+					
+					/**
+					 * Trace_exit needs to be here twice, not a typo
+					 */
+					e\trace_exit();
+					e\trace_exit();
+					throw $e;
+				}
 			}
 		}
 		
