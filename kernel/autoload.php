@@ -100,7 +100,7 @@ function load($class) {
 		throw new Exception("You need to put `use e;` at the top of your PHP file with namespace `$ns`.");
 
 	if(strtolower($base) === 'exception')
-		throw new Exception("You need to put `use Exception;` at the top of your PHP file with namespace `$ns`.");
+		throw new AutoLoadException("You need to put `use Exception;` at the top of your PHP file with namespace `$ns`.");
 
 	/**
 	 * Handle reserved names in classes by allowing _className
