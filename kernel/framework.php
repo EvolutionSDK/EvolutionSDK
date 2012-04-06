@@ -84,8 +84,6 @@ class Stack {
 		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'core');
 		}
-
-		dump(self::$bundles);
 		
 		/**
 		 * Mark system as loaded
