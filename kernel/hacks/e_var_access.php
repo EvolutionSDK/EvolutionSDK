@@ -117,8 +117,21 @@ if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesiz
 	$bundleList = array();
 	$dirs = array(e\root.'/bundles', e\site.'/bundles');
 
-	if(defined('\\EvolutionBundleLibrary'))
-		$dirs[] = \EvolutionBundleLibrary;
+	/**
+	 * Get bundle libraries
+	 * ====================
+	 *    04 - 06 - 2012
+	 * ====================
+	 * @author Kelly Becker
+	 */
+	$constants = get_defined_constants(true);
+	$EBL = array_filter(array_flip($constants['user']), function($key) {
+		if(strpos($key, 'EvolutionBundleLibrary') === false)
+			return false;
+		else return true;
+	});
+	foreach(array_flip($EBL) as $EBLD)
+		$dirs[] = $EBLD;
 
 	foreach($dirs as $dir) {
 		foreach(glob($dir.'/*/_bundle.php') as $name) {
