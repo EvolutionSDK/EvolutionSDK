@@ -53,13 +53,28 @@ class Stack {
 		}
 
 		/**
-		 * Load external bundles
-		 * @author Nate Ferrero
+		 * Get bundle libraries
+		 * ====================
+		 *    04 - 06 - 2012
+		 * ====================
+		 * @author Kelly Becker
 		 */
-		if(defined('EvolutionBundleLibrary')) {
-			foreach(glob(EvolutionBundleLibrary.'/*/_bundle.php') as $file) {
-				self::loadBundle($file, 'library');
-			}
+		$constants = get_defined_constants(true);
+		$EBL = array_filter(array_flip($constants['user']), function($key) {
+			if(strpos($key, 'EvolutionBundleLibrary') === false)
+				return false;
+			else return true;
+		});
+
+		/**
+		 *  Load bundles
+		 * ==============
+		 * 04 - 06 - 2012
+		 * ==============
+		 * @author Kelly Becker
+		 */
+		foreach(array_flip($EBL) as $EBLD) foreach(glob($EBLD.'/*/_bundle.php') as $file) {
+			self::loadBundle($file, 'library');
 		}
 
 		/**
@@ -69,6 +84,8 @@ class Stack {
 		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'core');
 		}
+
+		dump(self::$bundles);
 		
 		/**
 		 * Mark system as loaded
