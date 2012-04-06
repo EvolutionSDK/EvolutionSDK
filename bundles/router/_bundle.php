@@ -75,6 +75,11 @@ class Bundle {
 	 */
 	public function _route($url, $special = false) {
 
+		$qp = strpos($url, '?');
+		if($qp !== false) {
+			$url = substr($url, 0, $qp);
+		}
+
 		if(is_array($url))
 			$url = '/' . implode('/', $url);
 
