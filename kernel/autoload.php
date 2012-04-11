@@ -120,6 +120,18 @@ function load($class) {
 	$dirs = array(root, $site);
 
 	/**
+	 * Allow the addition of more dirs to scan inside
+	 * (Useful for portals within bundles ETC...)
+	 * @author Kelly Becker
+	 */
+	if(stack::$loaded)
+		$dirs = array_merge(
+			$dirs,
+			(array) e::configure('autoload')->dirs
+		);
+
+
+	/**
 	 * Special handling for bundle files
 	 * @author Nate Ferrero
 	 */
