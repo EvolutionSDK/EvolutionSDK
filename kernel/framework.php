@@ -283,8 +283,9 @@ class e extends e_var_access {
 	 * Map a string to a bundle model
 	 * @author David Boskovic
 	 */
-	public static function map($map) {
+	public static function map($map, $validate = false) {
 		if(preg_match("/^(\w+)\.(\w+):([\w-]+)$/", $map)) {
+			if($validate) return $map;
 			
 			list($map, $access) = explode(':', $map);
 			list($bundle, $model) = explode('.', $map);
