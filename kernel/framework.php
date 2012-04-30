@@ -20,6 +20,7 @@ class Stack {
 	 * Store the bundles and if they have been used
 	 * @author Nate Ferrero
 	 */
+
 	public static $dirs = array();
 	public static $bundles = array();
 	public static $bundleInitialized = array();

@@ -855,3 +855,15 @@ function glob_recursive($pattern, $flags = 0) {
 
 	return $files;
 }
+
+/**
+ * Find partial in an array()
+ * @author Kelly Becker
+ */
+function array_find($needle, array $haystack) {
+    foreach ($haystack as $key => $value) {
+        if(strpos($value, $needle) !== false) 
+        	return $key;
+    }
+    return false;
+}
