@@ -317,6 +317,17 @@ if(function_exists('e_static_bundle_access_init'))
  * @author Nate Ferrero
  */
 function dump($dump) {
+
+	/**
+	 * Allow Dumping JSON
+	 * @author Kelly Becker
+	 */
+	if(isset($_GET['--dump-json'])) {
+		header("Content-Type: application/json");
+		echo json_encode($dump);
+		die;
+	}
+
 	define('DUMP_SINGLE_VAR', 1);
 	eval(d);
 }
