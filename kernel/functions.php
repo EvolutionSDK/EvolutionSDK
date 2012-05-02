@@ -147,6 +147,24 @@ function code_blocks($code) {
  * Render an exception
  */
 function render_exception(&$exception, $overrideUrl = null) {
+
+	/**
+	 * Allow a JSON Exception
+	 * @author Kelly Becker
+	 */
+	if(isset($_GET['--exception-json'])) {
+		header("Content-Type: application/json");
+		echo json_encode(array(
+			'class' => $exception->className,
+			'message' => $exception->getMessage(),
+			'trace' => $exception->trace,
+			'code' => $exception->code,
+			'line' => $exception->line,
+			'file' => $exception->file,
+			'time' => $exception->time
+		));
+		die;
+	}
 	
 	// Get message
 	$message = $exception->getMessage();
