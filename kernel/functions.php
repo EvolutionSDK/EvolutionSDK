@@ -179,7 +179,7 @@ function render_exception(&$exception, $overrideUrl = null) {
 	/**
 	 * Start reveal div
 	 */	
-	$out .= "<div class='reveal'>";
+	$out .= "<h4 class='reveal-switch' onclick='this.style.display=\"none\";this.nextSibling.style.display=\"block\"'>&#x271A;</h4><div class='reveal' style='display:none'>";
 	// Not a good idea :( &#8203;
 	$out .= "<p>Error happened on <span class='line'>line " . $exception->getLine() .
 		'</span> of <code class="file">' . str_replace('/', '/', $exception->getFile()) . '</code></p>';
@@ -189,15 +189,15 @@ function render_exception(&$exception, $overrideUrl = null) {
 	 */
 	$out .= stylize_stack_trace($exception->getTrace());
 	
-	/**
-	 * End reveal div
-	 */
-	$out .= '</div>';
-	
 	// Check for previous exception
 	$prev = $exception->getPrevious();
 	if(is_object($prev))
 		$out .= render_exception($prev);
+	
+	/**
+	 * End reveal div
+	 */
+	$out .= '</div>';
 		
 	// Close section
 	$out .= '</div>';
