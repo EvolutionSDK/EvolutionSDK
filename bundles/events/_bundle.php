@@ -146,7 +146,7 @@ class Bundle {
 		$sortedObjects = array();
 		$sort = $method . '_order';
 		foreach($objects as $obj) {
-			if(isset($obj->$sort)) {
+			if(property_exists($obj, $sort)) {
 				$s = $obj->$sort;
 
 				if(!isset($sortCategories[$s]))
