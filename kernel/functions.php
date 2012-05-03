@@ -887,7 +887,7 @@ function array_find($needle, array $haystack) {
  * Instantiate a class with an array
  * @author Kelly Becker
  */
-function new() {
+function nclass() {
 	$args = func_get_args();
 	$class = array_shift($args);
 	$class = new \ReflectionClass($class);
