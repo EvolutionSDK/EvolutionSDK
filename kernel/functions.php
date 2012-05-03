@@ -157,11 +157,8 @@ function render_exception(&$exception, $overrideUrl = null) {
 		echo json_encode(array(
 			'class' => $exception->className,
 			'message' => $exception->getMessage(),
-			'trace' => $exception->trace,
-			'code' => $exception->code,
-			'line' => $exception->line,
-			'file' => $exception->file,
-			'time' => $exception->time
+			'line' => $exception->getLine(),
+			'file' => $exception->getFile()
 		));
 		die;
 	}
@@ -884,4 +881,15 @@ function array_find($needle, array $haystack) {
         	return $key;
     }
     return false;
+}
+
+/**
+ * Instantiate a class with an array
+ * @author Kelly Becker
+ */
+function new() {
+	$args = func_get_args();
+	$class = array_shift($args);
+	$class = new \ReflectionClass($class);
+	return $class->newInstanceArgs($args);
 }
