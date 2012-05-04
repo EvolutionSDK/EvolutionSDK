@@ -147,21 +147,6 @@ function code_blocks($code) {
  * Render an exception
  */
 function render_exception(&$exception, $overrideUrl = null) {
-
-	/**
-	 * Allow a JSON Exception
-	 * @author Kelly Becker
-	 */
-	if(isset($_GET['--exception-json'])) {
-		header("Content-Type: application/json");
-		echo json_encode(array(
-			'class' => $exception->className,
-			'message' => $exception->getMessage(),
-			'line' => $exception->getLine(),
-			'file' => $exception->getFile()
-		));
-		die;
-	}
 	
 	// Get message
 	$message = $exception->getMessage();
@@ -738,6 +723,7 @@ function error_handler($no, $msg, $file, $line) {
  * Show exceptions
  */
 function handle($exception) {
+
 	try {
 		/**
 		 * Trace the exception
@@ -752,6 +738,21 @@ function handle($exception) {
 				e::$events->exception($exception);
 			} catch(Exception $exception) {}
 		}
+
+		/**
+		 * Allow a JSON Exception
+		 * @author Kelly Becker
+		 */
+		if(isset($_GET['--exception-json'])) {
+			header("Content-Type: application/json");
+			die(json_encode(array(
+				'message' => $exception->getMessage(),
+				'line' => $exception->getLine(),
+				'file' => $exception->getFile(),
+				'trace' => $exception->getTrace()
+			)));
+		}
+
 		require_once(root.bundles.'/debug/message.php');
 	}
 	catch(\Exception $e) {
