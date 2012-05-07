@@ -888,9 +888,16 @@ function array_find($needle, array $haystack) {
  * Instantiate a class with an array
  * @author Kelly Becker
  */
-function nclass() {
-	$args = func_get_args();
-	$class = array_shift($args);
-	$class = new \ReflectionClass($class);
+function nclass($className, $args) {
+	
+	/**
+	 * If we dont have any args dont call the constructor
+	 */
+	if(empty($args)) return new $className;
+
+	/**
+	 * Call the constructor with the passed args
+	 */
+	$class = new \ReflectionClass($className);
 	return $class->newInstanceArgs($args);
 }
