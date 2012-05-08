@@ -670,6 +670,20 @@ function array_merge_recursive_simple() {
     return $merged;
 }
 
+/**
+ * If passed an array of arrays it will merge them
+ * @author Kelly Becker
+ */
+function subarrays_merge_recursive_simple($array) {
+	if(count($array) < 2) return array_shift($array);
+
+	$return = array();
+	foreach($array as $i)
+		$return = array_merge_recursive_simple($return, $i);
+
+	return $return;
+}	
+
 function array2Object($array) {
 	if(!is_array($array))
     	return $array;
