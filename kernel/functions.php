@@ -902,16 +902,26 @@ function array_find($needle, array $haystack) {
  * Instantiate a class with an array
  * @author Kelly Becker
  */
-function nclass($className, $args) {
+function nclass($className, $args, $invokeConstruct = true) {
 	
 	/**
-	 * If we dont have any args dont call the constructor
+	 * If we dont have any args call the constuctor with no args
 	 */
-	if(empty($args)) return new $className;
+	if(empty($args) && $invokeConstruct) return new $className;
+
+	/**
+	 * Prepare the ReflectionClass
+	 */
+	$class = new \ReflectionClass($className);
+
+	/**
+	 * If we absolutely do not want to invoke the constructor
+	 * Note: This will ignore any passed args
+	 */
+	if(!$invokeConstruct) return $class->newInstanceWithoutConstructor();
 
 	/**
 	 * Call the constructor with the passed args
 	 */
-	$class = new \ReflectionClass($className);
 	return $class->newInstanceArgs($args);
 }
