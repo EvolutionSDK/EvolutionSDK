@@ -902,7 +902,7 @@ function array_find($needle, array $haystack) {
  * Instantiate a class with an array
  * @author Kelly Becker
  */
-function nclass($className, $args, $invokeConstruct = true) {
+function nclass($className, $args = array(), $invokeConstruct = true) {
 	
 	/**
 	 * If we dont have any args call the constuctor with no args
