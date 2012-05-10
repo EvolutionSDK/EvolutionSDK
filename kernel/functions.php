@@ -900,9 +900,17 @@ function array_find($needle, array $haystack) {
 
 /**
  * Instantiate a class with an array
+ * Or Instantiate a class without loading the constructor!
  * @author Kelly Becker
  */
 function nclass($className, $args = array(), $invokeConstruct = true) {
+
+	/**
+	 * Make sure we have PHP 5.4 or greater to call classes without constructors
+	 */
+	$version = explode('.', phpversion());
+	if(($version[0] < 5 || ($version[0] == 5 && $version[1] < 4)) && !$invokeConstruct)
+		throw new Exception("Calling a class without the constructor requires `PHP 5.4+`");
 	
 	/**
 	 * If we dont have any args call the constuctor with no args
