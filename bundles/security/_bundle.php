@@ -72,9 +72,11 @@ class Bundle {
 				$keys = e::configure('developers');
 				if($keys->$name === $key) {
 
+					// Set the cookie
 					setcookie('e-developer', $name . '_' . $this->genCookieSegment($name, $key));
 
-					$developer = true;
+					// Redirect to prevent pages that use postdata from accessing the credentials
+					e\Redirect($_SERVER['REQUEST_URI']);
 				} else {
 					$this->page('access', 'You entered incorrect credentials');
 				}
