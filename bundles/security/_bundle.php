@@ -102,7 +102,7 @@ class Bundle {
 	}
 
 	public function genCookieSegment($name, $key) {
-		$stuff = md5($_SERVER['REMOTE_ADDR'].'_'.date('m'));
+		$stuff = 'eJBe9KSd6ZimrQ3r56ycEPvX51utURn1zs7l9KzBuxtrJwRpifX7WCO6QF3zlcp';
 		return md5($key . $stuff . $name);
 	}
 
