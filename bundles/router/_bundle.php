@@ -177,7 +177,7 @@ class Bundle {
 			$bundle = substr(array_shift($path), 1);
 			$realm = array_shift($path);
 			
-			if(preg_match('/[^a-zA-Z]/', $bundle))
+			if(preg_match('/[^a-zA-Z0-9]/', $bundle))
 				throw new Exception("Bundle name `@$bundle` contains invalid characters");
 				
 			if(!isset(e::$$bundle))

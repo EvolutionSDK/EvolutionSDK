@@ -156,6 +156,9 @@ class Bundle {
 		// Check for file
 		if(!is_file(self::$file) && !e::$yaml->save(self::$file, array()))
 			throw new Exception("No environment file at `".self::$file."`");
+
+		// Trace environment load
+		e\trace("Loading environment config.");
 		
 		// Load environment file
 		$tmp = e::$yaml->file(self::$file);
