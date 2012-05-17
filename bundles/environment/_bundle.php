@@ -22,11 +22,6 @@ class Bundle {
 		 * Load from EvolutionSDK sites folder
 		 */
 		self::$file = e\root . '/cache/' . basename(e\site) . '/environment.yaml';
-
-		/**
-		 * Normal Construct
-		 */
-		parent::__construct($dir);
 	}
 	
 	public function __initBundle() {
