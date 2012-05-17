@@ -2,7 +2,6 @@
 
 namespace Bundles\Environment;
 use Exception;
-use Bundles\SQL\SQLBundle;
 use stack;
 use e;
 
@@ -23,6 +22,11 @@ class Bundle {
 		 * Load from EvolutionSDK sites folder
 		 */
 		self::$file = e\root . '/cache/' . basename(e\site) . '/environment.yaml';
+
+		/**
+		 * Normal Construct
+		 */
+		parent::__construct($dir);
 	}
 	
 	public function __initBundle() {
@@ -72,6 +76,8 @@ class Bundle {
 	}
 	
 	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $throw = true) {
+
+		e\trace('Require Var', "`$var`", null, 9);
 		
 		if($_SERVER['REQUEST_URI'] == '/@environment/update') return;
 		
@@ -160,12 +166,20 @@ class Bundle {
 		$tmp = e::$yaml->file(self::$file);
 		foreach($tmp as $key => $value)
 			self::$environment[strtolower($key)] = $value;
+
+		// Load Environment Custom
+		$results = e::$events->environmentLoad(self::$environment);
+		foreach ($results as $result) {
+			foreach($result as $key => $value)
+				self::$environment[strtolower($key)] = $value;
+		}
 	}
 	
 	public function save() {
 		// Save environment file
 		ksort(self::$environment);
 		e::$yaml->save(self::$file, self::$environment);
+		e::$events->environmentSave(self::$environment);
 	}
 	
 	/**
