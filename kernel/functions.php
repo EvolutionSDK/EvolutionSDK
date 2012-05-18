@@ -452,7 +452,7 @@ function complete($exception = false) {
  * Full-featured redirection
  * @author Nate Ferrero
  */
-function redirect($url) {
+function redirect($url, $replaceDestination = true) {
 
 	if($url == '--notfound')
 		throw new \Bundles\Router\NotFoundException;
@@ -466,8 +466,9 @@ function redirect($url) {
 	else
 		$dev = 'no';
 
-	if(isset(e::$session))
+	if($replaceDestination && isset(e::$session)) {
 		e::$session->data->destinationURL = $_SERVER['REDIRECT_URL'];
+	}
 
 	/**
 	 * Redirect Event
