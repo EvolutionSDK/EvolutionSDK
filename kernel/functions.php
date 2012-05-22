@@ -934,3 +934,12 @@ function nclass($className, $args = array(), $invokeConstruct = true) {
 	 */
 	return $class->newInstanceArgs($args);
 }
+
+/**
+ * More or less the equivalent of move_uploaded_file()
+ * except it supports remote files
+ * @author Kelly Becker
+ */
+function moveFile($from, $to) {
+	file_put_contents($to, file_get_contents($from));
+}
