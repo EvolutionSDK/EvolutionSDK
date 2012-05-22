@@ -31,7 +31,34 @@
 		var w = _e_debug_getpanel('show-important', 'show-all');
 		document.getElementById('-e-show-important').style.display = (x == 1 ? 'inline' : 'none');
 		document.getElementById('-e-show-all').style.display = (x == 1 ? 'none' : 'inline');
+		if(x == 1)
+			$('._pushl').addClass('_pushl_wide').removeClass('_pushl');
+		else
+			$('._pushl_wide').addClass('_pushl').removeClass('_pushl_wide');
+
 		return false;
+	}
+
+	function _e_filter() {
+		if(window._e_filtered) {
+			window._e_filtered = false;
+			$('.trace-step').each(function(i,step){$(step).show();});
+		}
+		else {
+			var str = prompt('What would you like to isolate?');
+			if(str.length) {
+				window._e_filtered = true;
+				_e_show(1);
+				$('.trace-step').each(
+					function(i,step){
+						$s=$(step);
+						$s.find('.name').text().indexOf(str) !== -1 ? $s.show() : $s.hide();
+					}
+				);
+			}
+		}
+
+		$('#-e-filter-toggle').text(window._e_filtered ? 'Stop Filtering' : 'Filter Results');
 	}
 	
 	function _e_debug_getpanel(classOld, classNew) {
@@ -365,7 +392,13 @@
 	<?php echo e\button_style('#-e-debug-panel .link'); ?>
 	#-e-debug-panel span.link {
 		position: absolute;
-		top: 13px; right: 13px;
+		top: 20px; right: 6px;
+	}
+	#-e-debug-panel span.link._pushl {
+		right: 81px;
+	}
+	#-e-debug-panel span.link._pushl_wide {
+		right: 120px;
 	}
 </style>
 <div id="-e-debug-panel-wrap" class="<?php echo Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed'; ?>">
@@ -375,6 +408,7 @@
 			<div class="window-icon hide-icon" onclick="_e_debug_hide()"></div>
 			<div class="window-icon zoom-icon" onclick="_e_debug_zoom()"></div>
 			<span>Evolution SDK&trade; &mdash; Page Event Log</span>
+			<span class="link _pushl" id="-e-filter-toggle" onclick="_e_filter()">Filter Results</span>
 			<span class='link' style="" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
 			<span class='link' style="display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
 		</div>
