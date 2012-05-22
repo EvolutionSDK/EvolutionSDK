@@ -31,10 +31,12 @@
 		var w = _e_debug_getpanel('show-important', 'show-all');
 		document.getElementById('-e-show-important').style.display = (x == 1 ? 'inline' : 'none');
 		document.getElementById('-e-show-all').style.display = (x == 1 ? 'none' : 'inline');
-		if(x == 1)
-			$('._pushl').addClass('_pushl_wide').removeClass('_pushl');
-		else
-			$('._pushl_wide').addClass('_pushl').removeClass('_pushl_wide');
+		if(typeof $ === 'function') {
+			if(x == 1)
+				$('._pushl').addClass('_pushl_wide').removeClass('_pushl');
+			else
+				$('._pushl_wide').addClass('_pushl').removeClass('_pushl_wide');
+		}
 
 		return false;
 	}
@@ -80,6 +82,10 @@
 	
 	function _e_debug_close() {
 		_e_debug_toggle();
+	}
+
+	if(typeof $ === 'function') {
+		$(function() { $('#-e-filter-toggle').show(); });
 	}
 </script>
 <style>
@@ -408,7 +414,7 @@
 			<div class="window-icon hide-icon" onclick="_e_debug_hide()"></div>
 			<div class="window-icon zoom-icon" onclick="_e_debug_zoom()"></div>
 			<span>Evolution SDK&trade; &mdash; Page Event Log</span>
-			<span class="link _pushl" id="-e-filter-toggle" onclick="_e_filter()">Filter Results</span>
+			<span class="link _pushl" id="-e-filter-toggle" style="display: none" onclick="_e_filter()">Filter Results</span>
 			<span class='link' style="" id='-e-show-all' onclick='return _e_show(1)'>Show All</span>
 			<span class='link' style="display:none;" id='-e-show-important' onclick='return _e_show(0)'>Show Important</span>
 		</div>
