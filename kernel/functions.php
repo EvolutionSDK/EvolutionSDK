@@ -491,11 +491,12 @@ function redirect($url, $replaceDestination = true) {
 	if(isset(e::$events))
 		e::$events->redirect($url);
 
-	if($dev == 'yes' && false) {
+	if(isset($_GET['--block-redirect'])) {
 		trace('Redirected with <code class="alt2">e\\redirect()</code>');
 		echo "<div style='font-family: sans, sans-serif; font-size: 12px; padding: 3em'>
 			<h1><a href='$url' id='redirect'>Continue...</a></h1><p>Redirecting to <code>$url</code></p></div>";
 		echo "<script>if(false && confirm('Redirect now?'))window.location.replace(document.getElementById('redirect').href);</script>";
+		dump($url);
 	}
 	else {
 		if(!headers_sent())
