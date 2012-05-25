@@ -22,6 +22,20 @@ function get_object_id(&$obj) {
 }
 
 /**
+ * Get Primary Domain
+ * @author Nate Ferrero
+ */
+function primary_domain() {
+	static $domain = null;
+	if(is_null($domain)) {
+		$segs = explode('.', $_SERVER['HTTP_HOST']);
+		$domain = array_pop($segs);
+		$domain = array_pop($segs) . '.' . $domain;
+	}
+	return $domain;
+}
+
+/**
  * Super simple download script
  * @author Nate Ferrero
  */
