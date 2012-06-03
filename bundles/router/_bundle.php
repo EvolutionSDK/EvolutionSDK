@@ -201,7 +201,7 @@ class Bundle {
 			 * @author Kelly Becker
 			 * @todo find a better way to do this
 			 */
-			if(class_exists('Bundles\Portal\Bundle'))
+			if(class_exists('Bundles\Portal\Bundle', false))
 				\Bundles\Portal\Bundle::$currentException = $e;
 
 			e\complete();
