@@ -1,7 +1,6 @@
 <?php
 
 namespace Bundles\Router;
-use Bundles\Portal\Bundle as PortalBundle;
 use Exception;
 use stack;
 use e;
@@ -196,7 +195,15 @@ class Bundle {
 			throw new Exception("Bundle `@$bundle` routing did not complete");
 		} catch(Exception $e) {
 			e::$events->exception($e);
-			PortalBundle::$currentException = $e;
+
+			/**
+			 * Remove dependency on Portal Bundle
+			 * @author Kelly Becker
+			 * @todo find a better way to do this
+			 */
+			if(class_exists('Bundles\Portal\Bundle'))
+				\Bundles\Portal\Bundle::$currentException = $e;
+
 			e\complete();
 		}
 	}

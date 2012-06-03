@@ -407,7 +407,7 @@
 		right: 120px;
 	}
 </style>
-<div id="-e-debug-panel-wrap" class="<?php echo Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed'; ?>">
+<div id="-e-debug-panel-wrap" class="<?php echo class_exists('Bundles\Portal\Bundle') ? (Bundles\Portal\Bundle::$currentException instanceof Exception ? 'open' : 'closed') : 'closed'; ?>">
 	<div id="-e-debug-panel" class="windowed show-important">
 		<div class="title-bar">
 			<div class="window-icon close-icon" onclick="_e_debug_close()"></div>
@@ -421,7 +421,7 @@
 
 		<div class="body">
 			
-			<?php if(Bundles\Portal\Bundle::$currentException instanceof Exception) {
+			<?php if(class_exists('Bundles\Portal\Bundle') && Bundles\Portal\Bundle::$currentException instanceof Exception) {
 				echo '<style>'; include(e\root.e\bundles.'/debug/theme.css'); echo '</style>'; ?>
 				<div class="panel-page panel-exception _e_dump"><?php echo e\render_exception(Bundles\Portal\Bundle::$currentException); ?></div>
 			<?php } ?>
