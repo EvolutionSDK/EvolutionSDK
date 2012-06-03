@@ -14,6 +14,18 @@ You can also count on E3 do these things reliably:
 
 # Installing and Creating your first site
 
+## Automated Method (Fast and Easy)
+
+Head over to [KellyLSB's EvolutionSDK Phar Compiler](https://github.com/KellyLSB/EvolutionSDK-Phar-Compiler) where the whole process is explained.
+
+Quick Summary of Steps:
+- Clone [Repository](https://github.com/KellyLSB/EvolutionSDK-Phar-Compiler)
+- Run `./compile /path/to/site`
+- Point Apache to Dir
+- Profit!
+
+## Manual Method (More Flexability)
+
 Install git and clone this repository or download and extract it into a folder. (You can put this anywhere however for the purposes of this readme we are going to put the core into /usr/local/bin)
 
 	/usr/local/bin/EvolutionSDK
