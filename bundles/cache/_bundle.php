@@ -20,15 +20,13 @@ class Bundle {
 	private $_cache_path;
 	
 	public function __construct($dir) {
+
 		/**
-		 * Allow custom site names in caching
-		 * @author Nate Ferrero
+		 * Set the cache path
+		 * @author Kelly Becker
 		 */
-		foreach(glob(e\site . '/configure/*.name') as $name)
-			$name = pathinfo($name, PATHINFO_FILENAME);
-		if(!isset($name))
-			$name = basename(e\site);
-		$this->_cache_path = e\root.'/cache/' . $name;
+		$this->_cache_path = e\siteCache;
+
 		try {
 			if(!is_dir($this->_cache_path)) exec('mkdir -p -m 0777 '.$this->_cache_path);
 		} catch(Exception $e) {

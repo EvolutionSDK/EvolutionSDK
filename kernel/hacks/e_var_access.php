@@ -110,7 +110,7 @@ class e_bundle_accessor {
  * Load bundle names
  * @author Nate Ferrero
  */
-$file = e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php';
+$file = e\siteCache . '/e_var_access_generated.php';
 
 if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesize($file) < 1) {
 	$bundles = '';

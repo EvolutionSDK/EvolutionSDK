@@ -65,7 +65,7 @@ function download($file) {
 function bundle_status($bundle, $status = null) {
 	if($bundle !== preg_replace('/[^a-z]/', '', $bundle))
 		throw new Exception("Invalid bundle name");
-	$file = e\root . '/cache/' . e\sitename . '/status/'.$bundle.'.txt';
+	$file = e\siteCache . '/status/'.$bundle.'.txt';
 	if(is_null($status))
 		return is_file($file) ? file_get_contents($file) : 'No status.';
 	else {

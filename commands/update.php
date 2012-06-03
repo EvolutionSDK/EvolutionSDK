@@ -5,7 +5,7 @@ use e;
 
 $sites = array();
 
-foreach(glob(e\root . '/cache/*/', GLOB_ONLYDIR) as $dir) {
+foreach(glob(e\cache . '/*/', GLOB_ONLYDIR) as $dir) {
 
 	/**
 	 * Handle updates

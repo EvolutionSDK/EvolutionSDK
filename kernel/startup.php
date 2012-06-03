@@ -50,7 +50,20 @@ define('e\\sitename', isset($sitename) ? $sitename : basename(e\site));
 define('e\\root', convert_backslashes(\EvolutionSDK));
 define('e\\kernel', convert_backslashes(__DIR__));
 define('e\\bundles', '/bundles');
-define('e\\siteCache', root.'/cache/'.basename(site));
+
+/**
+ * Define cache directories
+ * @author Kelly Becker
+ */
+if(!defined('\CacheDir')) {
+	define('e\\cache', root . '/cache');
+	define('e\\siteCache', root . '/cache/' . sitename);
+}
+
+else {
+	define('e\\cache', \CacheDir);
+	define('e\\siteCache', \CacheDir . '/' . sitename);
+}
 
 /**
  * Support eval(d)
@@ -83,7 +96,7 @@ error_reporting(E_ALL | E_STRICT);
  * Use cache dir as working directory
  * @author Nate Ferrero
  */
-if(!is_dir(root.'/cache') && !mkdir(root.'/cache')) throw new Exception("Could not create cache folder, run command `dir=".root."/cache; mkdir \$dir;chmod 777 \$dir`");
+if(!is_dir(cache) && !mkdir(cache)) throw new Exception("Could not create cache folder, run command `dir=".cache."; mkdir \$dir;chmod 777 \$dir`");
 
 /**
  * Use cache dir as working directory
@@ -93,10 +106,12 @@ if(!is_dir(siteCache) && !mkdir(siteCache)) throw new Exception("Could not creat
 
 /**
  * Security
+ * 06-2-12 Changed constance to the cache variable
  * @todo move this somewhere else
  * @author Nate Ferrero
+ * @author Kelly Becker
  */
-chdir(root.'/cache');
+chdir(cache);
 
 /**
  * Include autoloader

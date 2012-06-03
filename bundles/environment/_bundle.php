@@ -21,7 +21,7 @@ class Bundle {
 		/**
 		 * Load from EvolutionSDK sites folder
 		 */
-		self::$file = e\root . '/cache/' . basename(e\site) . '/environment.yaml';
+		self::$file = e\siteCache . '/environment.yaml';
 	}
 	
 	public function __initBundle() {

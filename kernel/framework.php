@@ -269,7 +269,7 @@ class Stack {
  * @author Nate Ferrero
  */
 require_once(__DIR__ . '/hacks/e_var_access.php');
-require_once(e\root . '/cache/' . basename(e\site) . '/e_var_access_generated.php');
+require_once(e\siteCache . '/e_var_access_generated.php');
 class e extends e_var_access {
 	
 	/**
