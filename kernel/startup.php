@@ -43,8 +43,8 @@ define('e\\site', convert_backslashes(\EvolutionSite));
  * Get site name
  * @author Nate Ferrero
  */
-foreach(glob(e\site . '/configure/*.name') as $sitename)
-	$sitename = pathinfo($sitename, PATHINFO_FILENAME);
+if(is_file(e\site.'/configure/*.name'))
+	$sitename = pathinfo(e\site.'/configure/*.name', PATHINFO_FILENAME);
 define('e\\sitename', isset($sitename) ? $sitename : basename(e\site));
 
 define('e\\root', convert_backslashes(\EvolutionSDK));
@@ -52,7 +52,7 @@ define('e\\kernel', convert_backslashes(__DIR__));
 define('e\\bundles', '/bundles');
 
 /**
- * If we are in a PHAR file
+ * Are we running the framework out of a Phar
  * @author Kelly Becker
  */
 if(strpos(root, 'phar://') === 0)

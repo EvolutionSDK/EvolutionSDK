@@ -5,7 +5,18 @@ use e;
 
 $sites = array();
 
-foreach(glob(e\cache . '/*/', GLOB_ONLYDIR) as $dir) {
+/**
+ * Clear all caches
+ * @author Kelly Becker
+ */
+foreach(new \DirectoryIterator(e\cache) as $dir) {
+	if(strpos($dir, '.') === 0 || strlen($dir) < 1 || !$dir->isDir())
+		continue;
+
+	/**
+	 * Get the full directory path + name
+	 */
+	$dir = $dir->getPathname();
 
 	/**
 	 * Handle updates

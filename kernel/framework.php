@@ -47,10 +47,17 @@ class Stack {
 		
 		/**
 		 * Load site bundles
+		 * @author Kelly Becker
 		 * @author Nate Ferrero
 		 */
-		foreach(glob($site.$bundles.'/*/_bundle.php') as $file) {
-			self::loadBundle($file, 'site');
+		foreach(new \DirectoryIterator($site.$bundles) as $file) {
+			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+
+			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
+				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
+			else $file = $file->getPath().'/'.$file.'/_bundle.php';
+
+			if(is_file($file)) self::loadBundle($file, 'library');
 		}
 
 		/**
@@ -75,6 +82,8 @@ class Stack {
 		 * @author Kelly Becker
 		 */
 		foreach(array_flip($EBL) as $EBLD) foreach(new \DirectoryIterator($EBLD) as $file) {
+			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+
 			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
 				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
 			else $file = $file->getPath().'/'.$file.'/_bundle.php';
@@ -87,6 +96,8 @@ class Stack {
 		 * @author Kelly Becker
 		 */
 		foreach(new \DirectoryIterator($root.$bundles) as $file) {
+			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+
 			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
 				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
 			else $file = $file->getPath().'/'.$file.'/_bundle.php';
@@ -193,7 +204,8 @@ class Stack {
 		 */
 		if(is_dir($dir . '/extend')) {
 			foreach(new \DirectoryIterator($dir . '/extend') as $bundle) {
-				if(strpos($bundle, '.') === 0 || strlen($bundle) < 1) continue;
+				if(strpos($bundle, '.') === 0 || strlen($bundle) < 1 || !$bundle->isDir())
+					continue;
 
 				$bundle = $bundle->getPathname();
 				e\extend(basename($bundle), dirname($bundle));
