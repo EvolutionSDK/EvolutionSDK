@@ -93,7 +93,7 @@ class Stack {
 
 			if(is_file($file)) self::loadBundle($file, 'core');
 		}
-		
+
 		/**
 		 * Mark system as loaded
 		 */
@@ -188,11 +188,16 @@ class Stack {
 		
 		/**
 		 * Load bundle extensions
+		 * @author Kelly Becker: Changed to use DirectoryIterator for speed and Phar Support
 		 * @author Nate Ferrero
 		 */
 		if(is_dir($dir . '/extend')) {
-			foreach(glob($dir . '/extend/*', GLOB_ONLYDIR) as $bundle)
+			foreach(new \DirectoryIterator($dir . '/extend') as $bundle) {
+				if(strpos($bundle, '.') === 0 || strlen($bundle) < 1) continue;
+
+				$bundle = $bundle->getPathname();
 				e\extend(basename($bundle), dirname($bundle));
+			}
 		}
 
 		e\trace_exit();
