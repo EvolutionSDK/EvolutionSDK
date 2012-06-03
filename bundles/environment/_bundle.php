@@ -22,6 +22,12 @@ class Bundle {
 		 * Load from EvolutionSDK sites folder
 		 */
 		self::$file = e\siteCache . '/environment.yaml';
+
+		/**
+		 * If file does not exist create it
+		 * @author Kelly Becker
+		 */
+		if(!is_file(self::$file)) file_put_contents(self::$file, '---');
 	}
 	
 	public function __initBundle() {
