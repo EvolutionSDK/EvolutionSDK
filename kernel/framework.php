@@ -68,31 +68,30 @@ class Stack {
 		});
 
 		/**
-		 *  Load bundles
+		 * Load bundles
 		 * ==============
 		 * 04 - 06 - 2012
 		 * ==============
 		 * @author Kelly Becker
 		 */
-		foreach(array_flip($EBL) as $EBLD) foreach(glob($EBLD.'/*/_bundle.php') as $file) {
-			self::loadBundle($file, 'library');
+		foreach(array_flip($EBL) as $EBLD) foreach(new \DirectoryIterator($EBLD) as $file) {
+			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
+				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
+			else $file = $file->getPath().'/'.$file.'/_bundle.php';
+
+			if(is_file($file)) self::loadBundle($file, 'library');
 		}
 
 		/**
-		 * Load core bundles if in a phar file
+		 * Load core bundles
 		 * @author Kelly Becker
 		 */
-		if(e\phar) foreach(new \DirectoryIterator($root.$bundles) as $file) {
-			$file = $file->getPath().'/'.$file.'/_bundle.php';
-			if(is_file($file)) self::loadBundle($file, 'core');
-		}
+		foreach(new \DirectoryIterator($root.$bundles) as $file) {
+			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
+				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
+			else $file = $file->getPath().'/'.$file.'/_bundle.php';
 
-		/**
-		 * Load normal core bundles
-		 * @author Nate Ferrero
-		 */
-		else foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
-			self::loadBundle($file, 'core');
+			if(is_file($file)) self::loadBundle($file, 'core');
 		}
 		
 		/**
@@ -136,8 +135,33 @@ class Stack {
 	 */
 	public static function loadBundle($file, $location = 'other') {
 		
+		/**
+		 * Get the directory name
+		 */
 		$dir = dirname($file);
-		$bundle = strtolower(basename($dir));
+
+		/**
+		 * Is this Bundle is in a Phar
+		 * @author Kelly Becker
+		 */
+		if(strtolower(pathinfo(basename($dir), PATHINFO_EXTENSION)) === 'phar') {
+
+			/**
+			 * If it is within a phar and no _bundle file exists error
+			 */
+			if(!is_file($file))
+				throw new Exception("The Phar bundle must contain a _bundle.php");
+
+			/**
+			 * Get the bundle name
+			 */
+			$bundle = strtolower(pathinfo(basename($dir), PATHINFO_FILENAME));
+		}
+
+		/**
+		 * Get the bundle name by the folder name
+		 */
+		else $bundle = strtolower(basename($dir));
 		$site = e\site;
 		
 		if(!isset(self::$bundleLocations[$bundle]))

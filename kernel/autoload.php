@@ -114,8 +114,12 @@ function load($class) {
 		$c = implode('/', $path);
 	}
 
-	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php");
-	$bfiles = array("$b/$c.php", "$b/library/$c.php");
+	/**
+	 * Added Phar Format
+	 * @author Kelly Becker
+	 */
+	$files = array("$a/$b/$c.php", "$a/$b/library/$c.php", "$a/$b.phar/$c.php", "$a/$b.phar/library/$c.php");
+	$bfiles = array("$b/$c.php", "$b/library/$c.php", "$b.phar/$c.php", "$b.phar/library/$c.php");
 	$site = e\site;
 	$dirs = array(root, $site);
 
@@ -200,6 +204,19 @@ function load($class) {
 			/* END */
 
 			if(file_exists($pattern)) {
+				require_once($pattern);
+
+				/* DEBUG * /
+				echo "<p>It was!</p>";
+				/* END */
+
+				return;
+			}
+
+			/**
+			 * Added Search for Phar File
+			 */
+			else if(file_exists($pattern = 'phar://' . $pattern)) {
 				require_once($pattern);
 
 				/* DEBUG * /
