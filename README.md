@@ -24,7 +24,7 @@ Quick Summary of Steps:
 - Point Apache to Dir
 - Profit!
 
-## Manual Method (More Flexability)
+## Manual Method (More Flexibility)
 
 Install git and clone this repository or download and extract it into a folder. (You can put this anywhere however for the purposes of this readme we are going to put the core into /usr/local/bin)
 
