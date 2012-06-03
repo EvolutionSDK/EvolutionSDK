@@ -109,9 +109,16 @@ class Bundle {
 
 				/**
 				 * Get the first file
+				 * Switched to DirectorIterator for speed
+				 * @author Kelly Becker
 				 */
 				$done = true;
-				foreach(glob("$dir/*.md") as $file) {
+				foreach(new \DirectoryIterator($dir) as $file) {
+					if($file->isDot() || strlen($file) < 1 || pathinfo($file, PATHINFO_EXTENSION) !== 'md')
+						continue;
+
+					$file = $file->getPathinfo();
+
 					$page = pathinfo($file, PATHINFO_FILENAME);
 					continue;
 				}
@@ -139,7 +146,19 @@ class Bundle {
 			if($page == 'index')
 				$page = file_exists($dir . '/index.md') ? md5('index') : null;
 
-			foreach(glob($dir . '/*.md') as $current) {
+			/**
+			 * Switch to DirectoryIterator over glob for speed
+			 * @author Kelly Becker
+			 */
+			foreach(new \DirectoryIterator($dir) as $current) {
+				if($current->isDot() || strlen($current) < 1 || pathinfo($current, PATHINFO_EXTENSION) !== 'md')
+					continue;
+
+				/**
+				 * Get full path for file
+				 */
+				$current = $current->getPathinfo();
+
 				$name = pathinfo($current, PATHINFO_FILENAME);
 				if($name[0] == '-')
 					continue;
@@ -205,9 +224,32 @@ class Bundle {
 		foreach(stack::bundleLocations() as $dir) {
 			$bundle = basename($dir);
 			$name = ucfirst($bundle);
-			foreach(glob($dir . '/*.name') as $file)
-				$name = pathinfo($file, PATHINFO_FILENAME);
-			foreach(glob($dir . '/documentation/*.md') as $file) {
+
+			/**
+			 * Get custom bundle name if defined
+			 * Switched to DirectoryIterator for Speed
+			 * @author Kelly Becker
+			 */
+			foreach(new \DirectoryIterator($dir) as $file) {
+				if($file->isDot() || strlen($file) < 1 || pathinfo($file, PATHINFO_EXTENSION) !== 'name')
+					continue;
+
+				$name = pathinfo($file->getPathname(), PATHINFO_FILENAME); break;
+			}
+
+			/**
+			 * Switched to DirectoryIterator for Speed
+			 * @author Kelly Becker
+			 */
+			if(is_dir($dir.'/documentation')) foreach(new \DirectoryIterator($dir.'/documentation') as $file) {
+				if($file->isDot() || strlen($file) < 1 || pathinfo($file, PATHINFO_EXTENSION) !== 'md')
+					continue;
+
+				/**
+				 * Set file to the whole path + file
+				 */
+				$file = $file->getPathname();
+
 				if(!isset($this->files['bundles'][$bundle]))
 					$this->files['bundles'][$bundle] = array('name' => $name, 'files' => array());
 				$filename = pathinfo($file, PATHINFO_FILENAME);
@@ -219,7 +261,15 @@ class Bundle {
 		/**
 		 * Record Books
 		 */
-		foreach(glob(e\site . '/documentation/*', GLOB_ONLYDIR) as $section) {
+		if(is_dir(e\site.'/documentation')) foreach(new \DirectoryIterator(e\site.'/documentation') as $section) {
+			if($section->isDot() || strlen($section) < 1 || !$section->isDir())
+				continue;
+
+			/**
+			 * Set file to the whole path + dir
+			 */
+			$section = $section->getPathname();
+
 			$name = basename($section);
 			$path = md5($name);
 			$this->files['books'][$path] = $section;
@@ -281,7 +331,20 @@ class Bundle {
 		}
 		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
-			foreach(glob($dir . '/*.md') as $name) {
+
+			/**
+			 * Switch to use DirectoryIterator for speed
+			 * @author Kelly Becker
+			 */
+			foreach(new \DirectoryIterator($dir) as $name) {
+				if($name->isDot() || strlen($name) < 1 || pathinfo($name, PATHINFO_EXTENSION) !== 'md')
+					continue;
+
+				/**
+				 * Reset to be the full path + file
+				 */
+				$name = $name->getPathname();
+
 				$name = pathinfo($name, PATHINFO_FILENAME);
 				if($name[0] == '-')
 					continue;

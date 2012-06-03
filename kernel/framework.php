@@ -51,7 +51,7 @@ class Stack {
 		 * @author Nate Ferrero
 		 */
 		foreach(new \DirectoryIterator($site.$bundles) as $file) {
-			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+			if($file->isDot() || strlen($file) < 1) continue;
 
 			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
 				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
@@ -82,7 +82,7 @@ class Stack {
 		 * @author Kelly Becker
 		 */
 		foreach(array_flip($EBL) as $EBLD) foreach(new \DirectoryIterator($EBLD) as $file) {
-			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+			if($file->isDot() || strlen($file) < 1) continue;
 
 			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
 				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
@@ -96,7 +96,7 @@ class Stack {
 		 * @author Kelly Becker
 		 */
 		foreach(new \DirectoryIterator($root.$bundles) as $file) {
-			if(strpos($file, '.') === 0 || strlen($file) < 1) continue;
+			if($file->isDot() === 0 || strlen($file) < 1) continue;
 
 			if(strtolower(pathinfo($file, PATHINFO_EXTENSION)) === 'phar')
 				$file = 'phar://'.$file->getPath().'/'.$file.'/_bundle.php';
@@ -204,7 +204,7 @@ class Stack {
 		 */
 		if(is_dir($dir . '/extend')) {
 			foreach(new \DirectoryIterator($dir . '/extend') as $bundle) {
-				if(strpos($bundle, '.') === 0 || strlen($bundle) < 1 || !$bundle->isDir())
+				if($bundle->isDot() || strlen($bundle) < 1 || !$bundle->isDir())
 					continue;
 
 				$bundle = $bundle->getPathname();

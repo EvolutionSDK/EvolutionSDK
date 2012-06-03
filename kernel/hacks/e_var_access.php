@@ -136,7 +136,7 @@ if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesiz
 	foreach($dirs as $dir) {
 
 		foreach(new \DirectoryIterator($dir) as $name) {
-			if(strpos($name, '.') === 0 || strlen($name) < 1) continue;
+			if($name->isDot() || strlen($name) < 1) continue;
 
 			/**
 			 * If our bundle is in a Phar File

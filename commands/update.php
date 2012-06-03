@@ -10,7 +10,7 @@ $sites = array();
  * @author Kelly Becker
  */
 foreach(new \DirectoryIterator(e\cache) as $dir) {
-	if(strpos($dir, '.') === 0 || strlen($dir) < 1 || !$dir->isDir())
+	if($dir->isDot() || strlen($dir) < 1 || !$dir->isDir())
 		continue;
 
 	/**
