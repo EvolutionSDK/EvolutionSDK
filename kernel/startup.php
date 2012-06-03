@@ -52,6 +52,14 @@ define('e\\kernel', convert_backslashes(__DIR__));
 define('e\\bundles', '/bundles');
 
 /**
+ * If we are in a PHAR file
+ * @author Kelly Becker
+ */
+if(strpos(root, 'phar://') === 0)
+	define('e\\phar', true);
+else define('e\\phar', false);
+
+/**
  * Define cache directories
  * @author Kelly Becker
  */

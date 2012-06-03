@@ -79,10 +79,19 @@ class Stack {
 		}
 
 		/**
-		 * Load core bundles
-	 	 * @author Nate Ferrero
+		 * Load core bundles if in a phar file
+		 * @author Kelly Becker
 		 */
-		foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
+		if(e\phar) foreach(new \DirectoryIterator($root.$bundles) as $file) {
+			$file = $file->getPath().'/'.$file.'/_bundle.php';
+			if(is_file($file)) self::loadBundle($file, 'core');
+		}
+
+		/**
+		 * Load normal core bundles
+		 * @author Nate Ferrero
+		 */
+		else foreach(glob($root.$bundles.'/*/_bundle.php') as $file) {
 			self::loadBundle($file, 'core');
 		}
 		

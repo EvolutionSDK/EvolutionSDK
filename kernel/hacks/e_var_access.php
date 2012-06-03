@@ -134,13 +134,34 @@ if((isset($_GET['_setup']) && $_GET['_setup']) || !file_exists($file) || filesiz
 		$dirs[] = $EBLD;
 
 	foreach($dirs as $dir) {
-		foreach(glob($dir.'/*/_bundle.php') as $name) {
+
+		/**
+		 * If E3 is running out of a PHAR
+		 * @author Kelly Becker
+		 */
+		if(e\phar) foreach(new \DirectoryIterator($dir) as $name) {
+			$tfile = $name->getPath().'/'.$name.'/_bundle.php';
+			if(!is_file($tfile)) continue;
+
+			$name = strtolower($name);
+			if(in_array("'$name'", $bundleList))
+				continue;
+
+			$bundleList[] = "'$name'";
+			$bundles .= "\n\tpublic static $$name;";
+		}
+
+		/**
+		 * Otherwise load normally
+		 */
+		else foreach(glob($dir.'/*/_bundle.php') as $name) {
 			$name = strtolower(basename(dirname($name)));
 			if(in_array("'$name'", $bundleList))
 				continue;
 			$bundleList[] = "'$name'";
 			$bundles .= "\n\tpublic static $$name;";
 		}
+
 	}
 	$bundleList = implode(', ', $bundleList);
 
