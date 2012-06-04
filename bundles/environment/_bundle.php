@@ -48,6 +48,7 @@ class Bundle {
 		 * Check dev mode to avoid issues later
 		 */
 		e::$environment->requireVar('Development.Master', 'yes | no');
+		e::$environment->requireVar('Development.Trace', 'yes | no');
 	}
 	
 	/**
