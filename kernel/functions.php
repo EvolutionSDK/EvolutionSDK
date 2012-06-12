@@ -958,3 +958,23 @@ function nclass($className, $args = array(), $invokeConstruct = true) {
 function moveFile($from, $to) {
 	file_put_contents($to, file_get_contents($from));
 }
+
+/**
+ * Cut lines off of a file then return
+ * @author Kelly Becker
+ */
+function file($file, $trunc = null, $trunc1 = null) {
+	$file = file($file);
+
+	if($trunc < 0) for($i=0;$i<abs($trunc);$i++)
+		array_pop($file);
+	else if($trunc > 0) for($i=0;$i<abs($trunc);$i++)
+		array_shift($file);
+
+	if($trunc1 < 0) for($i=0;$i<abs($trunc1);$i++)
+		array_pop($file);
+	else if($trunc1 > 0) for($i=0;$i<abs($trunc1);$i++)
+		array_shift($file);
+
+	return implode("\n", $file);
+}
