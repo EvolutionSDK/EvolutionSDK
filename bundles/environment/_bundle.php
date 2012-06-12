@@ -81,8 +81,15 @@ class Bundle {
 
 		e\trace('Require Var', "`$var`", null, 9);
 		
-		if($_SERVER['REQUEST_URI'] == '/@environment/update') return;
-		
+		if($_SERVER['REQUEST_URI'] == '/@environment/update') {
+			foreach($_POST as $v => $value) {
+				$v = base64_decode($v);
+				if($v == $var) {
+					return $this->update();
+				}
+			}
+		}
+				
 		// Make active to prevent exceptions
 		$this->active = true;
 		
