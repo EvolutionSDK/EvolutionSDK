@@ -78,15 +78,14 @@ class Bundle {
 	}
 	
 	public function _require($var, $format = '/.+/', $why = 'Not Set', $new = false, $ex = null, $throw = true) {
+		$var = strtolower($var);
 
 		e\trace('Require Var', "`$var`", null, 9);
 		
 		if($_SERVER['REQUEST_URI'] == '/@environment/update') {
 			foreach($_POST as $v => $value) {
-				$v = base64_decode($v);
-				if($v == $var) {
-					return $this->update();
-				}
+				$v = strtolower(base64_decode($v));
+				if($v == $var) return $this->update();
 			}
 		}
 				
@@ -249,6 +248,7 @@ class Bundle {
 	
 	public function update() {
 		$return = '/';
+		
 		foreach($_POST as $var => $value) {
 			$var = base64_decode($var);
 			if($var == '_return')
@@ -256,7 +256,9 @@ class Bundle {
 			else if(strlen($var) > 1)
 				self::$environment[$var] = $value;
 		}
+
 		$this->save();
+
 		e\redirect($return);
 	}
 }
