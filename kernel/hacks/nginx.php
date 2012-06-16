@@ -22,3 +22,9 @@ if(!function_exists('getallheaders')) {
 		return apache_request_headers();
 	}
 }
+
+/**
+ * Hack for absense of Redirect URL
+ * @todo find a better thing for this
+ */
+$_SERVER['REDIRECT_URL'] = array_shift(explode('?', $_SERVER['REQUEST_URI']));
