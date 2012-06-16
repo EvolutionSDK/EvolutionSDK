@@ -23,6 +23,13 @@ ignore_user_abort(true);
 date_default_timezone_set('UTC');
 
 /**
+ * If nginx load the hacks file
+ * @author Kelly Becker
+ */
+if(isset($_SERVER["SERVER_SOFTWARE"]) && strpos($_SERVER["SERVER_SOFTWARE"], 'nginx') !== false)
+	require_once('hacks/nginx.php');
+
+/**
  * Include some functions
  */
 require_once('functions.php');
