@@ -27,7 +27,7 @@ date_default_timezone_set('UTC');
  * @author Kelly Becker
  */
 if(isset($_SERVER["SERVER_SOFTWARE"]) && strpos($_SERVER["SERVER_SOFTWARE"], 'nginx') !== false)
-	require_once('hacks/nginx.php');
+	require_once(__DIR__.'/hacks/nginx.php');
 
 /**
  * Include some functions
