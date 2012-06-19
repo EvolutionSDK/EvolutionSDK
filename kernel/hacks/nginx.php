@@ -27,4 +27,5 @@ if(!function_exists('getallheaders')) {
  * Hack for absense of Redirect URL
  * @todo find a better thing for this
  */
-$_SERVER['REDIRECT_URL'] = array_shift(explode('?', $_SERVER['REQUEST_URI']));
+$uri = explode('?', $_SERVER['REQUEST_URI']);
+$_SERVER['REDIRECT_URL'] = array_shift($uri);

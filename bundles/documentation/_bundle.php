@@ -178,7 +178,7 @@ class Bundle {
 			$titleSuffix = " &bull; $bookName";
 		}
 
-		if(!file_exists($file))
+		if(!is_file($file))
 			$file = __DIR__ . '/documentation/-not-found.md';
 
 		$this->documentationHTML = e::$markdown->file($file);
