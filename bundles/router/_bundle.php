@@ -35,7 +35,7 @@ class Bundle {
 		 * Router bundle access
 		 */
 		if(substr($url, 0, 2) == '/@')
-			$this->route($url);
+			$this->__routeBundle($url);
 	}
 	
 	public function domainSegment($id = 0) {
@@ -60,6 +60,10 @@ class Bundle {
 	}
 
 	public function route($url, $special = false) {
+		return call_user_func_array(array($this, '__routeBundle'), func_get_args());
+	}
+
+	public function __routeBundle($url, $special = false) {
 		try {
 			$this->_route($url, $special);
 		} catch(Exception $e) {
@@ -195,14 +199,14 @@ class Bundle {
 					/**
 					 * Route Bundle
 					 */
-					if(method_exists(e::$$bundle, '__routeBundle'))
+					if(e::$$bundle->__method_exists('__routeBundle'))
 						e::$$bundle->__routeBundle($path, true);
 
 					/**
 					 * Old Code
 					 * @todo @KellyLSB @dbokovic Deprecate this
 					 */
-					else if(method_exists(e::$$bundle, 'route'))
+					else if(e::$$bundle->__method_exists('route'))
 						e::$$bundle->route($path, true);
 				break;
 			}

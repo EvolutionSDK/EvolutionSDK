@@ -13,7 +13,7 @@ class Bundle {
 		e::configure('manage')->activeAddKey('bundle', __NAMESPACE__, 'manage');
 	}
 
-	public function route($path) {
+	public function __routeBundle($path) {
 
 		/**
 		 * Security access for development

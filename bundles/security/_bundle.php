@@ -112,7 +112,7 @@ class Bundle {
 		return isset($_POST['e-developer-credentials']) ? explode('.', $_POST['e-developer-credentials'], 2) : null;
 	}
 
-	public function route() {
+	public function __routeBundle() {
 		$key = $this->getPOSTKey();
 		if(!is_null($key)) {
 			$name = $key[0];

@@ -104,6 +104,11 @@ class e_bundle_accessor {
 		} else
 			return call_user_func_array(array($this->bundleCache, $method), $args);
 	}
+
+	public function __method_exists($method) {
+		$this->__init();
+		return method_exists($this->bundleCache, $method);
+	}
 }
 
 /**
