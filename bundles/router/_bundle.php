@@ -184,12 +184,27 @@ class Bundle {
 			
 			switch($realm) {
 				case 'api':
+					/**
+					 * Api Routing
+					 */
 					$this->route_bundle_api($bundle, $path);
-					break;
+				break;
 				default:
 					array_unshift($path, $realm);
-					e::$$bundle->route($path, true);
-					break;
+
+					/**
+					 * Route Bundle
+					 */
+					if(method_exists(e::$$bundle, '__routeBundle'))
+						e::$$bundle->__routeBundle($path, true);
+
+					/**
+					 * Old Code
+					 * @todo @KellyLSB @dbokovic Deprecate this
+					 */
+					else if(method_exists(e::$$bundle, 'route'))
+						e::$$bundle->route($path, true);
+				break;
 			}
 			
 			throw new Exception("Bundle `@$bundle` routing did not complete");
