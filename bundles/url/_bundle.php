@@ -33,8 +33,6 @@ class Bundle  {
 	 * @var string
 	 */
 	public $segments = array();
-	public $http_root = array();
-
 
 	/**
 	 * Referrer URL
@@ -52,38 +50,34 @@ class Bundle  {
 
 
 	/**
-	 * Analyze the url and see if we can find a controller or interface to run.
-	 *
-	 * @return void
+	 * Analyze the url and parse out information
 	 * @author David D. Boskovic
+	 * @author Kelly Becker
 	 */
 	public function __initBundle() {
 
-		# Setup path information
-		$this->initialize();
+		/**
+		 * Initialize Request URI and referer
+		 */
+		$this->path = $_SERVER['REQUEST_URI'];
+		$this->referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 
-		# Check for quick link to app
-		if(substr($this->path, 0, 2) == '/~') {
-			$d = explode('.', substr($this->segments[1], 1));
-			$type = array_shift($d);
-			$m1 = array_shift($d);
-			$m2 = array_shift($d);
-
-			if($type == 'app') {
-				echo json_encode_safe(e::app($m1)->$m2());
-				die;
+		/**
+		 * Run an event and try and get the referer if applicable
+		 */
+		if(empty($this->referer)) foreach(e::$events->get_referer() as $refer) {
+			if(!empty($refer)) {
+				$this->referer = $refer;
+				break;
 			}
 		}
 
-		# Check for link
-		if($this->path == '/--link-communicate') {
-			return e::$com->link()->handle($_POST);
-		}
-
-		# load the current url configuration
-		$urls = e::$configure->routing + e::$configure->routing_local;
-		
-		}
+		/**
+		 * Parse domain and path
+		 */
+		$this->domain = $this->_parse_domain();
+		$this->segments = $this->_parse_path();
+		$this->_parse_get();
 	}
 
 	/**
@@ -94,94 +88,31 @@ class Bundle  {
 		return $this->segments[$c - 1];
 	}
 
-
-	
-
-
-
 	/**
-	 * Initialize the url handler.
-	 *
-	 * @return void
-	 * @author David D. Boskovic
+	 * Set/Return the pointer
 	 */
-	public function initialize() {
-
-		# initialize variables
-		$this->path = $_SERVER['REQUEST_URI'];
-		$this->referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-		if(empty($this->referer)) {
-			if(!empty(e::$session->data['redirect_url']))
-				$this->referer = e::$session->data['redirect_url'];
-		}
-
-		$this->domain = $this->_parse_domain();
-		$this->http_root = @e::$env['http_path'] ? $this->_parse_path(e::$env['http_path']) : false;
-		$this->segments = $this->_parse_path();
-
-		# define SUBDOMAIN
-		$subDomain = !empty($this->domain[3]) ? $this->domain[3] : '';
-		define('SUBDOMAIN', $subDomain);
-
-		# Show debug information
-		if(isset($_GET['--routing'])) {
-			$segments = implode(' &bull; ', $this->segments);
-			$domain = implode(' &bull; ', array_reverse($this->domain));
-			$date = date('D F jS Y');
-			$time = date('G:i e');
-			echo "<h2>Evolution Routing Information</h2>
-			<style>
-				body, table {
-					font-family: Helvetica, Tahoma, sans;
-					font-size: 13px;
-				}
-
-				table {
-					border-collapse: collapse;
-				}
-
-				th {
-					border: 1px solid #888;
-					background: #eee;
-				}
-
-				td, th {
-					padding: 0.5em;
-				}
-
-				td {
-					border: 1px solid #bbb;
-				}
-			</style>
-			<table>
-				<tr><th>Variable</th><th>Value</th></tr>
-				<tr><td>Path</td><td>$this->path</td></tr>
-				<tr><td>Referer</td><td>$this->referer</td></tr>
-				<tr><td>Domain</td><td>$domain</td></tr>
-				<tr><td>HTTP Root</td><td>$this->http_root</td></tr>
-				<tr><td>Path Segments</td><td>$segments</td></tr>
-				<tr><td>Subdomain</td><td>$subDomain</td></tr>
-				<tr><td>Time</td><td>$date at $time</td></tr>
-			</table>";
-		}
-	}
-
-
 	public function position($no = null) {
 		if(is_null($no)) return $this->pointer;
-		else $this->pointer = $no;
+		return $this->pointer = $no;
 	}
 
-
+	/**
+	 * Advance the pointer
+	 */
 	public function next() {
 		++$this->pointer;
 	}
 
-
+	/**
+	 * Decrease the pointer
+	 */
 	public function prev() {
 		--$this->pointer;
 	}
 
+	/**
+	 * Output the path as loaded so far
+	 */
 	public function trace($no = false) {
 		$no = $no !== false ? $no : $this->pointer;
 
@@ -199,7 +130,9 @@ class Bundle  {
 		return $path;
 	}
 
-
+	/**
+	 * Get a segment, or list of segments
+	 */
 	public function segment($pointer = false) {
 
 		if(is_numeric($pointer)) $pointer = (int) $pointer;
@@ -230,6 +163,9 @@ class Bundle  {
 		else return isset($this->segments[$pointer]) ? $this->segments[$pointer] : false;
 	}
 
+	/**
+	 * Label a segment
+	 */
 	public function Label($string, $condition = TRUE) {
 		if($condition == FALSE) return FALSE;
 
@@ -247,9 +183,9 @@ class Bundle  {
 		}
 	}
 
-
-
-	//Assigns all specially formatted GET variables ( /key:val/ ) to the $_GET superglobal
+	/**
+	 * Parse the GET Variables
+	 */
 	public function _parse_get() {
 		$pathComponents = explode('/', $this->path);
 		foreach($pathComponents as $val){
@@ -273,11 +209,13 @@ class Bundle  {
 		}
 	}
 
+	/**
+	 * Parse the path
+	 */
 	public function _parse_path($uri = '') {
 
 		if(empty($uri)) {
 			$uri = $_SERVER['REQUEST_URI'];
-			$ignore = $this->http_root;
 		}
 		else {
 			$ignore = false;
@@ -308,6 +246,9 @@ class Bundle  {
 		return $path;
 	}
 
+	/**
+	 * Parse the domain
+	 */
 	public function _parse_domain() {
 		$this->rawDomain = $_SERVER['HTTP_HOST'];
 		$array = explode('.', $_SERVER['HTTP_HOST']);
@@ -329,10 +270,9 @@ class Bundle  {
 		return $output;
 	}
 
-
-
-
-
+	/**
+	 * Redirect Function
+	 */
 	public function redirect($to)	{
 
 		//ob_end_clean();
@@ -358,7 +298,9 @@ class Bundle  {
 	    die;
 	}
 
-
+	/**
+	 * Get a copy of the url to the current page with current domain, and protocol
+	 */
 	public function urdl($protocol = NULL) {
 		if(is_null($protocol)) {
 			$protocol = $this->protocol();
@@ -366,22 +308,32 @@ class Bundle  {
 		return $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
-
+	/**
+	 * Get the raw domain
+	 */
 	public function domain($prepend = '') {
-		return $prepend.url::$domain[2].'.'.url::$domain[1];
+		return $prepend.$this->rawDomain;
 	}
 
+	/**
+	 * Get the raw path
+	 */
+	public function path() {
+		return $this->path;
+	}
+
+	/**
+	 * Get the server protocol
+	 */
 	public function protocol() {
 		return ($_SERVER['HTTPS'] == 'on')? 'https' : 'http';
 	}
 
+	/**
+	 * Is the active page load triggered by AJAX
+	 */
 	public function is_ajax() {
 		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest");
 	}
-
-
-	getSegment('2-4')
-	getSegment('2$-1$')
-
 
 }
