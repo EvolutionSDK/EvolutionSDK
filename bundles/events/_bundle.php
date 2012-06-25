@@ -219,5 +219,19 @@ class Bundle {
 		return $results;
 		
 	}
+
+	public function __get($var) {
+		switch($var) {
+			case 'first':
+			case 'last':
+			case 'all':
+			case 'single':
+				return new Result($var);
+			break;
+			default:
+				throw new Exception('Trying to access event results with an invalid accessor.');
+			break;
+		}
+	}
 	
 }

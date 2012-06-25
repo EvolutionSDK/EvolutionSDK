@@ -39,7 +39,7 @@ class Bundle  {
 	 *
 	 * @var string
 	 */
-	public $referer;
+	public $referrer;
 
 	/**
 	 * Current Pointer
@@ -57,27 +57,27 @@ class Bundle  {
 	public function __initBundle() {
 
 		/**
-		 * Initialize Request URI and referer
+		 * Load in necessary variables.
+		 * @todo remove dependency on Apache vars
 		 */
 		$this->path = $_SERVER['REQUEST_URI'];
-		$this->referer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		$this->referrer = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+		$this->rawDomain = $_SERVER['HTTP_HOST'];
 
 		/**
 		 * Run an event and try and get the referer if applicable
+		 * @todo clean this up, it's messy, and what happens if multiple bundles respond with an event.
 		 */
-		if(empty($this->referer)) foreach(e::$events->get_referer() as $refer) {
-			if(!empty($refer)) {
-				$this->referer = $refer;
-				break;
-			}
+		if(!$this->referrer) {
+			$referrer = e::$events->first->get_referrer();
+			$this->referrer = $referrer ? $refferer : false;
 		}
 
 		/**
 		 * Parse domain and path
 		 */
-		$this->domain = $this->_parse_domain();
-		$this->segments = $this->_parse_path();
-		$this->_parse_get();
+		$this->domain = $this->parse_domain($this->rawDomain);
+		$this->segments = $this->parse_path($this->path);
 	}
 
 	/**
@@ -163,95 +163,51 @@ class Bundle  {
 		else return isset($this->segments[$pointer]) ? $this->segments[$pointer] : false;
 	}
 
-	/**
-	 * Label a segment
-	 */
-	public function Label($string, $condition = TRUE) {
-		if($condition == FALSE) return FALSE;
-
-		$labels = explode("/", $string);
-		$output = array();
-		if(substr($string, 0, 1) == '/') {
-			unset($labels[0]);
-			foreach($labels as $key => $val) {
-				$this->labels[$key] = $val;
-			}
-		} else {
-			foreach($labels as $key => $val) {
-				$this->labels[$key + $this->pointer] = $val;
-			}
-		}
-	}
 
 	/**
-	 * Parse the GET Variables
+	 * Parse any URI (can include query string)
+	 *
+	 * @author  David Boskovic
+	 * @since   06/24/2012
+	 *
+	 * @param   string [$uri]
+	 * @example /path/string/stuff?foo=bar => [1=> 'path', 2=> 'string', 3=> 'stuff']
+	 * @return  array
 	 */
-	public function _parse_get() {
-		$pathComponents = explode('/', $this->path);
-		foreach($pathComponents as $val){
-			if(stripos($val, ':') !== FALSE){
-				$getParts = explode(':', $val);
-				$getKey = $getParts[0];
-				$getVal = $getParts[1];
+	public function parse_path($uri) {
 
-				//If query string is formatted like:  /url?key:val, then parse out the url
-				if( stripos($getParts[0], '?') !== FALSE){
-					$getKey = substr($getKey, stripos($getKey, '?')+1 );
-				}
+		/**
+		 * Strip away the GET string from the URI if it's around.
+		 * @todo Do something with the GET string here eventually, or completely deprecate it.
+		 */
+		list($path, $get) = explode('?', $uri);
 
-				//If query string is formatted like:  /url?key:val, then this key will be set: $_GET['key:val'].  Let's unset it.
-				/* Commented out because there is potential for errors (ie, $GET keys getting deleted)
-				if( isset($_GET[$getKey]) )
-					unset($_GET[$getKey]);*/
+		/**
+		 * trim the path to make sure there's not a hanging empty array item after exploding...
+		 * however the path string is expected to always start with / so we add it back
+		 */
+		$path = explode("/", '/'.trim($path,'/'));
 
-				$_GET[$getKey] = $getVal;
-			}
-		}
-	}
+		/**
+		 * Because the string starts with a "/", array[0] is empty. This is important because
+		 * we actually want array 1 to be the first var
+		 * @todo I think it would be better to have a proper array here and +1 to the pointer later
+		 */
+		unset($path[0]);		
 
-	/**
-	 * Parse the path
-	 */
-	public function _parse_path($uri = '') {
-
-		if(empty($uri)) {
-			$uri = $_SERVER['REQUEST_URI'];
-		}
-		else {
-			$ignore = false;
-		}
-
-		$pathComponents = explode('?', $uri);
-		if(empty($pathComponents[1])) $pathComponents[1] = '';
-
-		list($path, $get) = $pathComponents;
-		$path = explode("/", $path);
-
-		$path = array_reverse($path);
-
-
-		if($path[0] == '') {
-			unset($path[0]);
-		}
-		$path = array_reverse($path);
-
-		unset($path[0]);
-		if($ignore) {
-			$npath = array_diff_assoc($path, $ignore);
-			array_unshift($npath, 'del');
-			unset($npath[0]);
-			$path = $npath;
-		}
-
+		/**
+		 * Return the parsed array of segments.
+		 */
 		return $path;
 	}
+
+
 
 	/**
 	 * Parse the domain
 	 */
-	public function _parse_domain() {
-		$this->rawDomain = $_SERVER['HTTP_HOST'];
-		$array = explode('.', $_SERVER['HTTP_HOST']);
+	public function parse_domain($domain) {
+		$array = explode('.', $domain);
 		$array = array_reverse($array);
 		$pointer = 1;
 
@@ -270,60 +226,147 @@ class Bundle  {
 		return $output;
 	}
 
+
+
 	/**
-	 * Redirect Function
+	 * Redirect to a new URL. Stops all processing and sends user to a new URL.
+	 *
+	 * @author  David Boskovic
+	 * @since   06/24/2012
+	 *
+	 * @example e::$url->redirect('/foo/bar') => 'http://www.domain.com/foo/bar'
+	 * @example e::$url->redirect('/foo/bar', 'https') => 'https://www.domain.com/foo/bar'
+	 * @example e::$url->redirect('http://google.com') => 'http://google.com'
+	 *
+	 * @param   string [$to], string [$protocol] http|https
+	 * @return  null
+	 *
+	 * @todo add support for output buffer.
+	 * @todo add checking for proper format of $to param
+	 * @todo add support for session transferring with an SID get var
 	 */
-	public function redirect($to)	{
+	public function redirect($to, $protocol = false)	{
 
-		//ob_end_clean();
+		/**
+		 * Build the domain.
+		 */
+		$url = $this->link($to, $protocol);
 
-		if(stripos($to, '://') === FALSE) {
-			$url = $this->protocol(). '://' . $this->rawDomain . $this->Link($to);
-		} else {
-			$url = $to;
-		}
-
-		if (!headers_sent()){    // If headers not sent yet... then do php redirect
+		/**
+		 * Do a header redirect as long as the headers have not yet been sent.
+		 */
+		if (!headers_sent())
 	        header('Location: '.$url);
-	        echo "If this page does not redirect, <a href=\"$url\">click here</a> to continue";
-	    } else {                 // If headers are sent... do javascript redirect... if javascript disabled, do html redirect.
-	        echo '<script type="text/javascript">';
-	        echo 'window.location.href="'.$url.'";';
-	        echo '</script>';
-	        echo '<noscript>';
-	        echo '<meta http-equiv="refresh" content="0;url='.$url.'" />';
-	        echo '</noscript>';
-	    }
+	   
+	    /**
+	      * If headers are sent... do javascript redirect... if javascript disabled, do html redirect.
+	      * This code will get sent anyways, in case for some reason the browser won't header-redirect.
+	      */ 
+        echo '<script type="text/javascript"> window.location.href="'.$url.'"; </script>';
+        echo '<noscript> <meta http-equiv="refresh" content="0;url='.$url.'" /> </noscript>';
+        echo "If this page does not redirect, <a href=\"$url\">click here</a> to continue.";
 
+	    /**
+	     * Kill the script. But give bundles a chance to execute critical function before death.
+	     * @todo this should probably be passed to a kernel method for killing scripts
+	     */
+	    e::$events->force_quit('redirect');
 	    die;
 	}
 
 	/**
-	 * Get a copy of the url to the current page with current domain, and protocol
+	 * Generate a proper link based off a root path eg: /foo/bar
+	 *
+	 * @author  David Boskovic
+	 * @since   06/24/2012
+	 *
+	 * @example e::$url->link('/foo/bar') => 'http://www.domain.com/foo/bar'
+	 * @example e::$url->link('/foo/bar', 'https') => 'https://www.domain.com/foo/bar'
+	 * @example e::$url->link('http://google.com') => 'http://google.com'
+	 *
+	 * @param   string [$to], string [$protocol] http|https
+	 * @return  string
+	 *
+	 * @todo add support for a special secure subdomain to be configured for https links
+	 * @todo clean up and document better
 	 */
-	public function urdl($protocol = NULL) {
-		if(is_null($protocol)) {
-			$protocol = $this->protocol();
+	public function link($src, $protocol = false) {
+
+		/**
+		 * Build the domain.
+		 */
+		if(strpos($src, '://') === FALSE) {
+
+			if($protocol && !($protocol == 'http' || $protocol == 'https'))
+					throw new Exception('If you pass a protocol, it must either be `http` or `https`. Otherwise do not pass a protocol to the redirect function.');
+			else $protocol = $this->protocol();
+
+			$url = $protocol. '://' . $this->domain() . '/'.ltrim($src,'/');
+		} 
+		else $url = $src;
+
+		return $url;
+	}
+
+
+
+	/**
+	 * Return the full raw domain. Add Subdomain if desired.
+	 *
+	 * @author  David Boskovic
+	 * @since   06/24/2012
+	 *
+	 * @example e::$url->domain('my') => 'my.domain.com'
+	 * @param   string [$subdomain]
+	 * @return  string
+	 */
+	public function domain($subdomain = false, $honor_full_domain = false) {
+
+		/**
+		 * Return the full domain + subdomain. If you want to prepend the subdomain to the entire
+		 * domain, make sure to pass the second param as true. (Warning this could result in 
+		 * returning 'subdomain.www.domain.com' rather than 'subdomain.domain.com'!!!)
+		 */
+		if(is_string($subdomain) && strlen($subdomain) > 0) {
+			if($honor_full_domain)
+				return rtrim($subdomain, '.') . '.' . $this->rawDomain;
+			else
+				return implode('.', array($subdomain, $this->domain[2], $this->domain[1]));
 		}
-		return $protocol . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+		/**
+		 * Return the current raw domain, whatever it is.
+		 */
+		else
+			return $this->rawDomain;
 	}
 
-	/**
-	 * Get the raw domain
-	 */
-	public function domain($prepend = '') {
-		return $prepend.$this->rawDomain;
-	}
+
 
 	/**
-	 * Get the raw path
+	 * Return the full path up to whatever pointer is specified.
+	 *
+	 * @author  David Boskovic
+	 * @since   06/24/2012
+	 *
+	 * @example e::$url->path() => '/this/domain/is/awesome'
+	 * @example e::$url->path(0) => '/this/domain/is/awesome'
+	 * @example e::$url->path(1) => '/this'
+	 * @example e::$url->path(2) => '/this/domain'
+	 * @example e::$url->path(3) => '/this/domain/is'
+	 *
+	 * @param   integer [$pointer]
+	 * @return  string
 	 */
-	public function path() {
-		return $this->path;
+	public function path($pointer = false) {
+		if(is_numeric($pointer) && $pointer > 0)
+			return $this->trace((int) $pointer);
+		return '/'.implode('/', $this->segments);
 	}
 
 	/**
 	 * Get the server protocol
+	 * @todo verify NGINX also populates this SERVER var.
 	 */
 	public function protocol() {
 		return ($_SERVER['HTTPS'] == 'on')? 'https' : 'http';
@@ -331,6 +374,7 @@ class Bundle  {
 
 	/**
 	 * Is the active page load triggered by AJAX
+	 * @todo verify NGINX also populates this SERVER var.
 	 */
 	public function is_ajax() {
 		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == "XMLHttpRequest");
