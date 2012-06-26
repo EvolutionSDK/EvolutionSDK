@@ -97,7 +97,7 @@ require(EvolutionSDK . '/kernel/startup.php');
 /**
  * Use the evolution router
  */
-e::$router->route($_SERVER['REDIRECT_URL']);
+e::$router->__routeBundle($_SERVER['REDIRECT_URL']);
 ```
 
 Then create `./runtime/environment.php` with the contents.

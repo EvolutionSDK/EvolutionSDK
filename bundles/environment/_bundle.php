@@ -141,7 +141,7 @@ class Bundle {
 		exit;
 	}
 	
-	public function route($path) {
+	public function __routeBundle($path) {
 
 		/**
 		 * Security access for development

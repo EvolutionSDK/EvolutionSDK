@@ -27,7 +27,7 @@ class Bundle {
 	public function _on_framework_loaded() {
 		if(isset($_GET['--docs'])) {
 			$this->root = '?--docs=';
-			$this->route($_GET['--docs']);
+			$this->__routeBundle($_GET['--docs']);
 		}
 	}
 
@@ -35,7 +35,7 @@ class Bundle {
 	 * Show documentation page
 	 * @author Nate Ferrero
 	 */
-	public function route($path) {
+	public function __routeBundle($path) {
 
 		/**
 		 * Allow multiple routing methods
