@@ -157,7 +157,7 @@ class Bundle {
 				/**
 				 * Get full path for file
 				 */
-				$current = $current->getPathinfo();
+				$current = $current->getPathname();
 
 				$name = pathinfo($current, PATHINFO_FILENAME);
 				if($name[0] == '-')
