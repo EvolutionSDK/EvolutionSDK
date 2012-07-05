@@ -4,21 +4,23 @@
 		<title>@--title--@ &bull; EvolutionSDK&trade; Documentation</title>
 		<style>
 			body {
-				background-color: #ccc;
-				font-family: Palatino, "Palatino Linotype", "URW Palladio L", "Book Antiqua", Georgia, serif;
+				background-color: #FFF;
+				font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+				font-size: 14px;
 				line-height: 1.45;
+				margin:0px;
+				padding:0px;
 				word-spacing: 0.05em;
 			}
 			.page {
 				background: #fff;
-				width: 960px;
-				margin: 20px auto;
-				box-shadow: 0 0 20px #000;
+				margin: 0px auto;
 			}
 
 			.nav-first {
+				font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
 				padding: 40px 40px 0;
-				font-size: 125%;
+				font-size: 115%;
 				font-weight: bold;
 				background: #eee;
 				border-bottom: 1px solid #ccc;
@@ -27,7 +29,7 @@
 			.nav-first a {
 				padding: 12px 16px 0;
 				margin-bottom: -1px;
-				color: #666;
+				color: #2996cf;
 				text-decoration: none;
 				height: 34px;
 				display: inline-block;
@@ -41,28 +43,37 @@
 			}
 
 			.nav-second {
-				padding: 22px 40px 20px;
-				line-height: 2em;
+
+				font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+				padding: 20px 0px 20px 20px;
+				line-height: 1.5em;
+				border-right:1px solid #dadada;
+				padding-right: 20px;
 			}
 
 			.nav-second a {
-				color: #666;
+				color: #2996cf;
 				text-decoration: none;
-				margin-right: 1.5em;
+				display:block;
+				padding:5px;
+				border-bottom:1px dotted #DADADA;
+			}
+			.nav-second p {
+				color: #666;
+				font-style:italic;
+				font-family: Georgia;
 			}
 
+			.nav-second a:first-child {
+				border-top:1px dotted #DADADA;
+			}
 			.nav-second a.selected {
-				color: #222;
-				border-bottom: 3px double #222;
+				color: #666;
+				background:#fafafa;
+				padding-left: 20px;
 			}
 
-			.nav-second > *:first-child {
-				margin-top: 0;
-			}
-
-			.nav-second > *:last-child {
-				margin-bottom: 0;
-			}
+		
 
 			.nav-third {
 				padding: 21px 40px 20px;
@@ -86,6 +97,7 @@
 
 			.documentation {
 				padding: 40px;
+				max-width: 700px;
 			}
 
 			.documentation > *:first-child {
@@ -95,11 +107,17 @@
 			.documentation > *:last-child {
 				margin-bottom: 0;
 			}
+			pre {
 
-			code {
+				border:1px solid #DADADA;
+			}
+			pre code {
 				background-color: #F4F4F4;
 				color: #736;
 				padding: 0.25em 0.5em;
+			}
+			code {
+				color: #736;
 			}
 
 			.documentation img {
@@ -134,6 +152,66 @@
 				width: 128px;
 				heigth: 128px;
 			}
+			.hide {
+			display:none;
+			}
+			h1{
+				font-weight:200;
+
+
+				margin-bottom: 0px;
+				margin-top: 40px;
+			}
+
+			h3 {
+			}
+
+			#TOC h2 {
+				margin-top:0px;
+			}
+			#TOC ul {
+				margin: 0; padding: 0;
+			}
+
+			#TOC ul ul {
+				margin-left: 20px; padding: 0;
+			}
+			#TOC ul li {
+				list-style-type: none;
+				margin: 0; padding: 0;
+			}
+			#TOC {
+			border-left: 10px solid #DADADA;
+			padding:20px;
+			}
+
+			code .variable {
+			color:purple;
+			}
+			code .regexp {
+			color:gray !important;
+			}
+			table{
+			width:100%;
+			border-collapse:collapse;
+			}
+			table td {
+			border: 1px solid #DADADA;
+			padding: 5px;
+			}
+			table th {
+			text-align:left;
+			padding-bottom: 5px;
+			}
+			blockquote {
+			margin:10px 0px;
+			padding:20px;
+			background:#fff9d6;
+			border:1px solid #ffdda4;
+			}
+			blockquote p {
+			margin:0px;
+			}
 		</style>
 		<script src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
 		<link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/magula.min.css" />
@@ -147,15 +225,20 @@
 			<div class="nav-first">
 				@--nav-first--@
 			</div>
-			<div class="nav-second">
-				@--nav-second--@
+
+			<div style="position:absolute;left:0px;width:300px;">
+				<div class="nav-second">
+					@--nav-second--@
+				</div>
 			</div>
-			<div class="nav-third">
-				@--nav-third--@
-			</div>
-			<div class="documentation @--class--@">
-				@--documentation--@
-				<hr />
+			<div style="position:absolute;right:0px;left:300px;">
+				<div class="nav-third @--nav-third-exists--@">
+					@--nav-third--@
+				</div>
+				<div class="documentation @--class--@">
+					@--documentation--@
+					<hr />
+				</div>
 			</div>
 		</div>
 	</body>

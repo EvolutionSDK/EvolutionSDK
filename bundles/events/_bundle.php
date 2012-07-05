@@ -202,14 +202,20 @@ class Bundle {
 				}
 				
 				catch(Exception $e) {
-					e\trace_exception($e);
-					
-					/**
-					 * Trace_exit needs to be here twice, not a typo
-					 */
-					e\trace_exit();
-					e\trace_exit();
-					throw $e;
+					if($e->getCode() != 401) {
+
+						e\trace_exception($e);
+						
+						/**
+						 * Trace_exit needs to be here twice, not a typo
+						 */
+						e\trace_exit();
+						e\trace_exit();
+						throw $e;
+					} else {
+						e\trace('Skipped event.', null, 9);
+						e\trace_exit();
+					}
 				}
 			}
 		}
