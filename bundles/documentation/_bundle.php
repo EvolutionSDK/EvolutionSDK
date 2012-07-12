@@ -117,7 +117,7 @@ class Bundle {
 					if($file->isDot() || strlen($file) < 1 || pathinfo($file, PATHINFO_EXTENSION) !== 'md')
 						continue;
 
-					$file = $file->getPathinfo();
+					$file = $file->getPathname();
 
 					$page = pathinfo($file, PATHINFO_FILENAME);
 					continue;
