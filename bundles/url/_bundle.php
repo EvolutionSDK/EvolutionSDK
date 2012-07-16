@@ -369,6 +369,8 @@ class Bundle  {
 	 * @todo verify NGINX also populates this SERVER var.
 	 */
 	public function protocol() {
+		if($_SERVER['HTTP_X_FORWARDED_PORT'] == '80') return 'http';
+		if($_SERVER['HTTP_X_FORWARDED_PORT'] == '443') return 'https';
 		return ($_SERVER['HTTPS'] == 'on')? 'https' : 'http';
 	}
 
