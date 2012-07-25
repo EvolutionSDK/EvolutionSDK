@@ -134,7 +134,6 @@ class Bundle  {
 	 * Get a segment, or list of segments
 	 */
 	public function segment($pointer = false) {
-
 		if(is_numeric($pointer)) $pointer = (int) $pointer;
 		# if no pointer has been specified, get the current pointer
 		$pointer = $pointer ? $pointer : $this->pointer;
