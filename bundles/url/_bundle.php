@@ -134,7 +134,6 @@ class Bundle  {
 	 * Get a segment, or list of segments
 	 */
 	public function segment($pointer = false) {
-
 		if(is_numeric($pointer)) $pointer = (int) $pointer;
 		# if no pointer has been specified, get the current pointer
 		$pointer = $pointer ? $pointer : $this->pointer;
@@ -369,6 +368,8 @@ class Bundle  {
 	 * @todo verify NGINX also populates this SERVER var.
 	 */
 	public function protocol() {
+		if($_SERVER['HTTP_X_FORWARDED_PORT'] == '80') return 'http';
+		if($_SERVER['HTTP_X_FORWARDED_PORT'] == '443') return 'https';
 		return ($_SERVER['HTTPS'] == 'on')? 'https' : 'http';
 	}
 

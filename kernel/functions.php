@@ -815,23 +815,25 @@ function after($count) {
  * Nate's awesome JSON function 
  * @author Nate Ferrero
  */
-function json_encode_safe($obj) {
-	return json_encode(prepareDeepEncode($obj));
+function json_encode_safe($obj, $nocache = false) {
+	return json_encode(prepareDeepEncode($obj, $nocache));
 }
 
-function prepareDeepEncode($obj) {
+function prepareDeepEncode($obj, $nocache = false) {
 	if(is_object($obj)) {
-		if(method_exists($obj, '__toArray'))
-			return prepareDeepEncode($obj->__toArray());
+		if(method_exists($obj, '__map') && $nocache)
+			return $obj->__map();
+		elseif(method_exists($obj, '__toArray'))
+			return prepareDeepEncode($obj->__toArray(), $nocache);
 		else if($obj instanceof \stdClass) 
-			return prepareDeepEncode((array) $obj);
+			return prepareDeepEncode((array) $obj, $nocache);
 		else 
 			return array('type' => 'object', 'encoding' => 'base64', 'serialized' => base64_encode(serialize($obj)));
 	} else if(is_array($obj)) {
 		$o = array();
 		foreach($obj as $key => $value) {
 			if(!is_null($value) && $value !== '')
-				$o[$key] = prepareDeepEncode($value);
+				$o[$key] = prepareDeepEncode($value, $nocache);
 		}
 		return $o;
 	} else if(is_string($obj)) {

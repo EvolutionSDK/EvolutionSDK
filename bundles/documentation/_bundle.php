@@ -117,7 +117,7 @@ class Bundle {
 					if($file->isDot() || strlen($file) < 1 || pathinfo($file, PATHINFO_EXTENSION) !== 'md')
 						continue;
 
-					$file = $file->getPathinfo();
+					$file = $file->getPathname();
 
 					$page = pathinfo($file, PATHINFO_FILENAME);
 					continue;
@@ -157,7 +157,7 @@ class Bundle {
 				/**
 				 * Get full path for file
 				 */
-				$current = $current->getPathinfo();
+				$current = $current->getPathname();
 
 				$name = pathinfo($current, PATHINFO_FILENAME);
 				if($name[0] == '-')
@@ -182,6 +182,9 @@ class Bundle {
 			$file = __DIR__ . '/documentation/-not-found.md';
 
 		$this->documentationHTML = e::$markdown->file($file);
+		$this->documentationHTML = $this->TableOfContents($this->documentationHTML);
+
+
 
 		/**
 		 * Get title
@@ -206,6 +209,57 @@ class Bundle {
 		echo $output;
 
 		e\Complete();
+	}
+
+	public function TableOfContents($html) {
+		preg_match_all("/(<h([0-2]{1})[^<>]*>)([^<>]+)(<\/h[0-2]{1}>)/", $html, $matches, PREG_SET_ORDER);
+		$LI = 0; // List Item Count
+		$HL = 1; // Heading Level
+		$SubHeading = false;
+
+		foreach ($matches as $val) {
+			++$LI;
+
+			if ($val[2] == $HL) // If the heading level didn't change.
+				$List["$LI"] = '<li><a href="#Sec'.$LI.'">'. $val[3] . '</a></li>';
+
+			elseif ($val[2] > $HL) { // If bigger then last heading level, create a nested list.
+				$List["$LI"] = '<li><ul><li><a href="#Sec'.$LI.'">'. $val[3] . '</a></li>';
+				if($SubHeading === true)
+					$SubHeading = false;
+				else
+					$SubHeading = true;
+			}
+			elseif ($val[2] < $HL) // If less then last Heading Level, end nested list.
+				$List["$LI"]  = '</ul></li><li><a href="#Sec'.$LI.'">'. $val[3] . '</a></li>';
+	
+
+			$Sections["$LI"]    = $val[1] . $val[3] . $val[4]; // Original heading to be Replaced.
+			$SectionWIDs["$LI"] = '<h' . $val[2] . ' id="Sec'.$LI.'">' . $val[3] . $val[4]; // This is the new Heading.
+
+			$HL = $val[2];
+		switch ($HL) { // Final markup fix, used if the list ended on a subheading, such as h3, h4. Etc.
+			case 3:
+				$List["$LI"] = $List["$LI"] . '</ul></li>';
+			break;
+			case 4:
+				$List["$LI"] = $List["$LI"] . '</ul></li></ul></li>';
+			break;
+			case 5:
+				$List["$LI"] = $List["$LI"] . '</ul></li></ul></li></ul></li>';
+			break;
+			case 6:
+				$List["$LI"] = $List["$LI"] . '</ul></li></ul></li></ul></li></ul></li>';
+			break;
+		}
+		}
+	
+		$Settu = '';
+		foreach ($List as $val) { // Puts together the list.
+			$Settu = $Settu . $val;
+		}
+		//dump($Sections);
+		return '<div id="TOC"><h2>Table of Contents</h2><ul>' . $Settu . '</ul></div>' . str_replace($Sections, $SectionWIDs, $html); // Returns the content
 	}
 
 	/**
@@ -315,21 +369,6 @@ class Bundle {
 			$file = $dir . '/-description.md';
 			if(is_file($file))
 				$html = e::$markdown->file($file);
-		}
-		$this->render($output, 'nav-second', $html);
-	}
-
-	/**
-	 * Render third-level navigation
-	 * @author Nate Ferrero
-	 */
-	private function renderNavThird(&$output, $bundle, $book, $page) {
-		$html = '';
-		if(!empty($bundle)) {
-			foreach($this->files['bundles'][$bundle]['files'] as $name => $path)
-				$html .= '<a class="'.($page == $name ? 'selected' : '').'" href="'.$this->root.$path.'">'.ucfirst($name).'</a> ';
-		}
-		if(!empty($book)) {
 			$dir = $this->files['books'][$book];
 
 			/**
@@ -352,6 +391,25 @@ class Bundle {
 				$html .= '<a class="'.($page == $path ? 'selected' : '').'" href="'.$this->root.$book.'/'.$path.'">'.ucfirst($name).'</a> ';
 			}
 		}
+		$this->render($output, 'nav-second', $html);
+	}
+
+	/**
+	 * Render third-level navigation
+	 * @author Nate Ferrero
+	 */
+	private function renderNavThird(&$output, $bundle, $book, $page) {
+		$html = '';
+		if(!empty($bundle)) {
+			if(count($this->files['bundles'][$bundle]['files']) >1)
+				foreach($this->files['bundles'][$bundle]['files'] as $name => $path)
+					$html .= '<a class="'.($page == $name ? 'selected' : '').'" href="'.$this->root.$path.'">'.ucfirst($name).'</a> ';
+		}
+		if(!empty($book)) {
+			// if it's a book, then let's make that second level navigation, not 3rd.
+		}
+		if(!$html)
+			$this->render($output, 'nav-third-exists', 'hide');
 		$this->render($output, 'nav-third', $html);
 
 	}
