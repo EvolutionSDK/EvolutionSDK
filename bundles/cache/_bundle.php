@@ -39,8 +39,24 @@ class Bundle {
 		}
 	}
 	
-	public function path() {
-		return $this->_cache_path;
+	public function path($subPath = '') {
+		$path = $this->_cache_path;
+
+		// Make sure any subDirs are available
+		if(!empty($subPath)) {
+			if(substr($subPath, 0, 1) !== '/')
+				$subPath = '/'.$subPath;
+
+			$path = $path . $subPath;
+
+			try {
+				if(!is_dir($path)) exec('mkdir -p -m 0777 '.$path);
+			} catch(Exception $e) {
+				throw new Exception("Could not create sub cache folder at `$path`", 0, $e);
+			}
+		}
+
+		return $path;
 	}
 	
 	/**
