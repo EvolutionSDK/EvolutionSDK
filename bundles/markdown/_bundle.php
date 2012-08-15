@@ -27,10 +27,24 @@ class Bundle {
 		 */
 		require_once(__DIR__ . '/markdown.php');
 
+		// Get the file contents
+		$string = file_get_contents($file);
+
+		// Trace it
+		e\trace_enter("Parse Markdown File", htmlentities(substr($string, 0, 250)."..."));
+
 		/**
 		 * Transform the text
 		 */
-		return Markdown(file_get_contents($file));
+		$return = Markdown($string);
+
+		// Trace it
+		e\trace("Markdown Parsed", htmlentities($return));
+
+		// Step down a trace
+		e\trace_exit();
+
+		return $return;
 	}
 
 	/**
@@ -44,10 +58,21 @@ class Bundle {
 		 */
 		require_once(__DIR__ . '/markdown.php');
 
+		// Trace it
+		e\trace_enter("Parse Markdown String", htmlentities(substr($string, 0, 250)."..."));
+
 		/**
 		 * Transform the text
 		 */
-		return Markdown($string);
+		$return = Markdown($string);
+
+		// Trace it
+		e\trace("Markdown Parsed", htmlentities($return));
+
+		// Step down a trace
+		e\trace_exit();
+
+		return $return;
 	}
 
 	/**
