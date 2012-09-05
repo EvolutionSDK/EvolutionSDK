@@ -1,12 +1,4 @@
 <?php
-
-/**
- * Added Namespace
- * @author Nate Ferrero
- */
-namespace Bundles\Markdown;
-use Exception;
-
 #
 # Markdown Extra  -  A text-to-HTML conversion tool for web writers
 #

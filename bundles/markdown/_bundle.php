@@ -27,10 +27,24 @@ class Bundle {
 		 */
 		require_once(__DIR__ . '/markdown.php');
 
+		// Get the file contents
+		$string = file_get_contents($file);
+
+		// Trace it
+		e\trace_enter("Parse Markdown File", htmlentities(substr($string, 0, 250)."..."));
+
 		/**
 		 * Transform the text
 		 */
-		return Markdown(file_get_contents($file));
+		$return = Markdown($string);
+
+		// Trace it
+		e\trace("Markdown Parsed", htmlentities($return));
+
+		// Step down a trace
+		e\trace_exit();
+
+		return $return;
 	}
 
 	/**
@@ -44,10 +58,21 @@ class Bundle {
 		 */
 		require_once(__DIR__ . '/markdown.php');
 
+		// Trace it
+		e\trace_enter("Parse Markdown String", htmlentities(substr($string, 0, 250)."..."));
+
 		/**
 		 * Transform the text
 		 */
-		return Markdown($string);
+		$return = Markdown($string);
+
+		// Trace it
+		e\trace("Markdown Parsed", htmlentities($return));
+
+		// Step down a trace
+		e\trace_exit();
+
+		return $return;
 	}
 
 	/**
@@ -55,9 +80,14 @@ class Bundle {
 	 * @author Kelly Becker
 	 */
 	public function __callBundle($string_file) {
-		if(is_file($string_file))
+		if(strlen($string_file) < 255 && is_file($string_file))
 			return $this->file($string_file);
 		else return $this->string($string_file);
+	}
+
+	public function __initBundle() {
+		ini_set('pcre.backtrack_limit', 9999999999);
+		ini_set('pcre.recursion_limit', 9999999999);
 	}
 
 }
