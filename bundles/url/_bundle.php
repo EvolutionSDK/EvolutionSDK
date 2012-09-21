@@ -326,6 +326,16 @@ class Bundle  {
 		 * domain, make sure to pass the second param as true. (Warning this could result in 
 		 * returning 'subdomain.www.domain.com' rather than 'subdomain.domain.com'!!!)
 		 */
+		if(is_numeric($subdomain)) {
+			$level = (int) $subdomain;
+			$domain = array();
+			for($i=1;$i<=$level;$i++) {
+				$domain[] = $this->domain[$i];
+			}
+			$domain = array_reverse($domain);
+			$domain = implode('.',$domain);
+			return $domain;
+		}
 		if(is_string($subdomain) && strlen($subdomain) > 0) {
 			if($honor_full_domain)
 				return rtrim($subdomain, '.') . '.' . $this->rawDomain;
