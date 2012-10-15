@@ -133,7 +133,7 @@ class Bundle {
 		if(!is_array($key) || !isset($key[1]))
 			return false;
 		list($name, $pass) = $key;
-		return($name . '_' . md5(base64_encode(md5($key . '!@#$%^*()' . $pass))));
+		return($name . '_' . md5(base64_encode(md5(serialize($key) . '!@#$%^*()' . $pass))));
 	}
 
 	public function page($which, $extra = '', $note = '') {
