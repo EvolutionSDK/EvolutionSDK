@@ -65,12 +65,14 @@ class Bundle {
 				 * Sort into order specified in Yaml
 				 */
 				usort($objects, function($class_a, $class_b) use ($conf) {
-					$conf = array_keys($conf);
+					$conf = array_keys(array_reverse($conf));
 					$a = array_search(get_class($class_a), $conf);
 					$b = array_search(get_class($class_b), $conf);
 					
-					return ($a < $b) ? -1 : 1;
+					return ($a < $b) ? 1 : -1;
 				});
+
+				dump($objects);
 			}
 		}
 		
