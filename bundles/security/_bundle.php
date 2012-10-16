@@ -96,11 +96,11 @@ class Bundle {
 	/**
 	 * Security access for development
 	 */
-	public function developerAccess($note = 'Unknown error while loading page') {
+	public function developerAccess($note = 'Unknown error while loading page', $title = null) {
 
 		// If cookie and post credentials both failed
 		if(!$this->developer)
-			$this->page('access', '', $note);
+			$this->page('access', '', $note, $title);
 	}
 
 	public function genCookieSegment($name, $key) {
@@ -136,13 +136,13 @@ class Bundle {
 		return($name . '_' . md5(base64_encode(md5(serialize($key) . '!@#$%^*()' . $pass))));
 	}
 
-	public function page($which, $extra = '', $note = '') {
+	public function page($which, $extra = '', $note = '', $title = null) {
 		
 		
 		/**
 		 * Show developer login form
 		 */
-		$title = "System Configuration Error";
+		if(is_null($title)) $title = "System Configuration Error";
 		$css = file_get_contents(__DIR__.'/../debug/theme.css') . self::style();
 		
 		echo "<!doctype html><html><head><title>$title</title><style>$css</style></head><body class='_e_dump'><div class='manage-page'>";
