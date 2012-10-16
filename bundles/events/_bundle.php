@@ -71,8 +71,6 @@ class Bundle {
 					
 					return ($a < $b) ? 1 : -1;
 				});
-
-				dump($objects);
 			}
 		}
 		
