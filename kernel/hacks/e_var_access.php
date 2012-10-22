@@ -41,7 +41,7 @@ Stack::addListener(new e_var_access_util);
  * Bundle static accessor pseudoclass
  * @author Nate Ferrero
  */
-class e_bundle_accessor {
+class e_bundle_accessor implements ArrayAccess {
 	
 	public static $bundleList = array();
 	
@@ -109,6 +109,39 @@ class e_bundle_accessor {
 		$this->__init();
 		return method_exists($this->bundleCache, $method);
 	}
+
+	/**
+	 * Array Access
+	 * @author Kelly Becker
+	 * @since Oct 22nd, 2012
+	 */
+	public function offsetSet($offset, $value) {
+		$this->__init();
+		if(method_exists($this->bundleCache, '__arraySetBundle'))
+			return $this->bundleCache->__arraySetBundle($offset, $value);
+		throw new Exception("Cannot set `e::\$$this->bundleName[$offset]` because bundle `$this->bundleName` does not implement `__arraySetBundle`");
+    }
+
+    public function offsetExists($offset) {
+    	$this->__init();
+		if(method_exists($this->bundleCache, '__arrayExistsBundle'))
+			return $this->bundleCache->__arrayExistsBundle($offset);
+		throw new Exception("Cannot run exists on `e::\$$this->bundleName[$offset]` because bundle `$this->bundleName` does not implement `__arrayExistsBundle`");
+    }
+
+    public function offsetUnset($offset) {
+        $this->__init();
+		if(method_exists($this->bundleCache, '__arrayUnsetBundle'))
+			return $this->bundleCache->__arrayUnsetBundle($offset);
+		throw new Exception("Cannot run unset on `e::\$$this->bundleName[$offset]` because bundle `$this->bundleName` does not implement `__arrayUnsetBundle`");
+    }
+
+    public function offsetGet($offset) {
+        $this->__init();
+		if(method_exists($this->bundleCache, '__arrayGetBundle'))
+			return $this->bundleCache->__arrayGetBundle($offset);
+		throw new Exception("Cannot run get on `e::\$$this->bundleName[$offset]` because bundle `$this->bundleName` does not implement `__arrayGetBundle`");
+    }
 }
 
 /**
